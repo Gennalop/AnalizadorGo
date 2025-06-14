@@ -19,6 +19,11 @@ reserved = {
 
 # 2. Lista de tokens (todos coordinan aquí)
 tokens = [
+    'ID', 'NUMBER', 'STRING',
+    'PLUS', 'MINUS', 'TIMES', 'DIVIDE',
+    'EQ', 'NEQ', 'GT', 'LT', 'GE', 'LE',
+    'AND', 'OR',
+    'ASSIGN',
     'LPAREN', 'RPAREN',
     'LBRACE', 'RBRACE',
     'LBRACKET', 'RBRACKET',
@@ -26,12 +31,27 @@ tokens = [
     'DOT', 'COLON',
 ] + list(reserved.values())
 
-
 # 3. Reglas para variables y tipo de datos (Integrante 1)
 
 
 # 4. Reglas para operadores (Integrante 2)
+t_PLUS    = r'\+'
+t_MINUS   = r'-'
+t_TIMES   = r'\*'
+t_DIVIDE  = r'/'
+t_MOD     = r'%'
 
+t_EQ      = r'=='
+t_NEQ     = r'!='
+t_GT      = r'>'
+t_LT      = r'<'
+t_GE      = r'>='
+t_LE      = r'<='
+
+t_AND     = r'&&'
+t_OR      = r'\|\|'
+
+t_ASSIGN  = r'='
 
 # 5. Reglas para comentarios y delimitadores (Integrante 3)
 t_LPAREN    = r'\('
