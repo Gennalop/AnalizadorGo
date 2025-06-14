@@ -1,0 +1,26 @@
+[ERROR] Unexpected character '
+' at line 1
+[ERROR] Unexpected character 'f' at line 1
+[ERROR] Unexpected character 'u' at line 1
+[ERROR] Unexpected character 'n' at line 1
+[ERROR] Unexpected character 'c' at line 1
+[ERROR] Unexpected character ' ' at line 1
+[ERROR] Unexpected character 'm' at line 1
+[ERROR] Unexpected character 'a' at line 1
+[ERROR] Unexpected character 'i' at line 1
+[ERROR] Unexpected character 'n' at line 1
+[ERROR] Unexpected character '(' at line 1
+[ERROR] Unexpected character ')' at line 1
+[ERROR] Unexpected character ' ' at line 1
+[ERROR] Unexpected character '{' at line 1
+[ERROR] Unexpected character '
+' at line 1
+[ERROR] Unexpected character '
+' at line 1
+[ERROR] Unexpected character '	' at line 1
+[ERROR] Unexpected character '
+' at line 1
+[ERROR] Unexpected character '	' at line 1
+[ERROR] Unexpected character '
+' at line 1
+[ERROR] Unexpected character '}' at line 1

@@ -18,7 +18,13 @@ reserved = {
 }
 
 # 2. Lista de tokens (todos coordinan aquí)
-tokens = [] + list(reserved.values())
+tokens = [
+    'LPAREN', 'RPAREN',
+    'LBRACE', 'RBRACE',
+    'LBRACKET', 'RBRACKET',
+    'COMMA', 'SEMICOLON',
+    'DOT', 'COLON',
+] + list(reserved.values())
 
 
 # 3. Reglas para variables y tipo de datos (Integrante 1)
@@ -28,9 +34,33 @@ tokens = [] + list(reserved.values())
 
 
 # 5. Reglas para comentarios y delimitadores (Integrante 3)
+t_LPAREN    = r'\('
+t_RPAREN    = r'\)'
+t_LBRACE    = r'\{'
+t_RBRACE    = r'\}'
+t_LBRACKET  = r'\['
+t_RBRACKET  = r'\]'
+t_COMMA     = r',' 
+t_SEMICOLON = r';' 
+t_DOT       = r'\.' #no es delimitador, sino un operador de acceso
+t_COLON     = r':'
 
+def t_COMMENT_UNILINE(t):
+    r'//[^\n]*'
+    pass
+
+def t_COMMENT_MULTILINE(t):
+    r'/\*[\s\S]*?\*/'
+    t.lexer.lineno += t.value.count('\n')
+    pass
 
 # 6. Reglas comunes (Integrante 3)
+t_ignore = ' \t'
+
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
+
 def t_error(t):
     message = f"[ERROR] Unexpected character '{t.value[0]}' at line {t.lineno}\n"
     log_file.write(message)
@@ -43,14 +73,23 @@ lexer = lex.lex()
 
 log_file = create_log_file("gitUser") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
 
-data = '' #TEXTO A PROBAR
+data = """
+func main() {
+
+	// Comentario de una línea
+	/*
+	Comentario de múltiples líneas
+	Este programa evalúa varias estructuras de Go.
+	*/
+}""" #TEXTO A PROBAR
+
 lexer.input(data)
   
 while True:
     tok = lexer.token()
     if not tok:
         break
-    message = f"[LEXTOKEN] {tok.type} -> '{tok.value}' (line {tok.lineno}, column {tok.col}, pos {tok.lexpos})\n"
+    message = f"[LEXTOKEN] {tok.type} -> '{tok.value}' (line {tok.lineno}, pos {tok.lexpos})\n"
     log_file.write(message)
     print(tok)
 

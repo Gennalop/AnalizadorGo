@@ -1,0 +1,12 @@
+[ERROR] Unexpected character 'f' at line 2
+[ERROR] Unexpected character 'u' at line 2
+[ERROR] Unexpected character 'n' at line 2
+[ERROR] Unexpected character 'c' at line 2
+[ERROR] Unexpected character 'm' at line 2
+[ERROR] Unexpected character 'a' at line 2
+[ERROR] Unexpected character 'i' at line 2
+[ERROR] Unexpected character 'n' at line 2
+[ERROR] Unexpected character '(' at line 2
+[ERROR] Unexpected character ')' at line 2
+[ERROR] Unexpected character '{' at line 2
+[ERROR] Unexpected character '}' at line 9
