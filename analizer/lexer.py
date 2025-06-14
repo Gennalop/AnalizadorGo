@@ -2,10 +2,23 @@ import ply.lex as lex
 from logger import create_log_file 
 
 # 1. Palabras Reservadas (Integrante 2)
-
+reserved = {
+    'if' : 'IF',
+    'else' : 'ELSE',
+    'for' : 'FOR',
+    'func' : 'FUNC',
+    'var' : 'VAR',
+    'return' : 'RETURN',
+    'switch' : 'SWITCH',
+    'case' : 'CASE',
+    'default' : 'DEFAULT',
+    'type' : 'TYPE',
+    'struct' : 'STRUCT',
+    'map' : 'MAP'
+}
 
 # 2. Lista de tokens (todos coordinan aquí)
-tokens = ()
+tokens = [] + list(reserved.values())
 
 
 # 3. Reglas para variables y tipo de datos (Integrante 1)
