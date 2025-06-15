@@ -1,0 +1,359 @@
+[ERROR] Invalid identifier: '
+package' at line 1
+[LEXTOKEN] IDENTIFIER -> 'mport' (line 1, pos 16)
+[ERROR] Invalid identifier: '(
+	' at line 1
+[LEXTOKEN] IDENTIFIER -> 't' (line 1, pos 28)
+[ERROR] Unexpected character '"' at line 1
+[ERROR] Invalid identifier: '
+	' at line 1
+[LEXTOKEN] IDENTIFIER -> 'rrors' (line 1, pos 34)
+[ERROR] Unexpected character '"' at line 1
+[ERROR] Invalid identifier: '
+)
+
+type' at line 1
+[LEXTOKEN] IDENTIFIER -> 'struct' (line 1, pos 57)
+[LEXTOKEN] LBRACE -> '{' (line 1, pos 64)
+[ERROR] Invalid identifier: '
+	nombre' at line 1
+[LEXTOKEN] IDENTIFIER -> 'edad' (line 1, pos 82)
+[LEXTOKEN] TYPE -> 'int' (line 1, pos 87)
+[ERROR] Invalid identifier: '
+	activo' at line 1
+[ERROR] Invalid identifier: '
+func' at line 1
+[LEXTOKEN] IDENTIFIER -> 'nerEdad' (line 1, pos 116)
+[ERROR] Invalid identifier: '() int' at line 1
+[LEXTOKEN] IDENTIFIER -> 'turn' (line 1, pos 135)
+[ERROR] Invalid identifier: '30' at line 1
+[ERROR] Invalid identifier: '
+
+func' at line 1
+[LEXTOKEN] IDENTIFIER -> 'ir' (line 1, pos 156)
+[ERROR] Invalid identifier: '(a' at line 1
+[LEXTOKEN] IDENTIFIER -> 'b' (line 1, pos 162)
+[LEXTOKEN] TYPE -> 'int' (line 1, pos 164)
+[ERROR] Invalid identifier: ') (int' at line 1
+[LEXTOKEN] IDENTIFIER -> 'r' (line 1, pos 179)
+[ERROR] Invalid identifier: ') ' at line 1
+[LEXTOKEN] IDENTIFIER -> 'if' (line 1, pos 185)
+[LEXTOKEN] IDENTIFIER -> 'b' (line 1, pos 188)
+[LEXTOKEN] EQ -> '==' (line 1, pos 190)
+[ERROR] Invalid identifier: '0' at line 1
+[LEXTOKEN] LBRACE -> '{' (line 1, pos 195)
+[ERROR] Invalid identifier: '
+		return' at line 1
+[LEXTOKEN] IDENTIFIER -> 's' (line 1, pos 214)
+[LEXTOKEN] DOT -> '.' (line 1, pos 215)
+[LEXTOKEN] IDENTIFIER -> 'New' (line 1, pos 216)
+[ERROR] Invalid identifier: '(' at line 1
+[LEXTOKEN] IDENTIFIER -> 'divisi' (line 1, pos 221)
+[ERROR] Unexpected character 'ó' at line 1
+[LEXTOKEN] IDENTIFIER -> 'n' (line 1, pos 228)
+[LEXTOKEN] IDENTIFIER -> 'por' (line 1, pos 230)
+[LEXTOKEN] IDENTIFIER -> 'cero' (line 1, pos 234)
+[ERROR] Unexpected character '"' at line 1
+[ERROR] Invalid identifier: ')
+	' at line 1
+[LEXTOKEN] IDENTIFIER -> 'return' (line 1, pos 245)
+[LEXTOKEN] IDENTIFIER -> 'a' (line 1, pos 252)
+[LEXTOKEN] DIVIDE -> '/' (line 1, pos 254)
+[LEXTOKEN] IDENTIFIER -> 'b' (line 1, pos 256)
+[LEXTOKEN] COMMA -> ',' (line 1, pos 257)
+[LEXTOKEN] IDENTIFIER -> 'nil' (line 1, pos 259)
+[ERROR] Invalid identifier: '
+' at line 1
+[ERROR] Invalid identifier: '
+
+func' at line 1
+[ERROR] Invalid identifier: ') ' at line 1
+[ERROR] Invalid identifier: '
+	' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Comentario' (line 1, pos 285)
+[LEXTOKEN] IDENTIFIER -> 'de' (line 1, pos 296)
+[LEXTOKEN] IDENTIFIER -> 'una' (line 1, pos 299)
+[LEXTOKEN] IDENTIFIER -> 'l' (line 1, pos 303)
+[ERROR] Unexpected character 'í' at line 1
+[LEXTOKEN] IDENTIFIER -> 'nea' (line 1, pos 305)
+[ERROR] Invalid identifier: '
+	' at line 1
+[ERROR] Invalid identifier: '
+	Comentario' at line 1
+[LEXTOKEN] IDENTIFIER -> 's' (line 1, pos 336)
+[LEXTOKEN] IDENTIFIER -> 'l' (line 1, pos 338)
+[ERROR] Unexpected character 'í' at line 1
+[LEXTOKEN] IDENTIFIER -> 'neas' (line 1, pos 340)
+[ERROR] Invalid identifier: '
+	Este' at line 1
+[LEXTOKEN] IDENTIFIER -> 'ama' (line 1, pos 356)
+[LEXTOKEN] IDENTIFIER -> 'eval' (line 1, pos 360)
+[ERROR] Unexpected character 'ú' at line 1
+[LEXTOKEN] IDENTIFIER -> 'a' (line 1, pos 365)
+[LEXTOKEN] IDENTIFIER -> 'varias' (line 1, pos 367)
+[LEXTOKEN] IDENTIFIER -> 'estructuras' (line 1, pos 374)
+[LEXTOKEN] IDENTIFIER -> 'de' (line 1, pos 386)
+[LEXTOKEN] IDENTIFIER -> 'Go' (line 1, pos 389)
+[LEXTOKEN] DOT -> '.' (line 1, pos 391)
+[ERROR] Invalid identifier: '
+	*' at line 1
+[LEXTOKEN] IDENTIFIER -> 'var' (line 1, pos 399)
+[LEXTOKEN] IDENTIFIER -> 'nombre' (line 1, pos 403)
+[LEXTOKEN] TYPE -> 'string' (line 1, pos 410)
+[LEXTOKEN] ASSIGN -> '=' (line 1, pos 417)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Carlos' (line 1, pos 420)
+[ERROR] Unexpected character '"' at line 1
+[ERROR] Invalid identifier: '
+	var' at line 1
+[LEXTOKEN] TYPE -> 'int' (line 1, pos 438)
+[LEXTOKEN] ASSIGN -> '=' (line 1, pos 442)
+[LEXTOKEN] IDENTIFIER -> 'obtenerEdad' (line 1, pos 444)
+[ERROR] Invalid identifier: '()
+	var' at line 1
+[LEXTOKEN] TYPE -> 'float64' (line 1, pos 469)
+[LEXTOKEN] ASSIGN -> '=' (line 1, pos 477)
+[ERROR] Invalid identifier: '150' at line 1
+[ERROR] Invalid identifier: '
+	var' at line 1
+[LEXTOKEN] IDENTIFIER -> 'vo' (line 1, pos 495)
+[LEXTOKEN] TYPE -> 'bool' (line 1, pos 498)
+[LEXTOKEN] ASSIGN -> '=' (line 1, pos 503)
+[LEXTOKEN] IDENTIFIER -> 'true' (line 1, pos 505)
+[ERROR] Invalid identifier: '
+	var' at line 1
+[LEXTOKEN] IDENTIFIER -> 'ros' (line 1, pos 519)
+[LEXTOKEN] LBRACKET -> '[' (line 1, pos 523)
+[LEXTOKEN] RBRACKET -> ']' (line 1, pos 524)
+[LEXTOKEN] TYPE -> 'int' (line 1, pos 525)
+[LEXTOKEN] ASSIGN -> '=' (line 1, pos 529)
+[LEXTOKEN] LBRACKET -> '[' (line 1, pos 531)
+[LEXTOKEN] RBRACKET -> ']' (line 1, pos 532)
+[LEXTOKEN] TYPE -> 'int' (line 1, pos 533)
+[LEXTOKEN] LBRACE -> '{' (line 1, pos 536)
+[ERROR] Invalid identifier: '10' at line 1
+[ERROR] Invalid identifier: '20' at line 1
+[ERROR] Invalid identifier: '30' at line 1
+[LEXTOKEN] IDENTIFIER -> 'mapa' (line 1, pos 550)
+[LEXTOKEN] COLON -> ':' (line 1, pos 555)
+[LEXTOKEN] ASSIGN -> '=' (line 1, pos 556)
+[LEXTOKEN] IDENTIFIER -> 'map' (line 1, pos 558)
+[LEXTOKEN] LBRACKET -> '[' (line 1, pos 561)
+[LEXTOKEN] TYPE -> 'string' (line 1, pos 562)
+[LEXTOKEN] RBRACKET -> ']' (line 1, pos 568)
+[LEXTOKEN] TYPE -> 'int' (line 1, pos 569)
+[LEXTOKEN] LBRACE -> '{' (line 1, pos 572)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] IDENTIFIER -> 'uno' (line 1, pos 574)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] COLON -> ':' (line 1, pos 578)
+[ERROR] Invalid identifier: '1' at line 1
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] IDENTIFIER -> 'dos' (line 1, pos 584)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] COLON -> ':' (line 1, pos 588)
+[ERROR] Invalid identifier: '2' at line 1
+[ERROR] Invalid identifier: '
+	persona' at line 1
+[LEXTOKEN] IDENTIFIER -> 'na' (line 1, pos 610)
+[LEXTOKEN] LBRACE -> '{' (line 1, pos 612)
+[LEXTOKEN] IDENTIFIER -> 'nombre' (line 1, pos 613)
+[LEXTOKEN] COLON -> ':' (line 1, pos 619)
+[LEXTOKEN] IDENTIFIER -> 'nombre' (line 1, pos 621)
+[LEXTOKEN] COMMA -> ',' (line 1, pos 627)
+[LEXTOKEN] IDENTIFIER -> 'edad' (line 1, pos 629)
+[LEXTOKEN] COLON -> ':' (line 1, pos 633)
+[LEXTOKEN] IDENTIFIER -> 'edad' (line 1, pos 635)
+[LEXTOKEN] COMMA -> ',' (line 1, pos 639)
+[LEXTOKEN] IDENTIFIER -> 'activo' (line 1, pos 641)
+[LEXTOKEN] COLON -> ':' (line 1, pos 647)
+[LEXTOKEN] IDENTIFIER -> 'activo' (line 1, pos 649)
+[LEXTOKEN] RBRACE -> '}' (line 1, pos 655)
+[ERROR] Invalid identifier: '
+
+	fmt' at line 1
+[LEXTOKEN] IDENTIFIER -> 'ln' (line 1, pos 668)
+[ERROR] Invalid identifier: '(' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Nombre' (line 1, pos 672)
+[LEXTOKEN] COLON -> ':' (line 1, pos 678)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] COMMA -> ',' (line 1, pos 680)
+[LEXTOKEN] IDENTIFIER -> 'persona' (line 1, pos 682)
+[LEXTOKEN] DOT -> '.' (line 1, pos 689)
+[LEXTOKEN] IDENTIFIER -> 'nombre' (line 1, pos 690)
+[ERROR] Invalid identifier: ')
+	fmt' at line 1
+[LEXTOKEN] IDENTIFIER -> 'ln' (line 1, pos 708)
+[ERROR] Invalid identifier: '(' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Edad' (line 1, pos 712)
+[LEXTOKEN] COLON -> ':' (line 1, pos 716)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] COMMA -> ',' (line 1, pos 718)
+[LEXTOKEN] IDENTIFIER -> 'persona' (line 1, pos 720)
+[LEXTOKEN] DOT -> '.' (line 1, pos 727)
+[LEXTOKEN] IDENTIFIER -> 'edad' (line 1, pos 728)
+[ERROR] Invalid identifier: ')
+	fmt' at line 1
+[LEXTOKEN] IDENTIFIER -> 'ln' (line 1, pos 744)
+[ERROR] Invalid identifier: '(' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Saldo' (line 1, pos 748)
+[LEXTOKEN] COLON -> ':' (line 1, pos 753)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] COMMA -> ',' (line 1, pos 755)
+[LEXTOKEN] IDENTIFIER -> 'saldo' (line 1, pos 757)
+[ERROR] Invalid identifier: ')
+
+	if' at line 1
+[LEXTOKEN] IDENTIFIER -> 'na' (line 1, pos 774)
+[LEXTOKEN] DOT -> '.' (line 1, pos 776)
+[LEXTOKEN] IDENTIFIER -> 'edad' (line 1, pos 777)
+[LEXTOKEN] GT -> '>' (line 1, pos 782)
+[ERROR] Invalid identifier: '18' at line 1
+[ERROR] Invalid identifier: '& persona' at line 1
+[ERROR] Invalid identifier: '
+		fmt' at line 1
+[LEXTOKEN] IDENTIFIER -> 'ln' (line 1, pos 818)
+[ERROR] Invalid identifier: '(' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Persona' (line 1, pos 822)
+[LEXTOKEN] IDENTIFIER -> 'activa' (line 1, pos 830)
+[LEXTOKEN] IDENTIFIER -> 'y' (line 1, pos 837)
+[LEXTOKEN] IDENTIFIER -> 'mayor' (line 1, pos 839)
+[LEXTOKEN] IDENTIFIER -> 'de' (line 1, pos 845)
+[LEXTOKEN] IDENTIFIER -> 'edad' (line 1, pos 848)
+[LEXTOKEN] DOT -> '.' (line 1, pos 852)
+[ERROR] Unexpected character '"' at line 1
+[ERROR] Invalid identifier: ')
+	' at line 1
+[LEXTOKEN] IDENTIFIER -> 'lse' (line 1, pos 860)
+[LEXTOKEN] LBRACE -> '{' (line 1, pos 864)
+[ERROR] Invalid identifier: '
+		fmt' at line 1
+[LEXTOKEN] IDENTIFIER -> 'ln' (line 1, pos 877)
+[ERROR] Invalid identifier: '(' at line 1
+[LEXTOKEN] IDENTIFIER -> 'No' (line 1, pos 881)
+[LEXTOKEN] IDENTIFIER -> 'cumple' (line 1, pos 884)
+[LEXTOKEN] IDENTIFIER -> 'los' (line 1, pos 891)
+[LEXTOKEN] IDENTIFIER -> 'criterios' (line 1, pos 895)
+[LEXTOKEN] DOT -> '.' (line 1, pos 904)
+[ERROR] Unexpected character '"' at line 1
+[ERROR] Invalid identifier: ')
+	' at line 1
+[LEXTOKEN] IDENTIFIER -> 'for' (line 1, pos 913)
+[LEXTOKEN] IDENTIFIER -> 'i' (line 1, pos 917)
+[LEXTOKEN] COLON -> ':' (line 1, pos 919)
+[LEXTOKEN] ASSIGN -> '=' (line 1, pos 920)
+[ERROR] Invalid identifier: '0' at line 1
+[LEXTOKEN] IDENTIFIER -> 'i' (line 1, pos 925)
+[LEXTOKEN] LT -> '<' (line 1, pos 927)
+[LEXTOKEN] IDENTIFIER -> 'len' (line 1, pos 929)
+[ERROR] Invalid identifier: '(numeros' at line 1
+[ERROR] Invalid identifier: '
+		fmt' at line 1
+[LEXTOKEN] IDENTIFIER -> 'f' (line 1, pos 960)
+[ERROR] Invalid identifier: '(' at line 1
+[LEXTOKEN] IDENTIFIER -> 'N' (line 1, pos 963)
+[ERROR] Unexpected character 'ú' at line 1
+[LEXTOKEN] IDENTIFIER -> 'mero' (line 1, pos 965)
+[LEXTOKEN] MOD -> '%' (line 1, pos 970)
+[LEXTOKEN] IDENTIFIER -> 'd' (line 1, pos 971)
+[LEXTOKEN] COLON -> ':' (line 1, pos 972)
+[LEXTOKEN] MOD -> '%' (line 1, pos 974)
+[LEXTOKEN] IDENTIFIER -> 'd' (line 1, pos 975)
+[ERROR] Invalid identifier: '
+' at line 1
+[LEXTOKEN] COMMA -> ',' (line 1, pos 978)
+[LEXTOKEN] IDENTIFIER -> 'i' (line 1, pos 980)
+[LEXTOKEN] COMMA -> ',' (line 1, pos 981)
+[LEXTOKEN] IDENTIFIER -> 'numeros' (line 1, pos 983)
+[LEXTOKEN] LBRACKET -> '[' (line 1, pos 990)
+[LEXTOKEN] IDENTIFIER -> 'i' (line 1, pos 991)
+[LEXTOKEN] RBRACKET -> ']' (line 1, pos 992)
+[ERROR] Invalid identifier: ')
+		if' at line 1
+[ERROR] Invalid identifier: '1' at line 1
+[LEXTOKEN] LBRACE -> '{' (line 1, pos 1007)
+[ERROR] Invalid identifier: '
+			continue' at line 1
+[LEXTOKEN] EQ -> '==' (line 1, pos 1032)
+[ERROR] Invalid identifier: '2' at line 1
+[LEXTOKEN] LBRACE -> '{' (line 1, pos 1037)
+[ERROR] Invalid identifier: '
+			break' at line 1
+[LEXTOKEN] IDENTIFIER -> 'resultado' (line 1, pos 1057)
+[LEXTOKEN] COMMA -> ',' (line 1, pos 1066)
+[LEXTOKEN] IDENTIFIER -> 'err' (line 1, pos 1068)
+[LEXTOKEN] COLON -> ':' (line 1, pos 1072)
+[LEXTOKEN] ASSIGN -> '=' (line 1, pos 1073)
+[LEXTOKEN] IDENTIFIER -> 'dividir' (line 1, pos 1075)
+[ERROR] Invalid identifier: '(10' at line 1
+[ERROR] Invalid identifier: ')
+
+	if' at line 1
+[LEXTOKEN] ASSIGN -> '=' (line 1, pos 1100)
+[LEXTOKEN] IDENTIFIER -> 'nil' (line 1, pos 1102)
+[LEXTOKEN] LBRACE -> '{' (line 1, pos 1106)
+[ERROR] Invalid identifier: '
+		fmt' at line 1
+[LEXTOKEN] IDENTIFIER -> 'ln' (line 1, pos 1119)
+[ERROR] Invalid identifier: '(' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Error' (line 1, pos 1123)
+[LEXTOKEN] COLON -> ':' (line 1, pos 1128)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] COMMA -> ',' (line 1, pos 1130)
+[LEXTOKEN] IDENTIFIER -> 'err' (line 1, pos 1132)
+[ERROR] Invalid identifier: ')
+	' at line 1
+[LEXTOKEN] IDENTIFIER -> 'lse' (line 1, pos 1141)
+[LEXTOKEN] LBRACE -> '{' (line 1, pos 1145)
+[ERROR] Invalid identifier: '
+		fmt' at line 1
+[LEXTOKEN] IDENTIFIER -> 'ln' (line 1, pos 1158)
+[ERROR] Invalid identifier: '(' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Resultado' (line 1, pos 1162)
+[LEXTOKEN] IDENTIFIER -> 'divisi' (line 1, pos 1172)
+[ERROR] Unexpected character 'ó' at line 1
+[LEXTOKEN] IDENTIFIER -> 'n' (line 1, pos 1179)
+[LEXTOKEN] COLON -> ':' (line 1, pos 1180)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] COMMA -> ',' (line 1, pos 1182)
+[LEXTOKEN] IDENTIFIER -> 'resultado' (line 1, pos 1184)
+[ERROR] Invalid identifier: ')
+	' at line 1
+[LEXTOKEN] IDENTIFIER -> 'switch' (line 1, pos 1200)
+[LEXTOKEN] IDENTIFIER -> 'persona' (line 1, pos 1207)
+[LEXTOKEN] DOT -> '.' (line 1, pos 1214)
+[LEXTOKEN] IDENTIFIER -> 'nombre' (line 1, pos 1215)
+[LEXTOKEN] LBRACE -> '{' (line 1, pos 1222)
+[ERROR] Invalid identifier: '
+		case' at line 1
+[LEXTOKEN] IDENTIFIER -> 's' (line 1, pos 1237)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] COLON -> ':' (line 1, pos 1239)
+[ERROR] Invalid identifier: '
+			fmt' at line 1
+[LEXTOKEN] IDENTIFIER -> 'n' (line 1, pos 1254)
+[ERROR] Invalid identifier: '(' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Hola' (line 1, pos 1257)
+[LEXTOKEN] IDENTIFIER -> 'Carlos' (line 1, pos 1262)
+[ERROR] Unexpected character '"' at line 1
+[ERROR] Invalid identifier: ')
+		case' at line 1
+[LEXTOKEN] IDENTIFIER -> 'fmt' (line 1, pos 1288)
+[LEXTOKEN] DOT -> '.' (line 1, pos 1291)
+[LEXTOKEN] IDENTIFIER -> 'Println' (line 1, pos 1292)
+[ERROR] Invalid identifier: '(' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Hola' (line 1, pos 1301)
+[LEXTOKEN] IDENTIFIER -> 'Ana' (line 1, pos 1306)
+[ERROR] Unexpected character '"' at line 1
+[ERROR] Invalid identifier: ')
+		default' at line 1
+[LEXTOKEN] IDENTIFIER -> 'intln' (line 1, pos 1332)
+[ERROR] Invalid identifier: '(' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Hola' (line 1, pos 1339)
+[LEXTOKEN] IDENTIFIER -> 'desconocido' (line 1, pos 1344)
+[ERROR] Unexpected character '"' at line 1
+[ERROR] Invalid identifier: ')
+	' at line 1
+[LEXTOKEN] RBRACE -> '}' (line 1, pos 1362)
+[ERROR] Invalid identifier: '
+' at line 1

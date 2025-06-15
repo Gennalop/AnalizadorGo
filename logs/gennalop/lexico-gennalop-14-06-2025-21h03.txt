@@ -1,0 +1,12 @@
+[LEXTOKEN] PACKAGE -> 'package' (line 2, pos 1)
+[LEXTOKEN] IDENTIFIER -> 'main' (line 2, pos 9)
+[LEXTOKEN] IMPORT -> 'import' (line 4, pos 15)
+[ERROR] Invalid identifier: '(
+	' at line 4
+[LEXTOKEN] IDENTIFIER -> 't' (line 4, pos 28)
+[ERROR] Unexpected character '"' at line 4
+[ERROR] Unexpected character '"' at line 5
+[LEXTOKEN] IDENTIFIER -> 'errors' (line 5, pos 33)
+[ERROR] Unexpected character '"' at line 5
+[ERROR] Invalid identifier: ')
+' at line 6
