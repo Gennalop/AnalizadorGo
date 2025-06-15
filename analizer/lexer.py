@@ -51,6 +51,7 @@ tokens = [
     'DATATYPE',
     'STRING', 'RAW_STRING',
     'DECLARE_ASSIGN',
+    'AMPERSAND',
 ] + list(reserved.values())
 
 go_types = {
@@ -103,6 +104,8 @@ t_OR      = r'\|\|'
 
 t_ASSIGN  = r'='
 t_DECLARE_ASSIGN = r':='
+
+t_AMPERSAND = r'&'
 
 t_LPAREN    = r'\('
 t_RPAREN    = r'\)'
