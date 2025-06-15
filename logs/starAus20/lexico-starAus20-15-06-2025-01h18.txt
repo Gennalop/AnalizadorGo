@@ -1,0 +1,273 @@
+[LEXTOKEN] IDENTIFIER -> 'package' (line 1, pos 0)
+[LEXTOKEN] IDENTIFIER -> 'main' (line 1, pos 8)
+[ERROR] Invalid identifier: '
+
+import' at line 1
+[ERROR] Invalid identifier: '
+type' at line 1
+[LEXTOKEN] IDENTIFIER -> 'ucto' (line 1, pos 85)
+[LEXTOKEN] IDENTIFIER -> 'struct' (line 1, pos 90)
+[LEXTOKEN] LBRACE -> '{' (line 1, pos 97)
+[ERROR] Invalid identifier: '
+	nombre' at line 1
+[ERROR] Invalid identifier: '
+	precio' at line 1
+[ERROR] Invalid identifier: '4' at line 1
+[LEXTOKEN] IDENTIFIER -> 'enStock' (line 1, pos 133)
+[LEXTOKEN] TYPE -> 'bool' (line 1, pos 141)
+[ERROR] Invalid identifier: '
+' at line 1
+[ERROR] Invalid identifier: '
+
+func' at line 1
+[LEXTOKEN] IDENTIFIER -> 'arDescuento' (line 1, pos 159)
+[ERROR] Invalid identifier: '(p' at line 1
+[LEXTOKEN] IDENTIFIER -> 'roducto' (line 1, pos 174)
+[LEXTOKEN] COMMA -> ',' (line 1, pos 181)
+[LEXTOKEN] IDENTIFIER -> 'porcentaje' (line 1, pos 183)
+[LEXTOKEN] TYPE -> 'float64' (line 1, pos 194)
+[ERROR] Invalid identifier: ') float64' at line 1
+[LEXTOKEN] IDENTIFIER -> 'n' (line 1, pos 219)
+[LEXTOKEN] IDENTIFIER -> 'p' (line 1, pos 221)
+[LEXTOKEN] DOT -> '.' (line 1, pos 222)
+[LEXTOKEN] IDENTIFIER -> 'precio' (line 1, pos 223)
+[ERROR] Invalid identifier: '- (p' at line 1
+[LEXTOKEN] IDENTIFIER -> 'cio' (line 1, pos 238)
+[ERROR] Invalid identifier: '* porcentaje' at line 1
+[LEXTOKEN] IDENTIFIER -> 'unc' (line 1, pos 266)
+[LEXTOKEN] IDENTIFIER -> 'main' (line 1, pos 270)
+[ERROR] Invalid identifier: '() ' at line 1
+[ERROR] Invalid identifier: '
+	productos' at line 1
+[LEXTOKEN] IDENTIFIER -> 'cto' (line 1, pos 335)
+[LEXTOKEN] LBRACE -> '{' (line 1, pos 338)
+[ERROR] Invalid identifier: '
+		' at line 1
+[LEXTOKEN] IDENTIFIER -> 'amisa' (line 1, pos 345)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] COMMA -> ',' (line 1, pos 351)
+[ERROR] Invalid identifier: '25' at line 1
+[LEXTOKEN] COMMA -> ',' (line 1, pos 357)
+[LEXTOKEN] IDENTIFIER -> 'true' (line 1, pos 359)
+[LEXTOKEN] RBRACE -> '}' (line 1, pos 363)
+[LEXTOKEN] COMMA -> ',' (line 1, pos 364)
+[ERROR] Invalid identifier: '
+		' at line 1
+[LEXTOKEN] IDENTIFIER -> 'antal' (line 1, pos 371)
+[ERROR] Unexpected character 'ó' at line 1
+[LEXTOKEN] IDENTIFIER -> 'n' (line 1, pos 377)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] COMMA -> ',' (line 1, pos 379)
+[ERROR] Invalid identifier: '40' at line 1
+[LEXTOKEN] COMMA -> ',' (line 1, pos 385)
+[LEXTOKEN] IDENTIFIER -> 'false' (line 1, pos 387)
+[LEXTOKEN] RBRACE -> '}' (line 1, pos 392)
+[LEXTOKEN] COMMA -> ',' (line 1, pos 393)
+[ERROR] Invalid identifier: '
+		' at line 1
+[LEXTOKEN] IDENTIFIER -> 'apatos' (line 1, pos 400)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] COMMA -> ',' (line 1, pos 407)
+[ERROR] Invalid identifier: '60' at line 1
+[ERROR] Invalid identifier: '5' at line 1
+[LEXTOKEN] IDENTIFIER -> 'true' (line 1, pos 416)
+[LEXTOKEN] RBRACE -> '}' (line 1, pos 420)
+[LEXTOKEN] COMMA -> ',' (line 1, pos 421)
+[ERROR] Invalid identifier: '
+	' at line 1
+[ERROR] Invalid identifier: '
+	' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Mapa' (line 1, pos 431)
+[LEXTOKEN] IDENTIFIER -> 'con' (line 1, pos 436)
+[LEXTOKEN] IDENTIFIER -> 'stock' (line 1, pos 440)
+[LEXTOKEN] IDENTIFIER -> 'por' (line 1, pos 446)
+[LEXTOKEN] IDENTIFIER -> 'producto' (line 1, pos 450)
+[ERROR] Invalid identifier: '
+	stock' at line 1
+[LEXTOKEN] LBRACKET -> '[' (line 1, pos 472)
+[LEXTOKEN] TYPE -> 'string' (line 1, pos 473)
+[LEXTOKEN] RBRACKET -> ']' (line 1, pos 479)
+[LEXTOKEN] TYPE -> 'int' (line 1, pos 480)
+[LEXTOKEN] LBRACE -> '{' (line 1, pos 483)
+[ERROR] Invalid identifier: '
+		' at line 1
+[LEXTOKEN] IDENTIFIER -> 'misa' (line 1, pos 490)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] COLON -> ':' (line 1, pos 495)
+[ERROR] Invalid identifier: '10' at line 1
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Pantal' (line 1, pos 506)
+[ERROR] Unexpected character 'ó' at line 1
+[LEXTOKEN] IDENTIFIER -> 'n' (line 1, pos 513)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] COLON -> ':' (line 1, pos 515)
+[ERROR] Invalid identifier: '0' at line 1
+[ERROR] Invalid identifier: '
+		' at line 1
+[LEXTOKEN] IDENTIFIER -> 'patos' (line 1, pos 525)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] COLON -> ':' (line 1, pos 531)
+[ERROR] Invalid identifier: '5' at line 1
+[ERROR] Invalid identifier: '
+	' at line 1
+[ERROR] Invalid identifier: '
+	' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Mostrar' (line 1, pos 545)
+[LEXTOKEN] IDENTIFIER -> 'productos' (line 1, pos 553)
+[LEXTOKEN] IDENTIFIER -> 'disponibles' (line 1, pos 563)
+[LEXTOKEN] IDENTIFIER -> 'con' (line 1, pos 575)
+[LEXTOKEN] IDENTIFIER -> 'precio' (line 1, pos 579)
+[LEXTOKEN] IDENTIFIER -> 'menor' (line 1, pos 586)
+[LEXTOKEN] IDENTIFIER -> 'a' (line 1, pos 592)
+[ERROR] Invalid identifier: '50' at line 1
+[LEXTOKEN] IDENTIFIER -> 'for' (line 1, pos 598)
+[LEXTOKEN] IDENTIFIER -> '_' (line 1, pos 602)
+[LEXTOKEN] COMMA -> ',' (line 1, pos 603)
+[LEXTOKEN] IDENTIFIER -> 'p' (line 1, pos 605)
+[LEXTOKEN] COLON -> ':' (line 1, pos 607)
+[LEXTOKEN] ASSIGN -> '=' (line 1, pos 608)
+[LEXTOKEN] IDENTIFIER -> 'range' (line 1, pos 610)
+[LEXTOKEN] IDENTIFIER -> 'productos' (line 1, pos 616)
+[LEXTOKEN] LBRACE -> '{' (line 1, pos 626)
+[ERROR] Invalid identifier: '
+		if' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Stock' (line 1, pos 637)
+[ERROR] Invalid identifier: '&& p' at line 1
+[LEXTOKEN] IDENTIFIER -> 'cio' (line 1, pos 651)
+[LEXTOKEN] LT -> '<' (line 1, pos 655)
+[ERROR] Invalid identifier: '50' at line 1
+[ERROR] Invalid identifier: '
+			precioFinal' at line 1
+[LEXTOKEN] IDENTIFIER -> 'uento' (line 1, pos 691)
+[ERROR] Invalid identifier: '(p' at line 1
+[ERROR] Invalid identifier: '10' at line 1
+[ERROR] Invalid identifier: ')
+			fmt' at line 1
+[ERROR] Invalid identifier: '(' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Producto' (line 1, pos 722)
+[LEXTOKEN] IDENTIFIER -> 'disponible' (line 1, pos 731)
+[LEXTOKEN] COLON -> ':' (line 1, pos 741)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] COMMA -> ',' (line 1, pos 743)
+[LEXTOKEN] IDENTIFIER -> 'p' (line 1, pos 745)
+[LEXTOKEN] DOT -> '.' (line 1, pos 746)
+[LEXTOKEN] IDENTIFIER -> 'nombre' (line 1, pos 747)
+[ERROR] Invalid identifier: ')
+			fmt' at line 1
+[ERROR] Invalid identifier: '(' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Precio' (line 1, pos 771)
+[LEXTOKEN] IDENTIFIER -> 'con' (line 1, pos 778)
+[LEXTOKEN] IDENTIFIER -> 'descuento' (line 1, pos 782)
+[LEXTOKEN] COLON -> ':' (line 1, pos 791)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] COMMA -> ',' (line 1, pos 793)
+[LEXTOKEN] IDENTIFIER -> 'precioFinal' (line 1, pos 795)
+[ERROR] Invalid identifier: ')
+			fmt' at line 1
+[ERROR] Invalid identifier: '(' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Stock' (line 1, pos 824)
+[LEXTOKEN] COLON -> ':' (line 1, pos 829)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] COMMA -> ',' (line 1, pos 831)
+[LEXTOKEN] IDENTIFIER -> 'stock' (line 1, pos 833)
+[LEXTOKEN] LBRACKET -> '[' (line 1, pos 838)
+[LEXTOKEN] IDENTIFIER -> 'p' (line 1, pos 839)
+[LEXTOKEN] DOT -> '.' (line 1, pos 840)
+[LEXTOKEN] IDENTIFIER -> 'nombre' (line 1, pos 841)
+[LEXTOKEN] RBRACKET -> ']' (line 1, pos 847)
+[ERROR] Invalid identifier: ')
+		' at line 1
+[ERROR] Invalid identifier: '
+
+	' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Operaciones' (line 1, pos 862)
+[LEXTOKEN] IDENTIFIER -> 'matem' (line 1, pos 874)
+[ERROR] Unexpected character 'á' at line 1
+[LEXTOKEN] IDENTIFIER -> 'ticas' (line 1, pos 880)
+[ERROR] Invalid identifier: '
+	subtotal' at line 1
+[ERROR] Invalid identifier: '*2' at line 1
+[ERROR] Invalid identifier: '3' at line 1
+[ERROR] Invalid identifier: '1' at line 1
+[LEXTOKEN] IDENTIFIER -> 'const' (line 1, pos 915)
+[LEXTOKEN] IDENTIFIER -> 'PI' (line 1, pos 921)
+[LEXTOKEN] ASSIGN -> '=' (line 1, pos 924)
+[ERROR] Invalid identifier: '3' at line 1
+[ERROR] Invalid identifier: '1416' at line 1
+[LEXTOKEN] IDENTIFIER -> 'r' (line 1, pos 936)
+[LEXTOKEN] IDENTIFIER -> 'iva' (line 1, pos 938)
+[LEXTOKEN] TYPE -> 'float64' (line 1, pos 942)
+[LEXTOKEN] ASSIGN -> '=' (line 1, pos 950)
+[ERROR] Invalid identifier: '12' at line 1
+[ERROR] Invalid identifier: '
+	total' at line 1
+[LEXTOKEN] IDENTIFIER -> 'at64' (line 1, pos 970)
+[ERROR] Invalid identifier: '(subtotal' at line 1
+[LEXTOKEN] IDENTIFIER -> 'iva' (line 1, pos 992)
+[LEXTOKEN] DIVIDE -> '/' (line 1, pos 995)
+[ERROR] Invalid identifier: '100' at line 1
+[LEXTOKEN] IDENTIFIER -> 'fmt' (line 1, pos 1003)
+[LEXTOKEN] DOT -> '.' (line 1, pos 1006)
+[LEXTOKEN] IDENTIFIER -> 'Println' (line 1, pos 1007)
+[ERROR] Invalid identifier: '(' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Total' (line 1, pos 1016)
+[LEXTOKEN] IDENTIFIER -> 'con' (line 1, pos 1022)
+[LEXTOKEN] IDENTIFIER -> 'IVA' (line 1, pos 1026)
+[LEXTOKEN] COLON -> ':' (line 1, pos 1029)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] COMMA -> ',' (line 1, pos 1031)
+[LEXTOKEN] IDENTIFIER -> 'total' (line 1, pos 1033)
+[ERROR] Invalid identifier: ')
+
+	' at line 1
+[LEXTOKEN] IDENTIFIER -> 'ariables' (line 1, pos 1046)
+[LEXTOKEN] IDENTIFIER -> 'y' (line 1, pos 1055)
+[LEXTOKEN] IDENTIFIER -> 'expresiones' (line 1, pos 1057)
+[LEXTOKEN] IDENTIFIER -> 'booleanas' (line 1, pos 1069)
+[ERROR] Invalid identifier: '
+	var' at line 1
+[LEXTOKEN] IDENTIFIER -> 'rio' (line 1, pos 1088)
+[LEXTOKEN] TYPE -> 'string' (line 1, pos 1092)
+[LEXTOKEN] ASSIGN -> '=' (line 1, pos 1099)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] IDENTIFIER -> 'cliente_01' (line 1, pos 1102)
+[ERROR] Unexpected character '"' at line 1
+[ERROR] Invalid identifier: '
+	var' at line 1
+[LEXTOKEN] TYPE -> 'int' (line 1, pos 1124)
+[LEXTOKEN] ASSIGN -> '=' (line 1, pos 1128)
+[ERROR] Invalid identifier: '30' at line 1
+[LEXTOKEN] IDENTIFIER -> 'activo' (line 1, pos 1134)
+[LEXTOKEN] COLON -> ':' (line 1, pos 1141)
+[LEXTOKEN] ASSIGN -> '=' (line 1, pos 1142)
+[LEXTOKEN] IDENTIFIER -> 'true' (line 1, pos 1144)
+[ERROR] Invalid identifier: '
+
+	if' at line 1
+[LEXTOKEN] GE -> '>=' (line 1, pos 1159)
+[ERROR] Invalid identifier: '18' at line 1
+[ERROR] Invalid identifier: '& activo' at line 1
+[LEXTOKEN] DOT -> '.' (line 1, pos 1182)
+[LEXTOKEN] IDENTIFIER -> 'Println' (line 1, pos 1183)
+[ERROR] Invalid identifier: '(' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Usuario' (line 1, pos 1192)
+[LEXTOKEN] IDENTIFIER -> 'autorizado' (line 1, pos 1200)
+[LEXTOKEN] COLON -> ':' (line 1, pos 1210)
+[ERROR] Unexpected character '"' at line 1
+[LEXTOKEN] COMMA -> ',' (line 1, pos 1212)
+[LEXTOKEN] IDENTIFIER -> 'usuario' (line 1, pos 1214)
+[ERROR] Invalid identifier: ')
+	' at line 1
+[LEXTOKEN] IDENTIFIER -> 'lse' (line 1, pos 1227)
+[LEXTOKEN] LBRACE -> '{' (line 1, pos 1231)
+[ERROR] Invalid identifier: '
+		fmt' at line 1
+[LEXTOKEN] IDENTIFIER -> 'ln' (line 1, pos 1244)
+[ERROR] Invalid identifier: '(' at line 1
+[LEXTOKEN] IDENTIFIER -> 'Acceso' (line 1, pos 1248)
+[LEXTOKEN] IDENTIFIER -> 'restringido' (line 1, pos 1255)
+[ERROR] Unexpected character '"' at line 1
+[ERROR] Invalid identifier: ')
+	' at line 1
+[ERROR] Invalid identifier: '
+' at line 1

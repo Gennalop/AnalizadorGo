@@ -29,8 +29,7 @@ tokens = [
     'LBRACKET', 'RBRACKET',
     'COMMA', 'SEMICOLON',
     'DOT', 'COLON',
-    'IDENTIFIER',
-    'TYPE',
+    'IDENTIFIER','MOD',
 ] + list(reserved.values())
 
 # 3. Reglas para variables y tipo de datos (Integrante 1)
@@ -114,9 +113,10 @@ def t_error(t):
 # Build the lexer and test----------------------------------------------------------
 lexer = lex.lex()
 
-log_file = create_log_file("gitUser") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
+log_file = create_log_file("gituser") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
 
-data = """
+#data = 
+"""
 func main() {
 
 	// Comentario de una línea
@@ -125,6 +125,9 @@ func main() {
 	Este programa evalúa varias estructuras de Go.
 	*/
 }""" #TEXTO A PROBAR
+
+with open("testing_algorithms/algorithm2.go", "r", encoding="utf-8") as f:
+    data = f.read()
 
 lexer.input(data)
   
