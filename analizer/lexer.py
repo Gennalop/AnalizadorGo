@@ -29,10 +29,33 @@ tokens = [
     'LBRACKET', 'RBRACKET',
     'COMMA', 'SEMICOLON',
     'DOT', 'COLON',
+    'IDENTIFIER',
+    'TYPE',
 ] + list(reserved.values())
 
 # 3. Reglas para variables y tipo de datos (Integrante 1)
+go_types = {
+    'int', 'int8', 'int16', 'int32', 'int64',        
+    'float32', 'float64',                            
+    'string',                                        
+    'bool',                                          
+    'rune',                                                                  
+}
 
+def t_IDENTIFIER(t):
+    r'[a-zA-Z_][a-zA-Z0-9_]*'
+    if t.value in go_types:
+        t.type = 'TYPE'
+    else:
+        t.type = 'IDENTIFIER'
+    return t
+
+def t_INVALID_IDENTIFIER(t):
+    r'[0-9][a-zA-Z0-9_]*|[a-zA-Z0-9_]*[\s\-\!\@\#\$\^\&\*\(\)]+[a-zA-Z0-9_]*'
+    message = f"[ERROR] Invalid identifier: '{t.value}' at line {t.lineno}\n"
+    log_file.write(message)
+    print(message.strip())
+    t.lexer.skip(len(t.value))
 
 # 4. Reglas para operadores (Integrante 2)
 t_PLUS    = r'\+'
