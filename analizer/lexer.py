@@ -15,7 +15,10 @@ reserved = {
     'default' : 'DEFAULT',
     'type' : 'TYPE',
     'struct' : 'STRUCT',
-    'map' : 'MAP'
+    'map' : 'MAP',
+    'import' : 'IMPORT',
+    'package' : 'PACKAGE'
+
 }
 
 # 2. Lista de tokens (todos coordinan aquí)
@@ -30,7 +33,7 @@ tokens = [
     'LBRACKET', 'RBRACKET',
     'COMMA', 'SEMICOLON',
     'DOT', 'COLON',
-    'IDENTIFIER',
+    'IDENTIFIER', 'DTYPE'
 ] + list(reserved.values())
 
 # 3. Reglas para variables y tipo de datos (Integrante 1)
@@ -48,7 +51,7 @@ def t_IDENTIFIER(t):
     t.type = reserved.get(t.value, 'IDENTIFIER')
 
     if t.type == 'IDENTIFIER' and t.value in go_types:
-        t.type = 'TYPE'
+        t.type = 'DTYPE'
 
     return t
 
@@ -118,9 +121,9 @@ def t_STRING(t):
 # Build the lexer and test----------------------------------------------------------
 lexer = lex.lex()
 
-log_file = create_log_file("gitUser") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
+log_file = create_log_file("ChrVillon") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
 
-with open("testing_algorithms/algorithm#.go", "r", encoding="utf-8") as f:  #PRUEBEN CON SU ALGORITMO
+with open("testing_algorithms/algorithm3.go", "r", encoding="utf-8") as f:  #PRUEBEN CON SU ALGORITMO
     data = f.read()
 
 lexer.input(data)
