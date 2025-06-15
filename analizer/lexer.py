@@ -30,11 +30,7 @@ tokens = [
     'LBRACKET', 'RBRACKET',
     'COMMA', 'SEMICOLON',
     'DOT', 'COLON',
-<<<<<<< HEAD
     'IDENTIFIER',
-=======
-    'IDENTIFIER','MOD',
->>>>>>> 3ae5ee090a47b844e9c4799d0a22797e79f7fcb7
 ] + list(reserved.values())
 
 # 3. Reglas para variables y tipo de datos (Integrante 1)
@@ -56,11 +52,6 @@ def t_IDENTIFIER(t):
 
     return t
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 3ae5ee090a47b844e9c4799d0a22797e79f7fcb7
 # 4. Reglas para operadores (Integrante 2)
 t_PLUS    = r'\+'
 t_MINUS   = r'-'
@@ -127,9 +118,9 @@ def t_STRING(t):
 # Build the lexer and test----------------------------------------------------------
 lexer = lex.lex()
 
-log_file = create_log_file("ChrVillon") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
+log_file = create_log_file("gitUser") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
 
-with open("testing_algorithms/algorithm2.go", "r", encoding="utf-8") as f:
+with open("testing_algorithms/algorithm#.go", "r", encoding="utf-8") as f:  #PRUEBEN CON SU ALGORITMO
     data = f.read()
 
 lexer.input(data)
