@@ -3,6 +3,7 @@ from logger import create_log_file
 
 # 1. Palabras Reservadas (Integrante 2)
 reserved = {
+    'main' : 'MAIN',
     'if' : 'IF',
     'else' : 'ELSE',
     'for' : 'FOR',
@@ -19,8 +20,8 @@ reserved = {
 
 # 2. Lista de tokens (todos coordinan aquí)
 tokens = [
-    'ID', 'NUMBER', 'STRING',
-    'PLUS', 'MINUS', 'TIMES', 'DIVIDE',
+    'NUMBER', 'STRING',
+    'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'MOD',
     'EQ', 'NEQ', 'GT', 'LT', 'GE', 'LE',
     'AND', 'OR',
     'ASSIGN',
@@ -30,7 +31,6 @@ tokens = [
     'COMMA', 'SEMICOLON',
     'DOT', 'COLON',
     'IDENTIFIER',
-    'TYPE',
 ] + list(reserved.values())
 
 # 3. Reglas para variables y tipo de datos (Integrante 1)
@@ -44,18 +44,15 @@ go_types = {
 
 def t_IDENTIFIER(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
-    if t.value in go_types:
+    
+    t.type = reserved.get(t.value, 'IDENTIFIER')
+
+    if t.type == 'IDENTIFIER' and t.value in go_types:
         t.type = 'TYPE'
-    else:
-        t.type = 'IDENTIFIER'
+
     return t
 
-def t_INVALID_IDENTIFIER(t):
-    r'[0-9][a-zA-Z0-9_]*|[a-zA-Z0-9_]*[\s\-\!\@\#\$\^\&\*\(\)]+[a-zA-Z0-9_]*'
-    message = f"[ERROR] Invalid identifier: '{t.value}' at line {t.lineno}\n"
-    log_file.write(message)
-    print(message.strip())
-    t.lexer.skip(len(t.value))
+
 
 # 4. Reglas para operadores (Integrante 2)
 t_PLUS    = r'\+'
@@ -110,11 +107,20 @@ def t_error(t):
     print("Illegal character '%s'" % t.value[0]) 
     t.lexer.skip(1)
 
+def t_NUMBER(t):
+    r'\d+'
+    t.value = int(t.value)
+    return t
+
+def t_STRING(t):
+    r'\"([^\\\n]|(\\.))*?\"'
+    return t
+
 
 # Build the lexer and test----------------------------------------------------------
 lexer = lex.lex()
 
-log_file = create_log_file("gitUser") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
+log_file = create_log_file("ChrVillon") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
 
 data = """
 func main() {
