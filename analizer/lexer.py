@@ -2,12 +2,8 @@ import ply.lex as lex
 from logger import create_log_file 
 
 ## Reparticion del Trabajo
+
 # 1. Palabras Reservadas (Integrante 2. Christopher Villon)
-# 2. Lista de tokens (todos coordinan aquí)
-# 3. Reglas para variables y tipo de datos (Integrante 1. Austin Estrella)
-# 4. Reglas para operadores (Integrante 2. Christopher Villon)
-# 5. Reglas para comentarios y delimitadores (Integrante 3. Genesis Lopez)
-# 6. Reglas comunes (Integrante 3. Genesis Lopez)
 
 reserved = {
     'if' : 'IF',
@@ -36,6 +32,8 @@ reserved = {
     'fallthrough' : 'FALLTHROUGH',
 }
 
+# 2. Lista de tokens (todos coordinan aquí)
+
 tokens = [
     'NUMBER',
     'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'MOD',
@@ -53,6 +51,8 @@ tokens = [
     'DECLARE_ASSIGN',
     'AMPERSAND',
 ] + list(reserved.values())
+
+# 3. Reglas para variables y tipo de datos (Integrante 1. Austin Estrella)
 
 go_types = {
     'int', 'int8', 'int16', 'int32', 'int64',        
@@ -86,6 +86,8 @@ def t_NUMBER(t):
     t.value = float(t.value) if '.' in t.value else int(t.value)
     return t
 
+# 4. Reglas para operadores (Integrante 2. Christopher Villon)
+
 t_PLUS    = r'\+'
 t_MINUS   = r'-'
 t_TIMES   = r'\*'
@@ -104,6 +106,8 @@ t_OR      = r'\|\|'
 
 t_ASSIGN  = r'='
 t_DECLARE_ASSIGN = r':='
+
+# 5. Reglas para comentarios y delimitadores (Integrante 3. Genesis Lopez)
 
 t_AMPERSAND = r'&'
 
@@ -126,6 +130,8 @@ def t_COMMENT_MULTILINE(t):
     r'/\*[\s\S]*?\*/'
     t.lexer.lineno += t.value.count('\n')
     pass
+
+# 6. Reglas comunes (Integrante 3. Genesis Lopez)
 
 t_ignore = ' \t'
 
