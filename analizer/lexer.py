@@ -49,13 +49,6 @@ def t_IDENTIFIER(t):
         t.type = 'IDENTIFIER'
     return t
 
-def t_INVALID_IDENTIFIER(t):
-    r'[0-9][a-zA-Z0-9_]*|[a-zA-Z0-9_]*[\s\-\!\@\#\$\^\&\*\(\)]+[a-zA-Z0-9_]*'
-    message = f"[ERROR] Invalid identifier: '{t.value}' at line {t.lineno}\n"
-    log_file.write(message)
-    print(message.strip())
-    t.lexer.skip(len(t.value))
-
 # 4. Reglas para operadores (Integrante 2)
 t_PLUS    = r'\+'
 t_MINUS   = r'-'
@@ -113,18 +106,7 @@ def t_error(t):
 # Build the lexer and test----------------------------------------------------------
 lexer = lex.lex()
 
-log_file = create_log_file("gituser") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
-
-#data = 
-"""
-func main() {
-
-	// Comentario de una línea
-	/*
-	Comentario de múltiples líneas
-	Este programa evalúa varias estructuras de Go.
-	*/
-}""" #TEXTO A PROBAR
+log_file = create_log_file("gitUser") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
 
 with open("testing_algorithms/algorithm2.go", "r", encoding="utf-8") as f:
     data = f.read()
