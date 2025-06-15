@@ -136,21 +136,14 @@ def t_error(t):
     print("Illegal character '%s'" % t.value[0]) 
     t.lexer.skip(1)
 
-def t_INVALID_IDENTIFIER(t):
-    r'[0-9]+[a-zA-Z_]+[a-zA-Z0-9_]*'
-    message = f"[ERROR] Invalid identifier: '{t.value}' at line {t.lineno}\n"
-    log_file.write(message)
-    print(message.strip())
-    t.lexer.skip(len(t.value))
 
 # Build the lexer and test----------------------------------------------------------
 lexer = lex.lex()
 
 log_file = create_log_file("gitUser") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
 
-data = """
-
-""" #TEXTO A PROBAR
+with open("testing_algorithms/algorithm3.go", "r", encoding="utf-8") as f:  #PRUEBEN CON SU ALGORITMO
+    data = f.read()
 
 lexer.input(data)
   
