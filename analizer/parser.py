@@ -2,38 +2,65 @@ import ply.yacc as yacc
 from lexer import tokens
 from logger import create_log_file 
 
-#impresión
+#Christopher Villon
 
-#ingreso de datos por teclado
 
-#expresiones aritméticas con uno o más operadores
 
-#condiciones con uno o más conectores lógicos
 
-#asignación de variables con todos los tipos, expresiones/condicionales
 
-#estructuras de datos
+#Genesis Lopez
 
-#estructuras de control
 
-#definición de funciones
 
-#definición de clases, propiedades, métodos
+
+#Austin Estrella
+
+# Expresiones Aritmeticas
+precedence = (
+    ('left', 'PLUS', 'MINUS'),         
+    ('left', 'TIMES', 'DIVIDE', 'MOD'), 
+    ('right', 'UMINUS'),                
+)
+
+def p_expression_binary(p):
+    '''expression : expression PLUS expression
+                  | expression MINUS expression
+                  | expression TIMES expression
+                  | expression DIVIDE expression
+                  | expression MOD expression'''
+    p[0] = ('binop', p[2], p[1], p[3])
+
+def p_expression_unary_minus(p):
+    'expression : MINUS expression %prec UMINUS'
+    p[0] = ('neg', p[2])
+
+def p_expression_group(p):
+    'expression : LPAREN expression RPAREN'
+    p[0] = p[2]
+
+def p_expression_value(p):
+    'expression : value'
+    p[0] = p[1]
+
+def p_value_number(p):
+    'value : NUMBER'
+    p[0] = ('number', p[1])
+
+def p_value_identifier(p):
+    'value : IDENTIFIER'
+    p[0] = ('var', p[1])
 
 # Error rule for syntax errors
 def p_error(p):
-    print("Syntax error in input!")
+     print(f"Syntax error at line {p.lineno}")
 
-
-# Build the parser
+# Build the parser and test
 parser = yacc.yacc()
 
-while True:
-   try:
-       s = input('calc > ')
-   except EOFError:
-       break
-   if not s: continue
-   result = parser.parse(s)
-   print(result)
 
+log_file = create_log_file("gitUser") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
+
+with open("testing_algorithms/algorithm#.go", "r", encoding="utf-8") as f:  #PRUEBEN CON SU ALGORITMO
+    data = f.read()
+
+parser.input(data)
