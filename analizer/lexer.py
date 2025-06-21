@@ -3,7 +3,7 @@ from logger import create_log_file
 
 ## Reparticion del Trabajo
 
-# 1. Palabras Reservadas (Integrante 2. Christopher Villon)
+# 1. Palabras Reservadas 
 
 reserved = {
     'if' : 'IF',
@@ -36,6 +36,7 @@ reserved = {
 
 tokens = [
     'NUMBER',
+    'RUNE',
     'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'MOD',
     'EQ', 'NEQ', 'GT', 'LT', 'GE', 'LE',
     'AND', 'OR',
@@ -52,7 +53,7 @@ tokens = [
     'AMPERSAND',
 ] + list(reserved.values())
 
-# 3. Reglas para variables y tipo de datos (Integrante 1. Austin Estrella)
+# 3. Reglas para variables y tipo de datos 
 
 go_types = {
     'int', 'int8', 'int16', 'int32', 'int64',        
@@ -81,12 +82,18 @@ def t_RAW_STRING(t):
     r'\`[^`]*\`'
     return t
 
+#En Go, las comillas simples ('...') se utilizan principalmente para representar caracteres individuales, conocidos como runas
+def t_RUNE(t): 
+    r"\'([^\\'\n]|(\\.))\'"
+    return t
+
 def t_NUMBER(t):
     r'\d+(\.\d+)?'
     t.value = float(t.value) if '.' in t.value else int(t.value)
     return t
 
-# 4. Reglas para operadores (Integrante 2. Christopher Villon)
+
+# 4. Reglas para operadores 
 
 t_PLUS    = r'\+'
 t_MINUS   = r'-'
@@ -107,7 +114,7 @@ t_OR      = r'\|\|'
 t_ASSIGN  = r'='
 t_DECLARE_ASSIGN = r':='
 
-# 5. Reglas para comentarios y delimitadores (Integrante 3. Genesis Lopez)
+# 5. Reglas para comentarios y delimitadores 
 
 t_AMPERSAND = r'&'
 
@@ -131,7 +138,7 @@ def t_COMMENT_MULTILINE(t):
     t.lexer.lineno += t.value.count('\n')
     pass
 
-# 6. Reglas comunes (Integrante 3. Genesis Lopez)
+# 6. Reglas comunes 
 
 t_ignore = ' \t'
 
@@ -147,11 +154,12 @@ def t_error(t):
 
 
 # Build the lexer and test----------------------------------------------------------
+    
 lexer = lex.lex()
 
 log_file = create_log_file("gitUser") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
 
-with open("testing_algorithms/algorithm3.go", "r", encoding="utf-8") as f:  #PRUEBEN CON SU ALGORITMO
+with open("testing_algorithms/algorithm1.go", "r", encoding="utf-8") as f:  #PRUEBEN CON SU ALGORITMO
     data = f.read()
 
 lexer.input(data)
