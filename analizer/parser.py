@@ -2,7 +2,6 @@ import ply.yacc as yacc
 from lexer import tokens
 from logger import create_log_file 
 
-
 #Christopher Villon
 
 
@@ -51,13 +50,6 @@ def p_value_identifier(p):
     'value : IDENTIFIER'
     p[0] = ('var', p[1])
 
-
-
-
-
-
-
-
 # Error rule for syntax errors
 def p_error(p):
      print(f"Syntax error at line {p.lineno}")
@@ -72,13 +64,3 @@ with open("testing_algorithms/algorithm#.go", "r", encoding="utf-8") as f:  #PRU
     data = f.read()
 
 parser.input(data)
-
-
-while True:
-   try:
-       s = input('calc > ')
-   except EOFError:
-       break
-   if not s: continue
-   result = parser.parse(s)
-   print(result)
