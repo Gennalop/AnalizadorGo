@@ -73,6 +73,7 @@ with open("testing_algorithms/algorithm#.go", "r", encoding="utf-8") as f:  #PRU
 
 parser.input(data)
 
+
 while True:
    try:
        s = input('calc > ')
