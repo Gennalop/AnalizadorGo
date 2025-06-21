@@ -1,0 +1,160 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    BREAK
+    CASE
+    COLON
+    CONST
+    CONTINUE
+    DEFAULT
+    DEFER
+    ELSE
+    FALLTHROUGH
+    FOR
+    FUNC
+    GO
+    IF
+    IMPORT
+    INTERFACE
+    LBRACE
+    LBRACKET
+    MAP
+    NIL
+    PACKAGE
+    RANGE
+    RAW_STRING
+    RBRACE
+    RBRACKET
+    RETURN
+    RUNE
+    SELECT
+    SEMICOLON
+    STRING
+    STRUCT
+    SWITCH
+    TYPE
+
+Grammar
+
+Rule 0     S' -> sentencias
+Rule 1     sentencias -> sentencia
+Rule 2     sentencias -> sentencia sentencias
+Rule 3     sentencia -> assignment
+Rule 4     sentencia -> input
+Rule 5     sentencia -> llamarFuncion
+Rule 6     input -> IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN
+Rule 7     assignment -> assigmentSimple
+Rule 8     assignment -> assignmentFuncion
+Rule 9     assignment -> shortAssignment
+Rule 10    shortAssignment -> IDENTIFIER DECLARE_ASSIGN expression
+Rule 11    assigmentSimple -> VAR IDENTIFIER DATATYPE ASSIGN expression
+Rule 12    assignmentFuncion -> VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion
+Rule 13    llamarFuncion -> IDENTIFIER LPAREN argumentos_opt RPAREN
+Rule 14    argumentos_opt -> argumentos
+Rule 15    argumentos_opt -> empty
+Rule 16    argumentos -> expression
+Rule 17    argumentos -> expression COMMA argumentos
+Rule 18    condicion -> expression comparador expression
+Rule 19    condicion -> condicion operadorLogico condicion
+Rule 20    condicion -> condicion operadorLogico condicion_compleja
+Rule 21    operadorLogico -> AND
+Rule 22    operadorLogico -> OR
+Rule 23    comparador -> EQ
+Rule 24    comparador -> NEQ
+Rule 25    comparador -> GT
+Rule 26    comparador -> LT
+Rule 27    comparador -> GE
+Rule 28    comparador -> LE
+Rule 29    empty -> <empty>
+Rule 30    expression -> expression PLUS expression
+Rule 31    expression -> expression MINUS expression
+Rule 32    expression -> expression TIMES expression
+Rule 33    expression -> expression DIVIDE expression
+Rule 34    expression -> expression MOD expression
+Rule 35    expression -> MINUS expression
+Rule 36    expression -> LPAREN expression RPAREN
+Rule 37    expression -> value
+Rule 38    value -> NUMBER
+Rule 39    value -> IDENTIFIER
+
+Terminals, with rules where they appear
+
+AMPERSAND            : 6
+AND                  : 21
+ASSIGN               : 11 12
+BREAK                : 
+CASE                 : 
+COLON                : 
+COMMA                : 17
+CONST                : 
+CONTINUE             : 
+DATATYPE             : 11 12
+DECLARE_ASSIGN       : 10
+DEFAULT              : 
+DEFER                : 
+DIVIDE               : 33
+DOT                  : 6
+ELSE                 : 
+EQ                   : 23
+FALLTHROUGH          : 
+FOR                  : 
+FUNC                 : 
+GE                   : 27
+GO                   : 
+GT                   : 25
+IDENTIFIER           : 6 6 6 10 11 12 13 39
+IF                   : 
+IMPORT               : 
+INTERFACE            : 
+LBRACE               : 
+LBRACKET             : 
+LE                   : 28
+LPAREN               : 6 13 36
+LT                   : 26
+MAP                  : 
+MINUS                : 31 35
+MOD                  : 34
+NEQ                  : 24
+NIL                  : 
+NUMBER               : 38
+OR                   : 22
+PACKAGE              : 
+PLUS                 : 30
+RANGE                : 
+RAW_STRING           : 
+RBRACE               : 
+RBRACKET             : 
+RETURN               : 
+RPAREN               : 6 13 36
+RUNE                 : 
+SELECT               : 
+SEMICOLON            : 
+STRING               : 
+STRUCT               : 
+SWITCH               : 
+TIMES                : 32
+TYPE                 : 
+VAR                  : 11 12
+error                : 
+
+Nonterminals, with rules where they appear
+
+argumentos           : 14 17
+argumentos_opt       : 13
+assigmentSimple      : 7
+assignment           : 3
+assignmentFuncion    : 8
+comparador           : 18
+condicion            : 19 19 20
+condicion_compleja   : 20
+empty                : 15
+expression           : 10 11 16 17 18 18 30 30 31 31 32 32 33 33 34 34 35 36
+input                : 4
+llamarFuncion        : 5 12
+operadorLogico       : 19 20
+sentencia            : 1 2
+sentencias           : 2 0
+shortAssignment      : 9
+value                : 37
+

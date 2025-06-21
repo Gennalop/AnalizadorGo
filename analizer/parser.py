@@ -3,6 +3,65 @@ from lexer import tokens
 from logger import create_log_file 
 
 #Christopher Villon
+def p_sentencias(p):
+    '''sentencias : sentencia
+                  | sentencia sentencias'''
+
+def p_sentencia(p):
+    '''sentencia : assignment
+                 | input
+                 | llamarFuncion'''
+
+def p_input(p):
+    '''input : IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN'''
+
+def p_assignment(p):
+    '''assignment : assigmentSimple
+                  | assignmentFuncion
+                  | shortAssignment'''
+
+def p_short_assignment(p):
+    '''shortAssignment : IDENTIFIER DECLARE_ASSIGN expression'''
+
+def p_assignment_simple(p):
+    '''assigmentSimple : VAR IDENTIFIER DATATYPE ASSIGN expression'''
+
+def p_assingment_funcion(p):
+    '''assignmentFuncion : VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion'''
+
+def p_llamar_funcion(p):
+    '''llamarFuncion : IDENTIFIER LPAREN argumentos_opt RPAREN'''
+
+def p_argumentos_opt(p):
+    '''argumentos_opt : argumentos
+                      | empty'''
+
+def p_argumentos(p):
+    '''argumentos : expression
+                  | expression COMMA argumentos'''
+
+def p_condicion(p):
+    '''condicion : expression comparador expression'''
+
+def p_condicion_compleja(p):
+    '''condicion : condicion operadorLogico condicion
+                 | condicion operadorLogico condicion_compleja'''
+
+def p_operador_logico(p):
+    '''operadorLogico : AND
+                      | OR'''
+
+def p_comparador(p):
+    '''comparador : EQ
+                  | NEQ
+                  | GT
+                  | LT
+                  | GE
+                  | LE'''
+
+def p_empty(p):
+    '''empty :'''
+    pass
 
 
 
