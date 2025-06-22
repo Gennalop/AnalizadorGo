@@ -2,7 +2,7 @@ import os
 import datetime
 
 #Para generar logs automaticamnete en el formato lexico-githubUser-date-hour
-def create_log_file(username="yourGitUser", base_dir="logs", prefix="sintactico"):
+def create_log_file(username="yourGitUser", base_dir="logs", prefix="sintactico"):   #prefix: lexico o sintactico
     current_dir = os.path.dirname(os.path.abspath(__file__))
     log_dir = os.path.abspath(os.path.join(current_dir, "..", base_dir, username))
     os.makedirs(log_dir, exist_ok=True)
