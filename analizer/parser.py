@@ -123,7 +123,7 @@ def p_struct_fields_multiple(p):
 
 ##for_statement
 def p_for_statement_classis(p):
-    'for_statement : FOR short_assignment SEMICOLON condicion SEMICOLON expression block'
+    'for_statement : FOR shortAssignment SEMICOLON condicion SEMICOLON expression block'
     p[0] = ("FOR_CLASSIC", p[2], p[4], p[6], p[7])
 
 def p_for_statement_condition(p):
@@ -198,7 +198,7 @@ def p_value_raw_string(p):
     p[0] = ('raw_string', p[1])
 def p_value_boolean(p):
     '''value : TRUE
-               FALSE'''
+             | FALSE'''
     p[0] = ('bool', True if p[1] == 'true' else False)
 def p_value_nil(p):
     'value : NIL'

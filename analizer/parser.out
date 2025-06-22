@@ -69,7 +69,7 @@ Rule 37    struct_definition -> TYPE IDENTIFIER STRUCT LBRACE struct_fields RBRA
 Rule 38    struct_field -> IDENTIFIER DATATYPE
 Rule 39    struct_fields -> struct_field
 Rule 40    struct_fields -> struct_fields struct_field
-Rule 41    for_statement -> FOR short_assignment SEMICOLON condicion SEMICOLON expression block
+Rule 41    for_statement -> FOR shortAssignment SEMICOLON condicion SEMICOLON expression block
 Rule 42    for_statement -> FOR condicion block
 Rule 43    for_statement -> FOR block
 Rule 44    block -> LBRACE sentencias RBRACE
@@ -178,10 +178,463 @@ print_statement      : 5 11
 program              : 0
 sentencia            : 6 7
 sentencias           : 7 44
-shortAssignment      : 15
-short_assignment     : 41
+shortAssignment      : 15 41
 struct_definition    : 4
 struct_field         : 39 40
 struct_fields        : 37 40
 value                : 53
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . program
+    (1) program -> . declaration_list
+    (2) declaration_list -> . declaration
+    (3) declaration_list -> . declaration_list declaration
+    (4) declaration -> . struct_definition
+    (5) declaration -> . print_statement
+    (37) struct_definition -> . TYPE IDENTIFIER STRUCT LBRACE struct_fields RBRACE
+    (36) print_statement -> . IDENTIFIER DOT IDENTIFIER LPAREN argumentos_opt RPAREN
+
+    TYPE            shift and go to state 6
+    IDENTIFIER      shift and go to state 7
+
+    program                        shift and go to state 1
+    declaration_list               shift and go to state 2
+    declaration                    shift and go to state 3
+    struct_definition              shift and go to state 4
+    print_statement                shift and go to state 5
+
+state 1
+
+    (0) S' -> program .
+
+
+
+state 2
+
+    (1) program -> declaration_list .
+    (3) declaration_list -> declaration_list . declaration
+    (4) declaration -> . struct_definition
+    (5) declaration -> . print_statement
+    (37) struct_definition -> . TYPE IDENTIFIER STRUCT LBRACE struct_fields RBRACE
+    (36) print_statement -> . IDENTIFIER DOT IDENTIFIER LPAREN argumentos_opt RPAREN
+
+    $end            reduce using rule 1 (program -> declaration_list .)
+    TYPE            shift and go to state 6
+    IDENTIFIER      shift and go to state 7
+
+    declaration                    shift and go to state 8
+    struct_definition              shift and go to state 4
+    print_statement                shift and go to state 5
+
+state 3
+
+    (2) declaration_list -> declaration .
+
+    TYPE            reduce using rule 2 (declaration_list -> declaration .)
+    IDENTIFIER      reduce using rule 2 (declaration_list -> declaration .)
+    $end            reduce using rule 2 (declaration_list -> declaration .)
+
+
+state 4
+
+    (4) declaration -> struct_definition .
+
+    TYPE            reduce using rule 4 (declaration -> struct_definition .)
+    IDENTIFIER      reduce using rule 4 (declaration -> struct_definition .)
+    $end            reduce using rule 4 (declaration -> struct_definition .)
+
+
+state 5
+
+    (5) declaration -> print_statement .
+
+    TYPE            reduce using rule 5 (declaration -> print_statement .)
+    IDENTIFIER      reduce using rule 5 (declaration -> print_statement .)
+    $end            reduce using rule 5 (declaration -> print_statement .)
+
+
+state 6
+
+    (37) struct_definition -> TYPE . IDENTIFIER STRUCT LBRACE struct_fields RBRACE
+
+    IDENTIFIER      shift and go to state 9
+
+
+state 7
+
+    (36) print_statement -> IDENTIFIER . DOT IDENTIFIER LPAREN argumentos_opt RPAREN
+
+    DOT             shift and go to state 10
+
+
+state 8
+
+    (3) declaration_list -> declaration_list declaration .
+
+    TYPE            reduce using rule 3 (declaration_list -> declaration_list declaration .)
+    IDENTIFIER      reduce using rule 3 (declaration_list -> declaration_list declaration .)
+    $end            reduce using rule 3 (declaration_list -> declaration_list declaration .)
+
+
+state 9
+
+    (37) struct_definition -> TYPE IDENTIFIER . STRUCT LBRACE struct_fields RBRACE
+
+    STRUCT          shift and go to state 11
+
+
+state 10
+
+    (36) print_statement -> IDENTIFIER DOT . IDENTIFIER LPAREN argumentos_opt RPAREN
+
+    IDENTIFIER      shift and go to state 12
+
+
+state 11
+
+    (37) struct_definition -> TYPE IDENTIFIER STRUCT . LBRACE struct_fields RBRACE
+
+    LBRACE          shift and go to state 13
+
+
+state 12
+
+    (36) print_statement -> IDENTIFIER DOT IDENTIFIER . LPAREN argumentos_opt RPAREN
+
+    LPAREN          shift and go to state 14
+
+
+state 13
+
+    (37) struct_definition -> TYPE IDENTIFIER STRUCT LBRACE . struct_fields RBRACE
+    (39) struct_fields -> . struct_field
+    (40) struct_fields -> . struct_fields struct_field
+    (38) struct_field -> . IDENTIFIER DATATYPE
+
+    IDENTIFIER      shift and go to state 15
+
+    struct_fields                  shift and go to state 16
+    struct_field                   shift and go to state 17
+
+state 14
+
+    (36) print_statement -> IDENTIFIER DOT IDENTIFIER LPAREN . argumentos_opt RPAREN
+    (20) argumentos_opt -> . argumentos
+    (21) argumentos_opt -> . empty
+    (22) argumentos -> . expression
+    (23) argumentos -> . expression COMMA argumentos
+    (35) empty -> .
+    (51) expression -> . MINUS expression
+    (52) expression -> . LPAREN expression RPAREN
+    (53) expression -> . value
+    (54) value -> . IDENTIFIER
+    (55) value -> . NUMBER
+    (56) value -> . RUNE
+    (57) value -> . STRING
+    (58) value -> . RAW_STRING
+    (59) value -> . TRUE
+    (60) value -> . FALSE
+    (61) value -> . NIL
+
+    RPAREN          reduce using rule 35 (empty -> .)
+    MINUS           shift and go to state 24
+    LPAREN          shift and go to state 19
+    IDENTIFIER      shift and go to state 18
+    NUMBER          shift and go to state 26
+    RUNE            shift and go to state 27
+    STRING          shift and go to state 28
+    RAW_STRING      shift and go to state 29
+    TRUE            shift and go to state 30
+    FALSE           shift and go to state 31
+    NIL             shift and go to state 32
+
+    argumentos_opt                 shift and go to state 20
+    argumentos                     shift and go to state 21
+    empty                          shift and go to state 22
+    expression                     shift and go to state 23
+    value                          shift and go to state 25
+
+state 15
+
+    (38) struct_field -> IDENTIFIER . DATATYPE
+
+    DATATYPE        shift and go to state 33
+
+
+state 16
+
+    (37) struct_definition -> TYPE IDENTIFIER STRUCT LBRACE struct_fields . RBRACE
+    (40) struct_fields -> struct_fields . struct_field
+    (38) struct_field -> . IDENTIFIER DATATYPE
+
+    RBRACE          shift and go to state 34
+    IDENTIFIER      shift and go to state 15
+
+    struct_field                   shift and go to state 35
+
+state 17
+
+    (39) struct_fields -> struct_field .
+
+    RBRACE          reduce using rule 39 (struct_fields -> struct_field .)
+    IDENTIFIER      reduce using rule 39 (struct_fields -> struct_field .)
+
+
+state 18
+
+    (54) value -> IDENTIFIER .
+
+    COMMA           reduce using rule 54 (value -> IDENTIFIER .)
+    RPAREN          reduce using rule 54 (value -> IDENTIFIER .)
+
+
+state 19
+
+    (52) expression -> LPAREN . expression RPAREN
+    (51) expression -> . MINUS expression
+    (52) expression -> . LPAREN expression RPAREN
+    (53) expression -> . value
+    (54) value -> . IDENTIFIER
+    (55) value -> . NUMBER
+    (56) value -> . RUNE
+    (57) value -> . STRING
+    (58) value -> . RAW_STRING
+    (59) value -> . TRUE
+    (60) value -> . FALSE
+    (61) value -> . NIL
+
+    MINUS           shift and go to state 24
+    LPAREN          shift and go to state 19
+    IDENTIFIER      shift and go to state 18
+    NUMBER          shift and go to state 26
+    RUNE            shift and go to state 27
+    STRING          shift and go to state 28
+    RAW_STRING      shift and go to state 29
+    TRUE            shift and go to state 30
+    FALSE           shift and go to state 31
+    NIL             shift and go to state 32
+
+    expression                     shift and go to state 36
+    value                          shift and go to state 25
+
+state 20
+
+    (36) print_statement -> IDENTIFIER DOT IDENTIFIER LPAREN argumentos_opt . RPAREN
+
+    RPAREN          shift and go to state 37
+
+
+state 21
+
+    (20) argumentos_opt -> argumentos .
+
+    RPAREN          reduce using rule 20 (argumentos_opt -> argumentos .)
+
+
+state 22
+
+    (21) argumentos_opt -> empty .
+
+    RPAREN          reduce using rule 21 (argumentos_opt -> empty .)
+
+
+state 23
+
+    (22) argumentos -> expression .
+    (23) argumentos -> expression . COMMA argumentos
+
+    RPAREN          reduce using rule 22 (argumentos -> expression .)
+    COMMA           shift and go to state 38
+
+
+state 24
+
+    (51) expression -> MINUS . expression
+    (51) expression -> . MINUS expression
+    (52) expression -> . LPAREN expression RPAREN
+    (53) expression -> . value
+    (54) value -> . IDENTIFIER
+    (55) value -> . NUMBER
+    (56) value -> . RUNE
+    (57) value -> . STRING
+    (58) value -> . RAW_STRING
+    (59) value -> . TRUE
+    (60) value -> . FALSE
+    (61) value -> . NIL
+
+    MINUS           shift and go to state 24
+    LPAREN          shift and go to state 19
+    IDENTIFIER      shift and go to state 18
+    NUMBER          shift and go to state 26
+    RUNE            shift and go to state 27
+    STRING          shift and go to state 28
+    RAW_STRING      shift and go to state 29
+    TRUE            shift and go to state 30
+    FALSE           shift and go to state 31
+    NIL             shift and go to state 32
+
+    expression                     shift and go to state 39
+    value                          shift and go to state 25
+
+state 25
+
+    (53) expression -> value .
+
+    COMMA           reduce using rule 53 (expression -> value .)
+    RPAREN          reduce using rule 53 (expression -> value .)
+
+
+state 26
+
+    (55) value -> NUMBER .
+
+    COMMA           reduce using rule 55 (value -> NUMBER .)
+    RPAREN          reduce using rule 55 (value -> NUMBER .)
+
+
+state 27
+
+    (56) value -> RUNE .
+
+    COMMA           reduce using rule 56 (value -> RUNE .)
+    RPAREN          reduce using rule 56 (value -> RUNE .)
+
+
+state 28
+
+    (57) value -> STRING .
+
+    COMMA           reduce using rule 57 (value -> STRING .)
+    RPAREN          reduce using rule 57 (value -> STRING .)
+
+
+state 29
+
+    (58) value -> RAW_STRING .
+
+    COMMA           reduce using rule 58 (value -> RAW_STRING .)
+    RPAREN          reduce using rule 58 (value -> RAW_STRING .)
+
+
+state 30
+
+    (59) value -> TRUE .
+
+    COMMA           reduce using rule 59 (value -> TRUE .)
+    RPAREN          reduce using rule 59 (value -> TRUE .)
+
+
+state 31
+
+    (60) value -> FALSE .
+
+    COMMA           reduce using rule 60 (value -> FALSE .)
+    RPAREN          reduce using rule 60 (value -> FALSE .)
+
+
+state 32
+
+    (61) value -> NIL .
+
+    COMMA           reduce using rule 61 (value -> NIL .)
+    RPAREN          reduce using rule 61 (value -> NIL .)
+
+
+state 33
+
+    (38) struct_field -> IDENTIFIER DATATYPE .
+
+    RBRACE          reduce using rule 38 (struct_field -> IDENTIFIER DATATYPE .)
+    IDENTIFIER      reduce using rule 38 (struct_field -> IDENTIFIER DATATYPE .)
+
+
+state 34
+
+    (37) struct_definition -> TYPE IDENTIFIER STRUCT LBRACE struct_fields RBRACE .
+
+    TYPE            reduce using rule 37 (struct_definition -> TYPE IDENTIFIER STRUCT LBRACE struct_fields RBRACE .)
+    IDENTIFIER      reduce using rule 37 (struct_definition -> TYPE IDENTIFIER STRUCT LBRACE struct_fields RBRACE .)
+    $end            reduce using rule 37 (struct_definition -> TYPE IDENTIFIER STRUCT LBRACE struct_fields RBRACE .)
+
+
+state 35
+
+    (40) struct_fields -> struct_fields struct_field .
+
+    RBRACE          reduce using rule 40 (struct_fields -> struct_fields struct_field .)
+    IDENTIFIER      reduce using rule 40 (struct_fields -> struct_fields struct_field .)
+
+
+state 36
+
+    (52) expression -> LPAREN expression . RPAREN
+
+    RPAREN          shift and go to state 40
+
+
+state 37
+
+    (36) print_statement -> IDENTIFIER DOT IDENTIFIER LPAREN argumentos_opt RPAREN .
+
+    TYPE            reduce using rule 36 (print_statement -> IDENTIFIER DOT IDENTIFIER LPAREN argumentos_opt RPAREN .)
+    IDENTIFIER      reduce using rule 36 (print_statement -> IDENTIFIER DOT IDENTIFIER LPAREN argumentos_opt RPAREN .)
+    $end            reduce using rule 36 (print_statement -> IDENTIFIER DOT IDENTIFIER LPAREN argumentos_opt RPAREN .)
+
+
+state 38
+
+    (23) argumentos -> expression COMMA . argumentos
+    (22) argumentos -> . expression
+    (23) argumentos -> . expression COMMA argumentos
+    (51) expression -> . MINUS expression
+    (52) expression -> . LPAREN expression RPAREN
+    (53) expression -> . value
+    (54) value -> . IDENTIFIER
+    (55) value -> . NUMBER
+    (56) value -> . RUNE
+    (57) value -> . STRING
+    (58) value -> . RAW_STRING
+    (59) value -> . TRUE
+    (60) value -> . FALSE
+    (61) value -> . NIL
+
+    MINUS           shift and go to state 24
+    LPAREN          shift and go to state 19
+    IDENTIFIER      shift and go to state 18
+    NUMBER          shift and go to state 26
+    RUNE            shift and go to state 27
+    STRING          shift and go to state 28
+    RAW_STRING      shift and go to state 29
+    TRUE            shift and go to state 30
+    FALSE           shift and go to state 31
+    NIL             shift and go to state 32
+
+    expression                     shift and go to state 23
+    argumentos                     shift and go to state 41
+    value                          shift and go to state 25
+
+state 39
+
+    (51) expression -> MINUS expression .
+
+    COMMA           reduce using rule 51 (expression -> MINUS expression .)
+    RPAREN          reduce using rule 51 (expression -> MINUS expression .)
+
+
+state 40
+
+    (52) expression -> LPAREN expression RPAREN .
+
+    COMMA           reduce using rule 52 (expression -> LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 52 (expression -> LPAREN expression RPAREN .)
+
+
+state 41
+
+    (23) argumentos -> expression COMMA argumentos .
+
+    RPAREN          reduce using rule 23 (argumentos -> expression COMMA argumentos .)
 

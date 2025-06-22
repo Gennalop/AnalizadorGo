@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftPLUSMINUSleftTIMESDIVIDEMODrightUMINUSAMPERSAND AND ASSIGN BREAK CASE COLON COMMA CONST CONTINUE DATATYPE DECLARE_ASSIGN DEFAULT DEFER DIVIDE DOT ELSE EQ FALLTHROUGH FOR FUNC GE GO GT IDENTIFIER IF IMPORT INTERFACE LBRACE LBRACKET LE LPAREN LT MAP MINUS MOD NEQ NIL NUMBER OR PACKAGE PLUS RANGE RAW_STRING RBRACE RBRACKET RETURN RPAREN RUNE SELECT SEMICOLON STRING STRUCT SWITCH TIMES TYPE VARexpression : expression PLUS expression\n                  | expression MINUS expression\n                  | expression TIMES expression\n                  | expression DIVIDE expression\n                  | expression MOD expressionexpression : MINUS expression %prec UMINUSexpression : LPAREN expression RPARENexpression : valuevalue : NUMBERvalue : IDENTIFIER'
+_lr_signature = 'leftPLUSMINUSleftTIMESDIVIDEMODrightUMINUSAMPERSAND AND ASSIGN BREAK CASE COLON COMMA CONST CONTINUE DATATYPE DECLARE_ASSIGN DEFAULT DEFER DIVIDE DOT ELSE EQ FALLTHROUGH FALSE FOR FUNC GE GO GT IDENTIFIER IF IMPORT INTERFACE LBRACE LBRACKET LE LPAREN LT MAP MINUS MOD NEQ NIL NUMBER OR PACKAGE PLUS RANGE RAW_STRING RBRACE RBRACKET RETURN RPAREN RUNE SELECT SEMICOLON STRING STRING_UNCLOSE STRUCT SWITCH TIMES TRUE TYPE VARprogram : declaration_listdeclaration_list : declarationdeclaration_list : declaration_list declarationdeclaration : struct_definition\n                   | print_statementsentencias : sentencia\n                  | sentencia sentenciassentencia : assignment\n                 | input\n                 | llamarFuncion\n                 | print_statementinput : IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPARENassignment : assigmentSimple\n                  | assignmentFuncion\n                  | shortAssignmentshortAssignment : IDENTIFIER DECLARE_ASSIGN expressionassigmentSimple : VAR IDENTIFIER DATATYPE ASSIGN expressionassignmentFuncion : VAR IDENTIFIER DATATYPE ASSIGN llamarFuncionllamarFuncion : IDENTIFIER LPAREN argumentos_opt RPARENargumentos_opt : argumentos\n                      | emptyargumentos : expression\n                  | expression COMMA argumentoscondicion : expression comparador expressioncondicion_compleja : condicion operadorLogico condicion\n                          | condicion operadorLogico condicion_complejaoperadorLogico : AND\n                      | ORcomparador : EQ\n                  | NEQ\n                  | GT\n                  | LT\n                  | GE\n                  | LEempty :print_statement : IDENTIFIER DOT IDENTIFIER LPAREN argumentos_opt RPARENstruct_definition : TYPE IDENTIFIER STRUCT LBRACE struct_fields RBRACEstruct_field : IDENTIFIER DATATYPEstruct_fields : struct_fieldstruct_fields : struct_fields struct_fieldfor_statement : FOR shortAssignment SEMICOLON condicion SEMICOLON expression blockfor_statement : FOR condicion blockfor_statement : FOR blockblock : LBRACE sentencias RBRACEblock : LBRACE RBRACEexpression_binary : expression PLUS expression\n                         | expression MINUS expression\n                         | expression TIMES expression\n                         | expression DIVIDE expression\n                         | expression MOD expressionexpression : MINUS expression %prec UMINUSexpression : LPAREN expression RPARENexpression : valuevalue : IDENTIFIERvalue : NUMBERvalue : RUNEvalue : STRINGvalue : RAW_STRINGvalue : TRUE\n             | FALSEvalue : NIL'
     
-_lr_action_items = {'MINUS':([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,],[2,8,2,2,-8,-9,-10,2,2,2,2,2,-6,8,-1,-2,-3,-4,-5,-7,]),'LPAREN':([0,2,3,7,8,9,10,11,],[3,3,3,3,3,3,3,3,]),'NUMBER':([0,2,3,7,8,9,10,11,],[5,5,5,5,5,5,5,5,]),'IDENTIFIER':([0,2,3,7,8,9,10,11,],[6,6,6,6,6,6,6,6,]),'$end':([1,4,5,6,12,14,15,16,17,18,19,],[0,-8,-9,-10,-6,-1,-2,-3,-4,-5,-7,]),'PLUS':([1,4,5,6,12,13,14,15,16,17,18,19,],[7,-8,-9,-10,-6,7,-1,-2,-3,-4,-5,-7,]),'TIMES':([1,4,5,6,12,13,14,15,16,17,18,19,],[9,-8,-9,-10,-6,9,9,9,-3,-4,-5,-7,]),'DIVIDE':([1,4,5,6,12,13,14,15,16,17,18,19,],[10,-8,-9,-10,-6,10,10,10,-3,-4,-5,-7,]),'MOD':([1,4,5,6,12,13,14,15,16,17,18,19,],[11,-8,-9,-10,-6,11,11,11,-3,-4,-5,-7,]),'RPAREN':([4,5,6,12,13,14,15,16,17,18,19,],[-8,-9,-10,-6,19,-1,-2,-3,-4,-5,-7,]),}
+_lr_action_items = {'TYPE':([0,2,3,4,5,8,34,37,],[6,6,-2,-4,-5,-3,-37,-36,]),'IDENTIFIER':([0,2,3,4,5,6,8,10,13,14,16,17,19,24,33,34,35,37,38,],[7,7,-2,-4,-5,9,-3,12,15,18,15,-39,18,18,-38,-37,-40,-36,18,]),'$end':([1,2,3,4,5,8,34,37,],[0,-1,-2,-4,-5,-3,-37,-36,]),'DOT':([7,],[10,]),'STRUCT':([9,],[11,]),'LBRACE':([11,],[13,]),'LPAREN':([12,14,19,24,38,],[14,19,19,19,19,]),'RPAREN':([14,18,20,21,22,23,25,26,27,28,29,30,31,32,36,39,40,41,],[-35,-54,37,-20,-21,-22,-53,-55,-56,-57,-58,-59,-60,-61,40,-51,-52,-23,]),'MINUS':([14,19,24,38,],[24,24,24,24,]),'NUMBER':([14,19,24,38,],[26,26,26,26,]),'RUNE':([14,19,24,38,],[27,27,27,27,]),'STRING':([14,19,24,38,],[28,28,28,28,]),'RAW_STRING':([14,19,24,38,],[29,29,29,29,]),'TRUE':([14,19,24,38,],[30,30,30,30,]),'FALSE':([14,19,24,38,],[31,31,31,31,]),'NIL':([14,19,24,38,],[32,32,32,32,]),'DATATYPE':([15,],[33,]),'RBRACE':([16,17,33,35,],[34,-39,-38,-40,]),'COMMA':([18,23,25,26,27,28,29,30,31,32,39,40,],[-54,38,-53,-55,-56,-57,-58,-59,-60,-61,-51,-52,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expression':([0,2,3,7,8,9,10,11,],[1,12,13,14,15,16,17,18,]),'value':([0,2,3,7,8,9,10,11,],[4,4,4,4,4,4,4,4,]),}
+_lr_goto_items = {'program':([0,],[1,]),'declaration_list':([0,],[2,]),'declaration':([0,2,],[3,8,]),'struct_definition':([0,2,],[4,4,]),'print_statement':([0,2,],[5,5,]),'struct_fields':([13,],[16,]),'struct_field':([13,16,],[17,35,]),'argumentos_opt':([14,],[20,]),'argumentos':([14,38,],[21,41,]),'empty':([14,],[22,]),'expression':([14,19,24,38,],[23,36,39,23,]),'value':([14,19,24,38,],[25,25,25,25,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,15 +26,66 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> expression","S'",1,None,None,None),
-  ('expression -> expression PLUS expression','expression',3,'p_expression_binary','parser.py',26),
-  ('expression -> expression MINUS expression','expression',3,'p_expression_binary','parser.py',27),
-  ('expression -> expression TIMES expression','expression',3,'p_expression_binary','parser.py',28),
-  ('expression -> expression DIVIDE expression','expression',3,'p_expression_binary','parser.py',29),
-  ('expression -> expression MOD expression','expression',3,'p_expression_binary','parser.py',30),
-  ('expression -> MINUS expression','expression',2,'p_expression_unary_minus','parser.py',34),
-  ('expression -> LPAREN expression RPAREN','expression',3,'p_expression_group','parser.py',38),
-  ('expression -> value','expression',1,'p_expression_value','parser.py',42),
-  ('value -> NUMBER','value',1,'p_value_number','parser.py',46),
-  ('value -> IDENTIFIER','value',1,'p_value_identifier','parser.py',50),
+  ("S' -> program","S'",1,None,None,None),
+  ('program -> declaration_list','program',1,'p_program','parser.py',7),
+  ('declaration_list -> declaration','declaration_list',1,'p_declaration_list_single','parser.py',11),
+  ('declaration_list -> declaration_list declaration','declaration_list',2,'p_declaration_list_multiple','parser.py',15),
+  ('declaration -> struct_definition','declaration',1,'p_declaration','parser.py',19),
+  ('declaration -> print_statement','declaration',1,'p_declaration','parser.py',20),
+  ('sentencias -> sentencia','sentencias',1,'p_sentencias','parser.py',28),
+  ('sentencias -> sentencia sentencias','sentencias',2,'p_sentencias','parser.py',29),
+  ('sentencia -> assignment','sentencia',1,'p_sentencia','parser.py',32),
+  ('sentencia -> input','sentencia',1,'p_sentencia','parser.py',33),
+  ('sentencia -> llamarFuncion','sentencia',1,'p_sentencia','parser.py',34),
+  ('sentencia -> print_statement','sentencia',1,'p_sentencia','parser.py',35),
+  ('input -> IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN','input',7,'p_input','parser.py',38),
+  ('assignment -> assigmentSimple','assignment',1,'p_assignment','parser.py',41),
+  ('assignment -> assignmentFuncion','assignment',1,'p_assignment','parser.py',42),
+  ('assignment -> shortAssignment','assignment',1,'p_assignment','parser.py',43),
+  ('shortAssignment -> IDENTIFIER DECLARE_ASSIGN expression','shortAssignment',3,'p_short_assignment','parser.py',46),
+  ('assigmentSimple -> VAR IDENTIFIER DATATYPE ASSIGN expression','assigmentSimple',5,'p_assignment_simple','parser.py',49),
+  ('assignmentFuncion -> VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion','assignmentFuncion',5,'p_assingment_funcion','parser.py',52),
+  ('llamarFuncion -> IDENTIFIER LPAREN argumentos_opt RPAREN','llamarFuncion',4,'p_llamar_funcion','parser.py',55),
+  ('argumentos_opt -> argumentos','argumentos_opt',1,'p_argumentos_opt','parser.py',58),
+  ('argumentos_opt -> empty','argumentos_opt',1,'p_argumentos_opt','parser.py',59),
+  ('argumentos -> expression','argumentos',1,'p_argumentos','parser.py',62),
+  ('argumentos -> expression COMMA argumentos','argumentos',3,'p_argumentos','parser.py',63),
+  ('condicion -> expression comparador expression','condicion',3,'p_condicion','parser.py',66),
+  ('condicion_compleja -> condicion operadorLogico condicion','condicion_compleja',3,'p_condicion_compleja','parser.py',69),
+  ('condicion_compleja -> condicion operadorLogico condicion_compleja','condicion_compleja',3,'p_condicion_compleja','parser.py',70),
+  ('operadorLogico -> AND','operadorLogico',1,'p_operador_logico','parser.py',73),
+  ('operadorLogico -> OR','operadorLogico',1,'p_operador_logico','parser.py',74),
+  ('comparador -> EQ','comparador',1,'p_comparador','parser.py',77),
+  ('comparador -> NEQ','comparador',1,'p_comparador','parser.py',78),
+  ('comparador -> GT','comparador',1,'p_comparador','parser.py',79),
+  ('comparador -> LT','comparador',1,'p_comparador','parser.py',80),
+  ('comparador -> GE','comparador',1,'p_comparador','parser.py',81),
+  ('comparador -> LE','comparador',1,'p_comparador','parser.py',82),
+  ('empty -> <empty>','empty',0,'p_empty','parser.py',85),
+  ('print_statement -> IDENTIFIER DOT IDENTIFIER LPAREN argumentos_opt RPAREN','print_statement',6,'p_print_statement','parser.py',96),
+  ('struct_definition -> TYPE IDENTIFIER STRUCT LBRACE struct_fields RBRACE','struct_definition',6,'p_struct_definition','parser.py',106),
+  ('struct_field -> IDENTIFIER DATATYPE','struct_field',2,'p_struct_field','parser.py',111),
+  ('struct_fields -> struct_field','struct_fields',1,'p_struct_fields_single','parser.py',116),
+  ('struct_fields -> struct_fields struct_field','struct_fields',2,'p_struct_fields_multiple','parser.py',119),
+  ('for_statement -> FOR shortAssignment SEMICOLON condicion SEMICOLON expression block','for_statement',7,'p_for_statement_classis','parser.py',126),
+  ('for_statement -> FOR condicion block','for_statement',3,'p_for_statement_condition','parser.py',130),
+  ('for_statement -> FOR block','for_statement',2,'p_for_statement_infinite','parser.py',134),
+  ('block -> LBRACE sentencias RBRACE','block',3,'p_block','parser.py',138),
+  ('block -> LBRACE RBRACE','block',2,'p_block_empty','parser.py',142),
+  ('expression_binary -> expression PLUS expression','expression_binary',3,'p_expression_binary','parser.py',157),
+  ('expression_binary -> expression MINUS expression','expression_binary',3,'p_expression_binary','parser.py',158),
+  ('expression_binary -> expression TIMES expression','expression_binary',3,'p_expression_binary','parser.py',159),
+  ('expression_binary -> expression DIVIDE expression','expression_binary',3,'p_expression_binary','parser.py',160),
+  ('expression_binary -> expression MOD expression','expression_binary',3,'p_expression_binary','parser.py',161),
+  ('expression -> MINUS expression','expression',2,'p_expression_unary_minus','parser.py',165),
+  ('expression -> LPAREN expression RPAREN','expression',3,'p_expression_group','parser.py',169),
+  ('expression -> value','expression',1,'p_expression_value','parser.py',173),
+  ('value -> IDENTIFIER','value',1,'p_value_identifier','parser.py',185),
+  ('value -> NUMBER','value',1,'p_value_number','parser.py',188),
+  ('value -> RUNE','value',1,'p_value_rune','parser.py',191),
+  ('value -> STRING','value',1,'p_value_string','parser.py',194),
+  ('value -> RAW_STRING','value',1,'p_value_raw_string','parser.py',197),
+  ('value -> TRUE','value',1,'p_value_boolean','parser.py',200),
+  ('value -> FALSE','value',1,'p_value_boolean','parser.py',201),
+  ('value -> NIL','value',1,'p_value_nil','parser.py',204),
 ]
