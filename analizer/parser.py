@@ -155,68 +155,56 @@ def p_value_identifier(p):
     'value : IDENTIFIER'
     p[0] = ("vari", p[1])
 
-
-#condicion con uno o mas comparadores logicos
-def p_condition_comparison(p):
-    '''condition : expression comparetor expression'''
-    p[0] = ('compare', p[2], p[1], p[3])
-
-def p_comparetor(p):
-    '''comparetor : EQ
-                | NEQ
-                | GT
-                | LT
-                | GE
-                | LE'''
-
-def p_condition_logical(p):
-    '''condition : condition AND condition
-                 | condition OR condition'''
-    p[0] = ('logical', p[2], p[1], p[3])
-
-def p_condition_group(p):
-    'condition : LPAREN condition RPAREN'
-    p[0] = p[2]
-
-
-#Estructura de control if
-def p_statement_if(p):
-    '''if_statement : IF LPAREN condition RPAREN block
-                 | IF LPAREN condition RPAREN block ELSE block'''
-    if len(p) == 6:
-        p[0] = ('if', p[3], p[5])  
+#Estructura if
+def p_if_statement(p):
+    '''if_statement : IF expression block
+                    | IF expression block ELSE block'''
+    if len(p) == 4:
+        p[0] = ('if', p[2], p[3], None)
     else:
-        p[0] = ('if-else', p[3], p[5], p[7])
+        p[0] = ('if_else', p[2], p[3], p[5])
 
-def p_function_call(p):
-    'function_call : IDENTIFIER LPAREN args RPAREN'
-    p[0] = ('call', p[1], p[3])
-
-
-def p_args_multiple(p):         #argumentos
-    'args : args COMMA expression'
-    p[0] = p[1] + [p[3]]
-
-def p_args_single(p):
-    'args : expression'
-    p[0] = [p[1]]
-
-def p_args_empty(p):
-    'args : '
-    p[0] = []
+def p_block(p):
+    '''block : LBRACE sentencias RBRACE'''
+    p[0] = ('block', p[2])
 
 
-def p_block(p):                 #para bloquedes de codigo
-    '''block : LBRACE statements RBRACE'''
-    p[0] = p[2]
+#funciones de orden superior
+def p_function_literal(p):
+    'function_literal : FUNC LPAREN parameters RPAREN return_type block'
+    p[0] = ('func_literal', p[3], p[5], p[6])
 
-def p_block_statements_multiple(p):
-    '''statements : statements statement'''
-    p[0] = p[1] + [p[2]]
+def p_parameters(p):
+    '''parameters : parameters COMMA parameter
+                  | parameter
+                  | empty'''
+    if len(p) == 2 and p[1] is None:
+        p[0] = []
+    elif len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = p[1] + [p[3]]
 
-def p_statements_single(p):
-    'statements : statement'
-    p[0] = [p[1]]
+def p_parameter(p):
+    '''parameter : IDENTIFIER DATATYPE
+                 | IDENTIFIER FUNC LPAREN parameters RPAREN DATATYPE'''
+    if len(p) == 3:
+        p[0] = ('param', p[1], p[2])
+    else:
+        p[0] = ('param_func', p[1], p[4], p[6])
+
+def p_return_type(p):
+    '''return_type : DATATYPE
+                   | empty'''
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = None
+
+
+def p_empty(p):
+    'empty :'
+    p[0] = None
 
 
 
