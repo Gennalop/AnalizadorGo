@@ -6,6 +6,8 @@ from logger import create_log_file
 # 1. Palabras Reservadas 
 
 reserved = {
+    'true': 'TRUE',
+    'false': 'FALSE',
     'if' : 'IF',
     'else' : 'ELSE',
     'for' : 'FOR',
@@ -48,7 +50,8 @@ tokens = [
     'DOT', 'COLON',
     'IDENTIFIER',
     'DATATYPE',
-    'STRING', 'RAW_STRING',
+    'STRING', 'STRING_UNCLOSE',
+    'RAW_STRING',
     'DECLARE_ASSIGN',
     'AMPERSAND',
 ] + list(reserved.values())
@@ -75,8 +78,12 @@ def t_IDENTIFIER(t):
 
 def t_STRING(t):
     r'"([^"\\]|\\.)*"'
-    #r'\"([^\\\n]|(\\.))*?\"'
     return t
+
+def t_STRING_UNCLOSED(t):
+    r'"[^"\n]*'
+    print("Error: cadena sin cerrar correctamente")
+    t.lexer.skip(len(t.value))
 
 def t_RAW_STRING(t):
     r'\`[^`]*\`'
@@ -147,29 +154,11 @@ def t_newline(t):
     t.lexer.lineno += len(t.value)
 
 def t_error(t):
-    message = f"[ERROR] Unexpected character '{t.value[0]}' at line {t.lineno}\n"
-    log_file.write(message)
     print("Illegal character '%s'" % t.value[0]) 
     t.lexer.skip(1)
 
 
 # Build the lexer and test----------------------------------------------------------
-    
+
+
 lexer = lex.lex()
-
-log_file = create_log_file("gitUser") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
-
-with open("testing_algorithms/algorithm1.go", "r", encoding="utf-8") as f:  #PRUEBEN CON SU ALGORITMO
-    data = f.read()
-
-lexer.input(data)
-  
-while True:
-    tok = lexer.token()
-    if not tok:
-        break
-    message = f"[LEXTOKEN] {tok.type} -> '{tok.value}' (line {tok.lineno}, pos {tok.lexpos})\n"
-    log_file.write(message)
-    print(tok)
-
-log_file.close()

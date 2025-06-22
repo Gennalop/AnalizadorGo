@@ -1,0 +1,5 @@
+[PARSE RESULT]
+( 'program',
+  [ ('struct', 'Persona', [('nombre', 'string'), ('edad', 'int')]),
+    ('struct', 'Punto', [('x', 'float64')]),
+    ('struct', 'Direccion', [('ciudad', 'string'), ('codigoPostal', 'int')])])
