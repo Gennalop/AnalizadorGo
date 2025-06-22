@@ -1,6 +1,14 @@
 import ply.lex as lex
 from logger import create_log_file 
 
+#Notes:
+#1) Se ha agregado el tipo rune que maneja datos de comilla simple.
+#2) Println se quedara como identifier por ser un nombre exportado.
+#Se podria reconocer junto a Println, Printf, Print como palabras reservadas, pero seria limitante a fmt
+#3) Está bien que los valores de constantes sean tokens NUMBER, porque representan literales fijos como 3.14.
+#El identificador de la constante (como PI) se procesa como IDENTIFIER y su valor se asocia luego en análisis semántico.
+
+
 ## Reparticion del Trabajo
 
 # 1. Palabras Reservadas 
