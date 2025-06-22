@@ -10,7 +10,11 @@ def p_sentencias(p):
 def p_sentencia(p):
     '''sentencia : assignment
                  | input
-                 | llamarFuncion'''
+                 | llamarFuncion
+                 | package
+                 | import
+                 | switch
+                 | map'''
 
 def p_input(p):
     '''input : IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN'''
@@ -39,13 +43,12 @@ def p_argumentos_opt(p):
 def p_argumentos(p):
     '''argumentos : expression
                   | expression COMMA argumentos'''
+    
+def p_expression_comparacion(p):
+    'expression : expression comparador expression'
 
-def p_condicion(p):
-    '''condicion : expression comparador expression'''
-
-def p_condicion_compleja(p):
-    '''condicion : condicion operadorLogico condicion
-                 | condicion operadorLogico condicion_compleja'''
+def p_boolean_expression(p):
+    '''expression : expression operadorLogico expression'''
 
 def p_operador_logico(p):
     '''operadorLogico : AND
@@ -63,7 +66,44 @@ def p_empty(p):
     '''empty :'''
     pass
 
+def p_switch_statement(p):
+    '''switch : SWITCH expression LBRACE caseBlocks RBRACE'''
 
+def p_caseBlocks(p):
+    '''caseBlocks : caseBlock
+                   | caseBlock caseBlocks'''
+
+def p_caseBlock(p):
+    '''caseBlock : CASE expression COLON sentencias
+                  | DEFAULT COLON sentencias'''
+    
+def p_short_map(p):
+    '''map : IDENTIFIER DECLARE_ASSIGN mapLiteral'''
+
+def p_map(p):
+    '''map : VAR IDENTIFIER ASSIGN mapLiteral'''
+
+def p_map_literal(p):
+    '''mapLiteral : MAP LBRACKET DATATYPE RBRACKET DATATYPE LBRACE mapEntries RBRACE'''
+
+def p_map_entries(p):
+    '''mapEntries : mapEntry
+                   | mapEntry COMMA mapEntries'''
+
+def p_map_entry(p):
+    '''mapEntry : value_key COLON value_key'''
+    
+def p_value_key(p):
+    '''value_key : expression
+                | STRING'''
+
+
+
+def p_package(p):
+    '''package : PACKAGE MAIN'''
+
+def p_import(p):
+    '''import : IMPORT STRING'''
 
 
 
@@ -119,7 +159,14 @@ parser = yacc.yacc()
 
 log_file = create_log_file("gitUser") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
 
-with open("testing_algorithms/algorithm#.go", "r", encoding="utf-8") as f:  #PRUEBEN CON SU ALGORITMO
+with open("testing_algorithms/algorithm3.go", "r", encoding="utf-8") as f:  #PRUEBEN CON SU ALGORITMO
     data = f.read()
 
-parser.input(data)
+print("Analizando archivo .go...\n")
+try:
+    result = parser.parse(data)
+    log_file.write("[OK] Parsing exitoso\n")
+    print("✅ Parsing completado correctamente")
+except Exception as e:
+    log_file.write(f"[ERROR] {str(e)}\n")
+    print("❌ Error durante el parsing:", e)

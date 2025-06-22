@@ -3,11 +3,8 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 Unused terminals:
 
     BREAK
-    CASE
-    COLON
     CONST
     CONTINUE
-    DEFAULT
     DEFER
     ELSE
     FALLTHROUGH
@@ -15,24 +12,15 @@ Unused terminals:
     FUNC
     GO
     IF
-    IMPORT
     INTERFACE
-    LBRACE
-    LBRACKET
-    MAP
     NIL
-    PACKAGE
     RANGE
     RAW_STRING
-    RBRACE
-    RBRACKET
     RETURN
     RUNE
     SELECT
     SEMICOLON
-    STRING
     STRUCT
-    SWITCH
     TYPE
 
 Grammar
@@ -43,118 +31,2457 @@ Rule 2     sentencias -> sentencia sentencias
 Rule 3     sentencia -> assignment
 Rule 4     sentencia -> input
 Rule 5     sentencia -> llamarFuncion
-Rule 6     input -> IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN
-Rule 7     assignment -> assigmentSimple
-Rule 8     assignment -> assignmentFuncion
-Rule 9     assignment -> shortAssignment
-Rule 10    shortAssignment -> IDENTIFIER DECLARE_ASSIGN expression
-Rule 11    assigmentSimple -> VAR IDENTIFIER DATATYPE ASSIGN expression
-Rule 12    assignmentFuncion -> VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion
-Rule 13    llamarFuncion -> IDENTIFIER LPAREN argumentos_opt RPAREN
-Rule 14    argumentos_opt -> argumentos
-Rule 15    argumentos_opt -> empty
-Rule 16    argumentos -> expression
-Rule 17    argumentos -> expression COMMA argumentos
-Rule 18    condicion -> expression comparador expression
-Rule 19    condicion -> condicion operadorLogico condicion
-Rule 20    condicion -> condicion operadorLogico condicion_compleja
-Rule 21    operadorLogico -> AND
-Rule 22    operadorLogico -> OR
-Rule 23    comparador -> EQ
-Rule 24    comparador -> NEQ
-Rule 25    comparador -> GT
-Rule 26    comparador -> LT
-Rule 27    comparador -> GE
-Rule 28    comparador -> LE
-Rule 29    empty -> <empty>
-Rule 30    expression -> expression PLUS expression
-Rule 31    expression -> expression MINUS expression
-Rule 32    expression -> expression TIMES expression
-Rule 33    expression -> expression DIVIDE expression
-Rule 34    expression -> expression MOD expression
-Rule 35    expression -> MINUS expression
-Rule 36    expression -> LPAREN expression RPAREN
-Rule 37    expression -> value
-Rule 38    value -> NUMBER
-Rule 39    value -> IDENTIFIER
+Rule 6     sentencia -> package
+Rule 7     sentencia -> import
+Rule 8     sentencia -> switch
+Rule 9     sentencia -> map
+Rule 10    input -> IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN
+Rule 11    assignment -> assigmentSimple
+Rule 12    assignment -> assignmentFuncion
+Rule 13    assignment -> shortAssignment
+Rule 14    shortAssignment -> IDENTIFIER DECLARE_ASSIGN expression
+Rule 15    assigmentSimple -> VAR IDENTIFIER DATATYPE ASSIGN expression
+Rule 16    assignmentFuncion -> VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion
+Rule 17    llamarFuncion -> IDENTIFIER LPAREN argumentos_opt RPAREN
+Rule 18    argumentos_opt -> argumentos
+Rule 19    argumentos_opt -> empty
+Rule 20    argumentos -> expression
+Rule 21    argumentos -> expression COMMA argumentos
+Rule 22    expression -> expression comparador expression
+Rule 23    expression -> expression operadorLogico expression
+Rule 24    operadorLogico -> AND
+Rule 25    operadorLogico -> OR
+Rule 26    comparador -> EQ
+Rule 27    comparador -> NEQ
+Rule 28    comparador -> GT
+Rule 29    comparador -> LT
+Rule 30    comparador -> GE
+Rule 31    comparador -> LE
+Rule 32    empty -> <empty>
+Rule 33    switch -> SWITCH expression LBRACE caseBlocks RBRACE
+Rule 34    caseBlocks -> caseBlock
+Rule 35    caseBlocks -> caseBlock caseBlocks
+Rule 36    caseBlock -> CASE expression COLON sentencias
+Rule 37    caseBlock -> DEFAULT COLON sentencias
+Rule 38    map -> IDENTIFIER DECLARE_ASSIGN mapLiteral
+Rule 39    map -> VAR IDENTIFIER ASSIGN mapLiteral
+Rule 40    mapLiteral -> MAP LBRACKET DATATYPE RBRACKET DATATYPE LBRACE mapEntries RBRACE
+Rule 41    mapEntries -> mapEntry
+Rule 42    mapEntries -> mapEntry COMMA mapEntries
+Rule 43    mapEntry -> value_key COLON value_key
+Rule 44    value_key -> expression
+Rule 45    value_key -> STRING
+Rule 46    package -> PACKAGE MAIN
+Rule 47    import -> IMPORT STRING
+Rule 48    expression -> expression PLUS expression
+Rule 49    expression -> expression MINUS expression
+Rule 50    expression -> expression TIMES expression
+Rule 51    expression -> expression DIVIDE expression
+Rule 52    expression -> expression MOD expression
+Rule 53    expression -> MINUS expression
+Rule 54    expression -> LPAREN expression RPAREN
+Rule 55    expression -> value
+Rule 56    value -> NUMBER
+Rule 57    value -> IDENTIFIER
 
 Terminals, with rules where they appear
 
-AMPERSAND            : 6
-AND                  : 21
-ASSIGN               : 11 12
+AMPERSAND            : 10
+AND                  : 24
+ASSIGN               : 15 16 39
 BREAK                : 
-CASE                 : 
-COLON                : 
-COMMA                : 17
+CASE                 : 36
+COLON                : 36 37 43
+COMMA                : 21 42
 CONST                : 
 CONTINUE             : 
-DATATYPE             : 11 12
-DECLARE_ASSIGN       : 10
-DEFAULT              : 
+DATATYPE             : 15 16 40 40
+DECLARE_ASSIGN       : 14 38
+DEFAULT              : 37
 DEFER                : 
-DIVIDE               : 33
-DOT                  : 6
+DIVIDE               : 51
+DOT                  : 10
 ELSE                 : 
-EQ                   : 23
+EQ                   : 26
 FALLTHROUGH          : 
 FOR                  : 
 FUNC                 : 
-GE                   : 27
+GE                   : 30
 GO                   : 
-GT                   : 25
-IDENTIFIER           : 6 6 6 10 11 12 13 39
+GT                   : 28
+IDENTIFIER           : 10 10 10 14 15 16 17 38 39 57
 IF                   : 
-IMPORT               : 
+IMPORT               : 47
 INTERFACE            : 
-LBRACE               : 
-LBRACKET             : 
-LE                   : 28
-LPAREN               : 6 13 36
-LT                   : 26
-MAP                  : 
-MINUS                : 31 35
-MOD                  : 34
-NEQ                  : 24
+LBRACE               : 33 40
+LBRACKET             : 40
+LE                   : 31
+LPAREN               : 10 17 54
+LT                   : 29
+MAIN                 : 46
+MAP                  : 40
+MINUS                : 49 53
+MOD                  : 52
+NEQ                  : 27
 NIL                  : 
-NUMBER               : 38
-OR                   : 22
-PACKAGE              : 
-PLUS                 : 30
+NUMBER               : 56
+OR                   : 25
+PACKAGE              : 46
+PLUS                 : 48
 RANGE                : 
 RAW_STRING           : 
-RBRACE               : 
-RBRACKET             : 
+RBRACE               : 33 40
+RBRACKET             : 40
 RETURN               : 
-RPAREN               : 6 13 36
+RPAREN               : 10 17 54
 RUNE                 : 
 SELECT               : 
 SEMICOLON            : 
-STRING               : 
+STRING               : 45 47
 STRUCT               : 
-SWITCH               : 
-TIMES                : 32
+SWITCH               : 33
+TIMES                : 50
 TYPE                 : 
-VAR                  : 11 12
+VAR                  : 15 16 39
 error                : 
 
 Nonterminals, with rules where they appear
 
-argumentos           : 14 17
-argumentos_opt       : 13
-assigmentSimple      : 7
+argumentos           : 18 21
+argumentos_opt       : 17
+assigmentSimple      : 11
 assignment           : 3
-assignmentFuncion    : 8
-comparador           : 18
-condicion            : 19 19 20
-condicion_compleja   : 20
-empty                : 15
-expression           : 10 11 16 17 18 18 30 30 31 31 32 32 33 33 34 34 35 36
+assignmentFuncion    : 12
+caseBlock            : 34 35
+caseBlocks           : 33 35
+comparador           : 22
+empty                : 19
+expression           : 14 15 20 21 22 22 23 23 33 36 44 48 48 49 49 50 50 51 51 52 52 53 54
+import               : 7
 input                : 4
-llamarFuncion        : 5 12
-operadorLogico       : 19 20
+llamarFuncion        : 5 16
+map                  : 9
+mapEntries           : 40 42
+mapEntry             : 41 42
+mapLiteral           : 38 39
+operadorLogico       : 23
+package              : 6
 sentencia            : 1 2
-sentencias           : 2 0
-shortAssignment      : 9
-value                : 37
+sentencias           : 2 36 37 0
+shortAssignment      : 13
+switch               : 8
+value                : 55
+value_key            : 43 43
 
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . sentencias
+    (1) sentencias -> . sentencia
+    (2) sentencias -> . sentencia sentencias
+    (3) sentencia -> . assignment
+    (4) sentencia -> . input
+    (5) sentencia -> . llamarFuncion
+    (6) sentencia -> . package
+    (7) sentencia -> . import
+    (8) sentencia -> . switch
+    (9) sentencia -> . map
+    (11) assignment -> . assigmentSimple
+    (12) assignment -> . assignmentFuncion
+    (13) assignment -> . shortAssignment
+    (10) input -> . IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN
+    (17) llamarFuncion -> . IDENTIFIER LPAREN argumentos_opt RPAREN
+    (46) package -> . PACKAGE MAIN
+    (47) import -> . IMPORT STRING
+    (33) switch -> . SWITCH expression LBRACE caseBlocks RBRACE
+    (38) map -> . IDENTIFIER DECLARE_ASSIGN mapLiteral
+    (39) map -> . VAR IDENTIFIER ASSIGN mapLiteral
+    (15) assigmentSimple -> . VAR IDENTIFIER DATATYPE ASSIGN expression
+    (16) assignmentFuncion -> . VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion
+    (14) shortAssignment -> . IDENTIFIER DECLARE_ASSIGN expression
+
+    IDENTIFIER      shift and go to state 13
+    PACKAGE         shift and go to state 14
+    IMPORT          shift and go to state 15
+    SWITCH          shift and go to state 16
+    VAR             shift and go to state 17
+
+    sentencias                     shift and go to state 1
+    sentencia                      shift and go to state 2
+    assignment                     shift and go to state 3
+    input                          shift and go to state 4
+    llamarFuncion                  shift and go to state 5
+    package                        shift and go to state 6
+    import                         shift and go to state 7
+    switch                         shift and go to state 8
+    map                            shift and go to state 9
+    assigmentSimple                shift and go to state 10
+    assignmentFuncion              shift and go to state 11
+    shortAssignment                shift and go to state 12
+
+state 1
+
+    (0) S' -> sentencias .
+
+
+
+state 2
+
+    (1) sentencias -> sentencia .
+    (2) sentencias -> sentencia . sentencias
+    (1) sentencias -> . sentencia
+    (2) sentencias -> . sentencia sentencias
+    (3) sentencia -> . assignment
+    (4) sentencia -> . input
+    (5) sentencia -> . llamarFuncion
+    (6) sentencia -> . package
+    (7) sentencia -> . import
+    (8) sentencia -> . switch
+    (9) sentencia -> . map
+    (11) assignment -> . assigmentSimple
+    (12) assignment -> . assignmentFuncion
+    (13) assignment -> . shortAssignment
+    (10) input -> . IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN
+    (17) llamarFuncion -> . IDENTIFIER LPAREN argumentos_opt RPAREN
+    (46) package -> . PACKAGE MAIN
+    (47) import -> . IMPORT STRING
+    (33) switch -> . SWITCH expression LBRACE caseBlocks RBRACE
+    (38) map -> . IDENTIFIER DECLARE_ASSIGN mapLiteral
+    (39) map -> . VAR IDENTIFIER ASSIGN mapLiteral
+    (15) assigmentSimple -> . VAR IDENTIFIER DATATYPE ASSIGN expression
+    (16) assignmentFuncion -> . VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion
+    (14) shortAssignment -> . IDENTIFIER DECLARE_ASSIGN expression
+
+    $end            reduce using rule 1 (sentencias -> sentencia .)
+    CASE            reduce using rule 1 (sentencias -> sentencia .)
+    DEFAULT         reduce using rule 1 (sentencias -> sentencia .)
+    RBRACE          reduce using rule 1 (sentencias -> sentencia .)
+    IDENTIFIER      shift and go to state 13
+    PACKAGE         shift and go to state 14
+    IMPORT          shift and go to state 15
+    SWITCH          shift and go to state 16
+    VAR             shift and go to state 17
+
+    sentencia                      shift and go to state 2
+    sentencias                     shift and go to state 18
+    assignment                     shift and go to state 3
+    input                          shift and go to state 4
+    llamarFuncion                  shift and go to state 5
+    package                        shift and go to state 6
+    import                         shift and go to state 7
+    switch                         shift and go to state 8
+    map                            shift and go to state 9
+    assigmentSimple                shift and go to state 10
+    assignmentFuncion              shift and go to state 11
+    shortAssignment                shift and go to state 12
+
+state 3
+
+    (3) sentencia -> assignment .
+
+    IDENTIFIER      reduce using rule 3 (sentencia -> assignment .)
+    PACKAGE         reduce using rule 3 (sentencia -> assignment .)
+    IMPORT          reduce using rule 3 (sentencia -> assignment .)
+    SWITCH          reduce using rule 3 (sentencia -> assignment .)
+    VAR             reduce using rule 3 (sentencia -> assignment .)
+    $end            reduce using rule 3 (sentencia -> assignment .)
+    CASE            reduce using rule 3 (sentencia -> assignment .)
+    DEFAULT         reduce using rule 3 (sentencia -> assignment .)
+    RBRACE          reduce using rule 3 (sentencia -> assignment .)
+
+
+state 4
+
+    (4) sentencia -> input .
+
+    IDENTIFIER      reduce using rule 4 (sentencia -> input .)
+    PACKAGE         reduce using rule 4 (sentencia -> input .)
+    IMPORT          reduce using rule 4 (sentencia -> input .)
+    SWITCH          reduce using rule 4 (sentencia -> input .)
+    VAR             reduce using rule 4 (sentencia -> input .)
+    $end            reduce using rule 4 (sentencia -> input .)
+    CASE            reduce using rule 4 (sentencia -> input .)
+    DEFAULT         reduce using rule 4 (sentencia -> input .)
+    RBRACE          reduce using rule 4 (sentencia -> input .)
+
+
+state 5
+
+    (5) sentencia -> llamarFuncion .
+
+    IDENTIFIER      reduce using rule 5 (sentencia -> llamarFuncion .)
+    PACKAGE         reduce using rule 5 (sentencia -> llamarFuncion .)
+    IMPORT          reduce using rule 5 (sentencia -> llamarFuncion .)
+    SWITCH          reduce using rule 5 (sentencia -> llamarFuncion .)
+    VAR             reduce using rule 5 (sentencia -> llamarFuncion .)
+    $end            reduce using rule 5 (sentencia -> llamarFuncion .)
+    CASE            reduce using rule 5 (sentencia -> llamarFuncion .)
+    DEFAULT         reduce using rule 5 (sentencia -> llamarFuncion .)
+    RBRACE          reduce using rule 5 (sentencia -> llamarFuncion .)
+
+
+state 6
+
+    (6) sentencia -> package .
+
+    IDENTIFIER      reduce using rule 6 (sentencia -> package .)
+    PACKAGE         reduce using rule 6 (sentencia -> package .)
+    IMPORT          reduce using rule 6 (sentencia -> package .)
+    SWITCH          reduce using rule 6 (sentencia -> package .)
+    VAR             reduce using rule 6 (sentencia -> package .)
+    $end            reduce using rule 6 (sentencia -> package .)
+    CASE            reduce using rule 6 (sentencia -> package .)
+    DEFAULT         reduce using rule 6 (sentencia -> package .)
+    RBRACE          reduce using rule 6 (sentencia -> package .)
+
+
+state 7
+
+    (7) sentencia -> import .
+
+    IDENTIFIER      reduce using rule 7 (sentencia -> import .)
+    PACKAGE         reduce using rule 7 (sentencia -> import .)
+    IMPORT          reduce using rule 7 (sentencia -> import .)
+    SWITCH          reduce using rule 7 (sentencia -> import .)
+    VAR             reduce using rule 7 (sentencia -> import .)
+    $end            reduce using rule 7 (sentencia -> import .)
+    CASE            reduce using rule 7 (sentencia -> import .)
+    DEFAULT         reduce using rule 7 (sentencia -> import .)
+    RBRACE          reduce using rule 7 (sentencia -> import .)
+
+
+state 8
+
+    (8) sentencia -> switch .
+
+    IDENTIFIER      reduce using rule 8 (sentencia -> switch .)
+    PACKAGE         reduce using rule 8 (sentencia -> switch .)
+    IMPORT          reduce using rule 8 (sentencia -> switch .)
+    SWITCH          reduce using rule 8 (sentencia -> switch .)
+    VAR             reduce using rule 8 (sentencia -> switch .)
+    $end            reduce using rule 8 (sentencia -> switch .)
+    CASE            reduce using rule 8 (sentencia -> switch .)
+    DEFAULT         reduce using rule 8 (sentencia -> switch .)
+    RBRACE          reduce using rule 8 (sentencia -> switch .)
+
+
+state 9
+
+    (9) sentencia -> map .
+
+    IDENTIFIER      reduce using rule 9 (sentencia -> map .)
+    PACKAGE         reduce using rule 9 (sentencia -> map .)
+    IMPORT          reduce using rule 9 (sentencia -> map .)
+    SWITCH          reduce using rule 9 (sentencia -> map .)
+    VAR             reduce using rule 9 (sentencia -> map .)
+    $end            reduce using rule 9 (sentencia -> map .)
+    CASE            reduce using rule 9 (sentencia -> map .)
+    DEFAULT         reduce using rule 9 (sentencia -> map .)
+    RBRACE          reduce using rule 9 (sentencia -> map .)
+
+
+state 10
+
+    (11) assignment -> assigmentSimple .
+
+    IDENTIFIER      reduce using rule 11 (assignment -> assigmentSimple .)
+    PACKAGE         reduce using rule 11 (assignment -> assigmentSimple .)
+    IMPORT          reduce using rule 11 (assignment -> assigmentSimple .)
+    SWITCH          reduce using rule 11 (assignment -> assigmentSimple .)
+    VAR             reduce using rule 11 (assignment -> assigmentSimple .)
+    $end            reduce using rule 11 (assignment -> assigmentSimple .)
+    CASE            reduce using rule 11 (assignment -> assigmentSimple .)
+    DEFAULT         reduce using rule 11 (assignment -> assigmentSimple .)
+    RBRACE          reduce using rule 11 (assignment -> assigmentSimple .)
+
+
+state 11
+
+    (12) assignment -> assignmentFuncion .
+
+    IDENTIFIER      reduce using rule 12 (assignment -> assignmentFuncion .)
+    PACKAGE         reduce using rule 12 (assignment -> assignmentFuncion .)
+    IMPORT          reduce using rule 12 (assignment -> assignmentFuncion .)
+    SWITCH          reduce using rule 12 (assignment -> assignmentFuncion .)
+    VAR             reduce using rule 12 (assignment -> assignmentFuncion .)
+    $end            reduce using rule 12 (assignment -> assignmentFuncion .)
+    CASE            reduce using rule 12 (assignment -> assignmentFuncion .)
+    DEFAULT         reduce using rule 12 (assignment -> assignmentFuncion .)
+    RBRACE          reduce using rule 12 (assignment -> assignmentFuncion .)
+
+
+state 12
+
+    (13) assignment -> shortAssignment .
+
+    IDENTIFIER      reduce using rule 13 (assignment -> shortAssignment .)
+    PACKAGE         reduce using rule 13 (assignment -> shortAssignment .)
+    IMPORT          reduce using rule 13 (assignment -> shortAssignment .)
+    SWITCH          reduce using rule 13 (assignment -> shortAssignment .)
+    VAR             reduce using rule 13 (assignment -> shortAssignment .)
+    $end            reduce using rule 13 (assignment -> shortAssignment .)
+    CASE            reduce using rule 13 (assignment -> shortAssignment .)
+    DEFAULT         reduce using rule 13 (assignment -> shortAssignment .)
+    RBRACE          reduce using rule 13 (assignment -> shortAssignment .)
+
+
+state 13
+
+    (10) input -> IDENTIFIER . DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN
+    (17) llamarFuncion -> IDENTIFIER . LPAREN argumentos_opt RPAREN
+    (38) map -> IDENTIFIER . DECLARE_ASSIGN mapLiteral
+    (14) shortAssignment -> IDENTIFIER . DECLARE_ASSIGN expression
+
+    DOT             shift and go to state 19
+    LPAREN          shift and go to state 20
+    DECLARE_ASSIGN  shift and go to state 21
+
+
+state 14
+
+    (46) package -> PACKAGE . MAIN
+
+    MAIN            shift and go to state 22
+
+
+state 15
+
+    (47) import -> IMPORT . STRING
+
+    STRING          shift and go to state 23
+
+
+state 16
+
+    (33) switch -> SWITCH . expression LBRACE caseBlocks RBRACE
+    (22) expression -> . expression comparador expression
+    (23) expression -> . expression operadorLogico expression
+    (48) expression -> . expression PLUS expression
+    (49) expression -> . expression MINUS expression
+    (50) expression -> . expression TIMES expression
+    (51) expression -> . expression DIVIDE expression
+    (52) expression -> . expression MOD expression
+    (53) expression -> . MINUS expression
+    (54) expression -> . LPAREN expression RPAREN
+    (55) expression -> . value
+    (56) value -> . NUMBER
+    (57) value -> . IDENTIFIER
+
+    MINUS           shift and go to state 25
+    LPAREN          shift and go to state 26
+    NUMBER          shift and go to state 28
+    IDENTIFIER      shift and go to state 29
+
+    expression                     shift and go to state 24
+    value                          shift and go to state 27
+
+state 17
+
+    (39) map -> VAR . IDENTIFIER ASSIGN mapLiteral
+    (15) assigmentSimple -> VAR . IDENTIFIER DATATYPE ASSIGN expression
+    (16) assignmentFuncion -> VAR . IDENTIFIER DATATYPE ASSIGN llamarFuncion
+
+    IDENTIFIER      shift and go to state 30
+
+
+state 18
+
+    (2) sentencias -> sentencia sentencias .
+
+    $end            reduce using rule 2 (sentencias -> sentencia sentencias .)
+    CASE            reduce using rule 2 (sentencias -> sentencia sentencias .)
+    DEFAULT         reduce using rule 2 (sentencias -> sentencia sentencias .)
+    RBRACE          reduce using rule 2 (sentencias -> sentencia sentencias .)
+
+
+state 19
+
+    (10) input -> IDENTIFIER DOT . IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN
+
+    IDENTIFIER      shift and go to state 31
+
+
+state 20
+
+    (17) llamarFuncion -> IDENTIFIER LPAREN . argumentos_opt RPAREN
+    (18) argumentos_opt -> . argumentos
+    (19) argumentos_opt -> . empty
+    (20) argumentos -> . expression
+    (21) argumentos -> . expression COMMA argumentos
+    (32) empty -> .
+    (22) expression -> . expression comparador expression
+    (23) expression -> . expression operadorLogico expression
+    (48) expression -> . expression PLUS expression
+    (49) expression -> . expression MINUS expression
+    (50) expression -> . expression TIMES expression
+    (51) expression -> . expression DIVIDE expression
+    (52) expression -> . expression MOD expression
+    (53) expression -> . MINUS expression
+    (54) expression -> . LPAREN expression RPAREN
+    (55) expression -> . value
+    (56) value -> . NUMBER
+    (57) value -> . IDENTIFIER
+
+    RPAREN          reduce using rule 32 (empty -> .)
+    MINUS           shift and go to state 25
+    LPAREN          shift and go to state 26
+    NUMBER          shift and go to state 28
+    IDENTIFIER      shift and go to state 29
+
+    argumentos_opt                 shift and go to state 32
+    argumentos                     shift and go to state 33
+    empty                          shift and go to state 34
+    expression                     shift and go to state 35
+    value                          shift and go to state 27
+
+state 21
+
+    (38) map -> IDENTIFIER DECLARE_ASSIGN . mapLiteral
+    (14) shortAssignment -> IDENTIFIER DECLARE_ASSIGN . expression
+    (40) mapLiteral -> . MAP LBRACKET DATATYPE RBRACKET DATATYPE LBRACE mapEntries RBRACE
+    (22) expression -> . expression comparador expression
+    (23) expression -> . expression operadorLogico expression
+    (48) expression -> . expression PLUS expression
+    (49) expression -> . expression MINUS expression
+    (50) expression -> . expression TIMES expression
+    (51) expression -> . expression DIVIDE expression
+    (52) expression -> . expression MOD expression
+    (53) expression -> . MINUS expression
+    (54) expression -> . LPAREN expression RPAREN
+    (55) expression -> . value
+    (56) value -> . NUMBER
+    (57) value -> . IDENTIFIER
+
+    MAP             shift and go to state 38
+    MINUS           shift and go to state 25
+    LPAREN          shift and go to state 26
+    NUMBER          shift and go to state 28
+    IDENTIFIER      shift and go to state 29
+
+    mapLiteral                     shift and go to state 36
+    expression                     shift and go to state 37
+    value                          shift and go to state 27
+
+state 22
+
+    (46) package -> PACKAGE MAIN .
+
+    IDENTIFIER      reduce using rule 46 (package -> PACKAGE MAIN .)
+    PACKAGE         reduce using rule 46 (package -> PACKAGE MAIN .)
+    IMPORT          reduce using rule 46 (package -> PACKAGE MAIN .)
+    SWITCH          reduce using rule 46 (package -> PACKAGE MAIN .)
+    VAR             reduce using rule 46 (package -> PACKAGE MAIN .)
+    $end            reduce using rule 46 (package -> PACKAGE MAIN .)
+    CASE            reduce using rule 46 (package -> PACKAGE MAIN .)
+    DEFAULT         reduce using rule 46 (package -> PACKAGE MAIN .)
+    RBRACE          reduce using rule 46 (package -> PACKAGE MAIN .)
+
+
+state 23
+
+    (47) import -> IMPORT STRING .
+
+    IDENTIFIER      reduce using rule 47 (import -> IMPORT STRING .)
+    PACKAGE         reduce using rule 47 (import -> IMPORT STRING .)
+    IMPORT          reduce using rule 47 (import -> IMPORT STRING .)
+    SWITCH          reduce using rule 47 (import -> IMPORT STRING .)
+    VAR             reduce using rule 47 (import -> IMPORT STRING .)
+    $end            reduce using rule 47 (import -> IMPORT STRING .)
+    CASE            reduce using rule 47 (import -> IMPORT STRING .)
+    DEFAULT         reduce using rule 47 (import -> IMPORT STRING .)
+    RBRACE          reduce using rule 47 (import -> IMPORT STRING .)
+
+
+state 24
+
+    (33) switch -> SWITCH expression . LBRACE caseBlocks RBRACE
+    (22) expression -> expression . comparador expression
+    (23) expression -> expression . operadorLogico expression
+    (48) expression -> expression . PLUS expression
+    (49) expression -> expression . MINUS expression
+    (50) expression -> expression . TIMES expression
+    (51) expression -> expression . DIVIDE expression
+    (52) expression -> expression . MOD expression
+    (26) comparador -> . EQ
+    (27) comparador -> . NEQ
+    (28) comparador -> . GT
+    (29) comparador -> . LT
+    (30) comparador -> . GE
+    (31) comparador -> . LE
+    (24) operadorLogico -> . AND
+    (25) operadorLogico -> . OR
+
+    LBRACE          shift and go to state 39
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    MOD             shift and go to state 46
+    EQ              shift and go to state 47
+    NEQ             shift and go to state 48
+    GT              shift and go to state 49
+    LT              shift and go to state 50
+    GE              shift and go to state 51
+    LE              shift and go to state 52
+    AND             shift and go to state 53
+    OR              shift and go to state 54
+
+    comparador                     shift and go to state 40
+    operadorLogico                 shift and go to state 41
+
+state 25
+
+    (53) expression -> MINUS . expression
+    (22) expression -> . expression comparador expression
+    (23) expression -> . expression operadorLogico expression
+    (48) expression -> . expression PLUS expression
+    (49) expression -> . expression MINUS expression
+    (50) expression -> . expression TIMES expression
+    (51) expression -> . expression DIVIDE expression
+    (52) expression -> . expression MOD expression
+    (53) expression -> . MINUS expression
+    (54) expression -> . LPAREN expression RPAREN
+    (55) expression -> . value
+    (56) value -> . NUMBER
+    (57) value -> . IDENTIFIER
+
+    MINUS           shift and go to state 25
+    LPAREN          shift and go to state 26
+    NUMBER          shift and go to state 28
+    IDENTIFIER      shift and go to state 29
+
+    expression                     shift and go to state 55
+    value                          shift and go to state 27
+
+state 26
+
+    (54) expression -> LPAREN . expression RPAREN
+    (22) expression -> . expression comparador expression
+    (23) expression -> . expression operadorLogico expression
+    (48) expression -> . expression PLUS expression
+    (49) expression -> . expression MINUS expression
+    (50) expression -> . expression TIMES expression
+    (51) expression -> . expression DIVIDE expression
+    (52) expression -> . expression MOD expression
+    (53) expression -> . MINUS expression
+    (54) expression -> . LPAREN expression RPAREN
+    (55) expression -> . value
+    (56) value -> . NUMBER
+    (57) value -> . IDENTIFIER
+
+    MINUS           shift and go to state 25
+    LPAREN          shift and go to state 26
+    NUMBER          shift and go to state 28
+    IDENTIFIER      shift and go to state 29
+
+    expression                     shift and go to state 56
+    value                          shift and go to state 27
+
+state 27
+
+    (55) expression -> value .
+
+    LBRACE          reduce using rule 55 (expression -> value .)
+    PLUS            reduce using rule 55 (expression -> value .)
+    MINUS           reduce using rule 55 (expression -> value .)
+    TIMES           reduce using rule 55 (expression -> value .)
+    DIVIDE          reduce using rule 55 (expression -> value .)
+    MOD             reduce using rule 55 (expression -> value .)
+    EQ              reduce using rule 55 (expression -> value .)
+    NEQ             reduce using rule 55 (expression -> value .)
+    GT              reduce using rule 55 (expression -> value .)
+    LT              reduce using rule 55 (expression -> value .)
+    GE              reduce using rule 55 (expression -> value .)
+    LE              reduce using rule 55 (expression -> value .)
+    AND             reduce using rule 55 (expression -> value .)
+    OR              reduce using rule 55 (expression -> value .)
+    COMMA           reduce using rule 55 (expression -> value .)
+    RPAREN          reduce using rule 55 (expression -> value .)
+    IDENTIFIER      reduce using rule 55 (expression -> value .)
+    PACKAGE         reduce using rule 55 (expression -> value .)
+    IMPORT          reduce using rule 55 (expression -> value .)
+    SWITCH          reduce using rule 55 (expression -> value .)
+    VAR             reduce using rule 55 (expression -> value .)
+    $end            reduce using rule 55 (expression -> value .)
+    CASE            reduce using rule 55 (expression -> value .)
+    DEFAULT         reduce using rule 55 (expression -> value .)
+    RBRACE          reduce using rule 55 (expression -> value .)
+    COLON           reduce using rule 55 (expression -> value .)
+
+
+state 28
+
+    (56) value -> NUMBER .
+
+    LBRACE          reduce using rule 56 (value -> NUMBER .)
+    PLUS            reduce using rule 56 (value -> NUMBER .)
+    MINUS           reduce using rule 56 (value -> NUMBER .)
+    TIMES           reduce using rule 56 (value -> NUMBER .)
+    DIVIDE          reduce using rule 56 (value -> NUMBER .)
+    MOD             reduce using rule 56 (value -> NUMBER .)
+    EQ              reduce using rule 56 (value -> NUMBER .)
+    NEQ             reduce using rule 56 (value -> NUMBER .)
+    GT              reduce using rule 56 (value -> NUMBER .)
+    LT              reduce using rule 56 (value -> NUMBER .)
+    GE              reduce using rule 56 (value -> NUMBER .)
+    LE              reduce using rule 56 (value -> NUMBER .)
+    AND             reduce using rule 56 (value -> NUMBER .)
+    OR              reduce using rule 56 (value -> NUMBER .)
+    COMMA           reduce using rule 56 (value -> NUMBER .)
+    RPAREN          reduce using rule 56 (value -> NUMBER .)
+    IDENTIFIER      reduce using rule 56 (value -> NUMBER .)
+    PACKAGE         reduce using rule 56 (value -> NUMBER .)
+    IMPORT          reduce using rule 56 (value -> NUMBER .)
+    SWITCH          reduce using rule 56 (value -> NUMBER .)
+    VAR             reduce using rule 56 (value -> NUMBER .)
+    $end            reduce using rule 56 (value -> NUMBER .)
+    CASE            reduce using rule 56 (value -> NUMBER .)
+    DEFAULT         reduce using rule 56 (value -> NUMBER .)
+    RBRACE          reduce using rule 56 (value -> NUMBER .)
+    COLON           reduce using rule 56 (value -> NUMBER .)
+
+
+state 29
+
+    (57) value -> IDENTIFIER .
+
+    LBRACE          reduce using rule 57 (value -> IDENTIFIER .)
+    PLUS            reduce using rule 57 (value -> IDENTIFIER .)
+    MINUS           reduce using rule 57 (value -> IDENTIFIER .)
+    TIMES           reduce using rule 57 (value -> IDENTIFIER .)
+    DIVIDE          reduce using rule 57 (value -> IDENTIFIER .)
+    MOD             reduce using rule 57 (value -> IDENTIFIER .)
+    EQ              reduce using rule 57 (value -> IDENTIFIER .)
+    NEQ             reduce using rule 57 (value -> IDENTIFIER .)
+    GT              reduce using rule 57 (value -> IDENTIFIER .)
+    LT              reduce using rule 57 (value -> IDENTIFIER .)
+    GE              reduce using rule 57 (value -> IDENTIFIER .)
+    LE              reduce using rule 57 (value -> IDENTIFIER .)
+    AND             reduce using rule 57 (value -> IDENTIFIER .)
+    OR              reduce using rule 57 (value -> IDENTIFIER .)
+    COMMA           reduce using rule 57 (value -> IDENTIFIER .)
+    RPAREN          reduce using rule 57 (value -> IDENTIFIER .)
+    IDENTIFIER      reduce using rule 57 (value -> IDENTIFIER .)
+    PACKAGE         reduce using rule 57 (value -> IDENTIFIER .)
+    IMPORT          reduce using rule 57 (value -> IDENTIFIER .)
+    SWITCH          reduce using rule 57 (value -> IDENTIFIER .)
+    VAR             reduce using rule 57 (value -> IDENTIFIER .)
+    $end            reduce using rule 57 (value -> IDENTIFIER .)
+    CASE            reduce using rule 57 (value -> IDENTIFIER .)
+    DEFAULT         reduce using rule 57 (value -> IDENTIFIER .)
+    RBRACE          reduce using rule 57 (value -> IDENTIFIER .)
+    COLON           reduce using rule 57 (value -> IDENTIFIER .)
+
+
+state 30
+
+    (39) map -> VAR IDENTIFIER . ASSIGN mapLiteral
+    (15) assigmentSimple -> VAR IDENTIFIER . DATATYPE ASSIGN expression
+    (16) assignmentFuncion -> VAR IDENTIFIER . DATATYPE ASSIGN llamarFuncion
+
+    ASSIGN          shift and go to state 57
+    DATATYPE        shift and go to state 58
+
+
+state 31
+
+    (10) input -> IDENTIFIER DOT IDENTIFIER . LPAREN AMPERSAND IDENTIFIER RPAREN
+
+    LPAREN          shift and go to state 59
+
+
+state 32
+
+    (17) llamarFuncion -> IDENTIFIER LPAREN argumentos_opt . RPAREN
+
+    RPAREN          shift and go to state 60
+
+
+state 33
+
+    (18) argumentos_opt -> argumentos .
+
+    RPAREN          reduce using rule 18 (argumentos_opt -> argumentos .)
+
+
+state 34
+
+    (19) argumentos_opt -> empty .
+
+    RPAREN          reduce using rule 19 (argumentos_opt -> empty .)
+
+
+state 35
+
+    (20) argumentos -> expression .
+    (21) argumentos -> expression . COMMA argumentos
+    (22) expression -> expression . comparador expression
+    (23) expression -> expression . operadorLogico expression
+    (48) expression -> expression . PLUS expression
+    (49) expression -> expression . MINUS expression
+    (50) expression -> expression . TIMES expression
+    (51) expression -> expression . DIVIDE expression
+    (52) expression -> expression . MOD expression
+    (26) comparador -> . EQ
+    (27) comparador -> . NEQ
+    (28) comparador -> . GT
+    (29) comparador -> . LT
+    (30) comparador -> . GE
+    (31) comparador -> . LE
+    (24) operadorLogico -> . AND
+    (25) operadorLogico -> . OR
+
+    RPAREN          reduce using rule 20 (argumentos -> expression .)
+    COMMA           shift and go to state 61
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    MOD             shift and go to state 46
+    EQ              shift and go to state 47
+    NEQ             shift and go to state 48
+    GT              shift and go to state 49
+    LT              shift and go to state 50
+    GE              shift and go to state 51
+    LE              shift and go to state 52
+    AND             shift and go to state 53
+    OR              shift and go to state 54
+
+    comparador                     shift and go to state 40
+    operadorLogico                 shift and go to state 41
+
+state 36
+
+    (38) map -> IDENTIFIER DECLARE_ASSIGN mapLiteral .
+
+    IDENTIFIER      reduce using rule 38 (map -> IDENTIFIER DECLARE_ASSIGN mapLiteral .)
+    PACKAGE         reduce using rule 38 (map -> IDENTIFIER DECLARE_ASSIGN mapLiteral .)
+    IMPORT          reduce using rule 38 (map -> IDENTIFIER DECLARE_ASSIGN mapLiteral .)
+    SWITCH          reduce using rule 38 (map -> IDENTIFIER DECLARE_ASSIGN mapLiteral .)
+    VAR             reduce using rule 38 (map -> IDENTIFIER DECLARE_ASSIGN mapLiteral .)
+    $end            reduce using rule 38 (map -> IDENTIFIER DECLARE_ASSIGN mapLiteral .)
+    CASE            reduce using rule 38 (map -> IDENTIFIER DECLARE_ASSIGN mapLiteral .)
+    DEFAULT         reduce using rule 38 (map -> IDENTIFIER DECLARE_ASSIGN mapLiteral .)
+    RBRACE          reduce using rule 38 (map -> IDENTIFIER DECLARE_ASSIGN mapLiteral .)
+
+
+state 37
+
+    (14) shortAssignment -> IDENTIFIER DECLARE_ASSIGN expression .
+    (22) expression -> expression . comparador expression
+    (23) expression -> expression . operadorLogico expression
+    (48) expression -> expression . PLUS expression
+    (49) expression -> expression . MINUS expression
+    (50) expression -> expression . TIMES expression
+    (51) expression -> expression . DIVIDE expression
+    (52) expression -> expression . MOD expression
+    (26) comparador -> . EQ
+    (27) comparador -> . NEQ
+    (28) comparador -> . GT
+    (29) comparador -> . LT
+    (30) comparador -> . GE
+    (31) comparador -> . LE
+    (24) operadorLogico -> . AND
+    (25) operadorLogico -> . OR
+
+    IDENTIFIER      reduce using rule 14 (shortAssignment -> IDENTIFIER DECLARE_ASSIGN expression .)
+    PACKAGE         reduce using rule 14 (shortAssignment -> IDENTIFIER DECLARE_ASSIGN expression .)
+    IMPORT          reduce using rule 14 (shortAssignment -> IDENTIFIER DECLARE_ASSIGN expression .)
+    SWITCH          reduce using rule 14 (shortAssignment -> IDENTIFIER DECLARE_ASSIGN expression .)
+    VAR             reduce using rule 14 (shortAssignment -> IDENTIFIER DECLARE_ASSIGN expression .)
+    $end            reduce using rule 14 (shortAssignment -> IDENTIFIER DECLARE_ASSIGN expression .)
+    CASE            reduce using rule 14 (shortAssignment -> IDENTIFIER DECLARE_ASSIGN expression .)
+    DEFAULT         reduce using rule 14 (shortAssignment -> IDENTIFIER DECLARE_ASSIGN expression .)
+    RBRACE          reduce using rule 14 (shortAssignment -> IDENTIFIER DECLARE_ASSIGN expression .)
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    MOD             shift and go to state 46
+    EQ              shift and go to state 47
+    NEQ             shift and go to state 48
+    GT              shift and go to state 49
+    LT              shift and go to state 50
+    GE              shift and go to state 51
+    LE              shift and go to state 52
+    AND             shift and go to state 53
+    OR              shift and go to state 54
+
+    comparador                     shift and go to state 40
+    operadorLogico                 shift and go to state 41
+
+state 38
+
+    (40) mapLiteral -> MAP . LBRACKET DATATYPE RBRACKET DATATYPE LBRACE mapEntries RBRACE
+
+    LBRACKET        shift and go to state 62
+
+
+state 39
+
+    (33) switch -> SWITCH expression LBRACE . caseBlocks RBRACE
+    (34) caseBlocks -> . caseBlock
+    (35) caseBlocks -> . caseBlock caseBlocks
+    (36) caseBlock -> . CASE expression COLON sentencias
+    (37) caseBlock -> . DEFAULT COLON sentencias
+
+    CASE            shift and go to state 65
+    DEFAULT         shift and go to state 66
+
+    caseBlocks                     shift and go to state 63
+    caseBlock                      shift and go to state 64
+
+state 40
+
+    (22) expression -> expression comparador . expression
+    (22) expression -> . expression comparador expression
+    (23) expression -> . expression operadorLogico expression
+    (48) expression -> . expression PLUS expression
+    (49) expression -> . expression MINUS expression
+    (50) expression -> . expression TIMES expression
+    (51) expression -> . expression DIVIDE expression
+    (52) expression -> . expression MOD expression
+    (53) expression -> . MINUS expression
+    (54) expression -> . LPAREN expression RPAREN
+    (55) expression -> . value
+    (56) value -> . NUMBER
+    (57) value -> . IDENTIFIER
+
+    MINUS           shift and go to state 25
+    LPAREN          shift and go to state 26
+    NUMBER          shift and go to state 28
+    IDENTIFIER      shift and go to state 29
+
+    expression                     shift and go to state 67
+    value                          shift and go to state 27
+
+state 41
+
+    (23) expression -> expression operadorLogico . expression
+    (22) expression -> . expression comparador expression
+    (23) expression -> . expression operadorLogico expression
+    (48) expression -> . expression PLUS expression
+    (49) expression -> . expression MINUS expression
+    (50) expression -> . expression TIMES expression
+    (51) expression -> . expression DIVIDE expression
+    (52) expression -> . expression MOD expression
+    (53) expression -> . MINUS expression
+    (54) expression -> . LPAREN expression RPAREN
+    (55) expression -> . value
+    (56) value -> . NUMBER
+    (57) value -> . IDENTIFIER
+
+    MINUS           shift and go to state 25
+    LPAREN          shift and go to state 26
+    NUMBER          shift and go to state 28
+    IDENTIFIER      shift and go to state 29
+
+    expression                     shift and go to state 68
+    value                          shift and go to state 27
+
+state 42
+
+    (48) expression -> expression PLUS . expression
+    (22) expression -> . expression comparador expression
+    (23) expression -> . expression operadorLogico expression
+    (48) expression -> . expression PLUS expression
+    (49) expression -> . expression MINUS expression
+    (50) expression -> . expression TIMES expression
+    (51) expression -> . expression DIVIDE expression
+    (52) expression -> . expression MOD expression
+    (53) expression -> . MINUS expression
+    (54) expression -> . LPAREN expression RPAREN
+    (55) expression -> . value
+    (56) value -> . NUMBER
+    (57) value -> . IDENTIFIER
+
+    MINUS           shift and go to state 25
+    LPAREN          shift and go to state 26
+    NUMBER          shift and go to state 28
+    IDENTIFIER      shift and go to state 29
+
+    expression                     shift and go to state 69
+    value                          shift and go to state 27
+
+state 43
+
+    (49) expression -> expression MINUS . expression
+    (22) expression -> . expression comparador expression
+    (23) expression -> . expression operadorLogico expression
+    (48) expression -> . expression PLUS expression
+    (49) expression -> . expression MINUS expression
+    (50) expression -> . expression TIMES expression
+    (51) expression -> . expression DIVIDE expression
+    (52) expression -> . expression MOD expression
+    (53) expression -> . MINUS expression
+    (54) expression -> . LPAREN expression RPAREN
+    (55) expression -> . value
+    (56) value -> . NUMBER
+    (57) value -> . IDENTIFIER
+
+    MINUS           shift and go to state 25
+    LPAREN          shift and go to state 26
+    NUMBER          shift and go to state 28
+    IDENTIFIER      shift and go to state 29
+
+    expression                     shift and go to state 70
+    value                          shift and go to state 27
+
+state 44
+
+    (50) expression -> expression TIMES . expression
+    (22) expression -> . expression comparador expression
+    (23) expression -> . expression operadorLogico expression
+    (48) expression -> . expression PLUS expression
+    (49) expression -> . expression MINUS expression
+    (50) expression -> . expression TIMES expression
+    (51) expression -> . expression DIVIDE expression
+    (52) expression -> . expression MOD expression
+    (53) expression -> . MINUS expression
+    (54) expression -> . LPAREN expression RPAREN
+    (55) expression -> . value
+    (56) value -> . NUMBER
+    (57) value -> . IDENTIFIER
+
+    MINUS           shift and go to state 25
+    LPAREN          shift and go to state 26
+    NUMBER          shift and go to state 28
+    IDENTIFIER      shift and go to state 29
+
+    expression                     shift and go to state 71
+    value                          shift and go to state 27
+
+state 45
+
+    (51) expression -> expression DIVIDE . expression
+    (22) expression -> . expression comparador expression
+    (23) expression -> . expression operadorLogico expression
+    (48) expression -> . expression PLUS expression
+    (49) expression -> . expression MINUS expression
+    (50) expression -> . expression TIMES expression
+    (51) expression -> . expression DIVIDE expression
+    (52) expression -> . expression MOD expression
+    (53) expression -> . MINUS expression
+    (54) expression -> . LPAREN expression RPAREN
+    (55) expression -> . value
+    (56) value -> . NUMBER
+    (57) value -> . IDENTIFIER
+
+    MINUS           shift and go to state 25
+    LPAREN          shift and go to state 26
+    NUMBER          shift and go to state 28
+    IDENTIFIER      shift and go to state 29
+
+    expression                     shift and go to state 72
+    value                          shift and go to state 27
+
+state 46
+
+    (52) expression -> expression MOD . expression
+    (22) expression -> . expression comparador expression
+    (23) expression -> . expression operadorLogico expression
+    (48) expression -> . expression PLUS expression
+    (49) expression -> . expression MINUS expression
+    (50) expression -> . expression TIMES expression
+    (51) expression -> . expression DIVIDE expression
+    (52) expression -> . expression MOD expression
+    (53) expression -> . MINUS expression
+    (54) expression -> . LPAREN expression RPAREN
+    (55) expression -> . value
+    (56) value -> . NUMBER
+    (57) value -> . IDENTIFIER
+
+    MINUS           shift and go to state 25
+    LPAREN          shift and go to state 26
+    NUMBER          shift and go to state 28
+    IDENTIFIER      shift and go to state 29
+
+    expression                     shift and go to state 73
+    value                          shift and go to state 27
+
+state 47
+
+    (26) comparador -> EQ .
+
+    MINUS           reduce using rule 26 (comparador -> EQ .)
+    LPAREN          reduce using rule 26 (comparador -> EQ .)
+    NUMBER          reduce using rule 26 (comparador -> EQ .)
+    IDENTIFIER      reduce using rule 26 (comparador -> EQ .)
+
+
+state 48
+
+    (27) comparador -> NEQ .
+
+    MINUS           reduce using rule 27 (comparador -> NEQ .)
+    LPAREN          reduce using rule 27 (comparador -> NEQ .)
+    NUMBER          reduce using rule 27 (comparador -> NEQ .)
+    IDENTIFIER      reduce using rule 27 (comparador -> NEQ .)
+
+
+state 49
+
+    (28) comparador -> GT .
+
+    MINUS           reduce using rule 28 (comparador -> GT .)
+    LPAREN          reduce using rule 28 (comparador -> GT .)
+    NUMBER          reduce using rule 28 (comparador -> GT .)
+    IDENTIFIER      reduce using rule 28 (comparador -> GT .)
+
+
+state 50
+
+    (29) comparador -> LT .
+
+    MINUS           reduce using rule 29 (comparador -> LT .)
+    LPAREN          reduce using rule 29 (comparador -> LT .)
+    NUMBER          reduce using rule 29 (comparador -> LT .)
+    IDENTIFIER      reduce using rule 29 (comparador -> LT .)
+
+
+state 51
+
+    (30) comparador -> GE .
+
+    MINUS           reduce using rule 30 (comparador -> GE .)
+    LPAREN          reduce using rule 30 (comparador -> GE .)
+    NUMBER          reduce using rule 30 (comparador -> GE .)
+    IDENTIFIER      reduce using rule 30 (comparador -> GE .)
+
+
+state 52
+
+    (31) comparador -> LE .
+
+    MINUS           reduce using rule 31 (comparador -> LE .)
+    LPAREN          reduce using rule 31 (comparador -> LE .)
+    NUMBER          reduce using rule 31 (comparador -> LE .)
+    IDENTIFIER      reduce using rule 31 (comparador -> LE .)
+
+
+state 53
+
+    (24) operadorLogico -> AND .
+
+    MINUS           reduce using rule 24 (operadorLogico -> AND .)
+    LPAREN          reduce using rule 24 (operadorLogico -> AND .)
+    NUMBER          reduce using rule 24 (operadorLogico -> AND .)
+    IDENTIFIER      reduce using rule 24 (operadorLogico -> AND .)
+
+
+state 54
+
+    (25) operadorLogico -> OR .
+
+    MINUS           reduce using rule 25 (operadorLogico -> OR .)
+    LPAREN          reduce using rule 25 (operadorLogico -> OR .)
+    NUMBER          reduce using rule 25 (operadorLogico -> OR .)
+    IDENTIFIER      reduce using rule 25 (operadorLogico -> OR .)
+
+
+state 55
+
+    (53) expression -> MINUS expression .
+    (22) expression -> expression . comparador expression
+    (23) expression -> expression . operadorLogico expression
+    (48) expression -> expression . PLUS expression
+    (49) expression -> expression . MINUS expression
+    (50) expression -> expression . TIMES expression
+    (51) expression -> expression . DIVIDE expression
+    (52) expression -> expression . MOD expression
+    (26) comparador -> . EQ
+    (27) comparador -> . NEQ
+    (28) comparador -> . GT
+    (29) comparador -> . LT
+    (30) comparador -> . GE
+    (31) comparador -> . LE
+    (24) operadorLogico -> . AND
+    (25) operadorLogico -> . OR
+
+    LBRACE          reduce using rule 53 (expression -> MINUS expression .)
+    PLUS            reduce using rule 53 (expression -> MINUS expression .)
+    MINUS           reduce using rule 53 (expression -> MINUS expression .)
+    TIMES           reduce using rule 53 (expression -> MINUS expression .)
+    DIVIDE          reduce using rule 53 (expression -> MINUS expression .)
+    MOD             reduce using rule 53 (expression -> MINUS expression .)
+    EQ              reduce using rule 53 (expression -> MINUS expression .)
+    NEQ             reduce using rule 53 (expression -> MINUS expression .)
+    GT              reduce using rule 53 (expression -> MINUS expression .)
+    LT              reduce using rule 53 (expression -> MINUS expression .)
+    GE              reduce using rule 53 (expression -> MINUS expression .)
+    LE              reduce using rule 53 (expression -> MINUS expression .)
+    AND             reduce using rule 53 (expression -> MINUS expression .)
+    OR              reduce using rule 53 (expression -> MINUS expression .)
+    COMMA           reduce using rule 53 (expression -> MINUS expression .)
+    RPAREN          reduce using rule 53 (expression -> MINUS expression .)
+    IDENTIFIER      reduce using rule 53 (expression -> MINUS expression .)
+    PACKAGE         reduce using rule 53 (expression -> MINUS expression .)
+    IMPORT          reduce using rule 53 (expression -> MINUS expression .)
+    SWITCH          reduce using rule 53 (expression -> MINUS expression .)
+    VAR             reduce using rule 53 (expression -> MINUS expression .)
+    $end            reduce using rule 53 (expression -> MINUS expression .)
+    CASE            reduce using rule 53 (expression -> MINUS expression .)
+    DEFAULT         reduce using rule 53 (expression -> MINUS expression .)
+    RBRACE          reduce using rule 53 (expression -> MINUS expression .)
+    COLON           reduce using rule 53 (expression -> MINUS expression .)
+
+  ! PLUS            [ shift and go to state 42 ]
+  ! MINUS           [ shift and go to state 43 ]
+  ! TIMES           [ shift and go to state 44 ]
+  ! DIVIDE          [ shift and go to state 45 ]
+  ! MOD             [ shift and go to state 46 ]
+  ! EQ              [ shift and go to state 47 ]
+  ! NEQ             [ shift and go to state 48 ]
+  ! GT              [ shift and go to state 49 ]
+  ! LT              [ shift and go to state 50 ]
+  ! GE              [ shift and go to state 51 ]
+  ! LE              [ shift and go to state 52 ]
+  ! AND             [ shift and go to state 53 ]
+  ! OR              [ shift and go to state 54 ]
+
+    comparador                     shift and go to state 40
+    operadorLogico                 shift and go to state 41
+
+state 56
+
+    (54) expression -> LPAREN expression . RPAREN
+    (22) expression -> expression . comparador expression
+    (23) expression -> expression . operadorLogico expression
+    (48) expression -> expression . PLUS expression
+    (49) expression -> expression . MINUS expression
+    (50) expression -> expression . TIMES expression
+    (51) expression -> expression . DIVIDE expression
+    (52) expression -> expression . MOD expression
+    (26) comparador -> . EQ
+    (27) comparador -> . NEQ
+    (28) comparador -> . GT
+    (29) comparador -> . LT
+    (30) comparador -> . GE
+    (31) comparador -> . LE
+    (24) operadorLogico -> . AND
+    (25) operadorLogico -> . OR
+
+    RPAREN          shift and go to state 74
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    MOD             shift and go to state 46
+    EQ              shift and go to state 47
+    NEQ             shift and go to state 48
+    GT              shift and go to state 49
+    LT              shift and go to state 50
+    GE              shift and go to state 51
+    LE              shift and go to state 52
+    AND             shift and go to state 53
+    OR              shift and go to state 54
+
+    comparador                     shift and go to state 40
+    operadorLogico                 shift and go to state 41
+
+state 57
+
+    (39) map -> VAR IDENTIFIER ASSIGN . mapLiteral
+    (40) mapLiteral -> . MAP LBRACKET DATATYPE RBRACKET DATATYPE LBRACE mapEntries RBRACE
+
+    MAP             shift and go to state 38
+
+    mapLiteral                     shift and go to state 75
+
+state 58
+
+    (15) assigmentSimple -> VAR IDENTIFIER DATATYPE . ASSIGN expression
+    (16) assignmentFuncion -> VAR IDENTIFIER DATATYPE . ASSIGN llamarFuncion
+
+    ASSIGN          shift and go to state 76
+
+
+state 59
+
+    (10) input -> IDENTIFIER DOT IDENTIFIER LPAREN . AMPERSAND IDENTIFIER RPAREN
+
+    AMPERSAND       shift and go to state 77
+
+
+state 60
+
+    (17) llamarFuncion -> IDENTIFIER LPAREN argumentos_opt RPAREN .
+
+    IDENTIFIER      reduce using rule 17 (llamarFuncion -> IDENTIFIER LPAREN argumentos_opt RPAREN .)
+    PACKAGE         reduce using rule 17 (llamarFuncion -> IDENTIFIER LPAREN argumentos_opt RPAREN .)
+    IMPORT          reduce using rule 17 (llamarFuncion -> IDENTIFIER LPAREN argumentos_opt RPAREN .)
+    SWITCH          reduce using rule 17 (llamarFuncion -> IDENTIFIER LPAREN argumentos_opt RPAREN .)
+    VAR             reduce using rule 17 (llamarFuncion -> IDENTIFIER LPAREN argumentos_opt RPAREN .)
+    $end            reduce using rule 17 (llamarFuncion -> IDENTIFIER LPAREN argumentos_opt RPAREN .)
+    CASE            reduce using rule 17 (llamarFuncion -> IDENTIFIER LPAREN argumentos_opt RPAREN .)
+    DEFAULT         reduce using rule 17 (llamarFuncion -> IDENTIFIER LPAREN argumentos_opt RPAREN .)
+    RBRACE          reduce using rule 17 (llamarFuncion -> IDENTIFIER LPAREN argumentos_opt RPAREN .)
+
+
+state 61
+
+    (21) argumentos -> expression COMMA . argumentos
+    (20) argumentos -> . expression
+    (21) argumentos -> . expression COMMA argumentos
+    (22) expression -> . expression comparador expression
+    (23) expression -> . expression operadorLogico expression
+    (48) expression -> . expression PLUS expression
+    (49) expression -> . expression MINUS expression
+    (50) expression -> . expression TIMES expression
+    (51) expression -> . expression DIVIDE expression
+    (52) expression -> . expression MOD expression
+    (53) expression -> . MINUS expression
+    (54) expression -> . LPAREN expression RPAREN
+    (55) expression -> . value
+    (56) value -> . NUMBER
+    (57) value -> . IDENTIFIER
+
+    MINUS           shift and go to state 25
+    LPAREN          shift and go to state 26
+    NUMBER          shift and go to state 28
+    IDENTIFIER      shift and go to state 29
+
+    expression                     shift and go to state 35
+    argumentos                     shift and go to state 78
+    value                          shift and go to state 27
+
+state 62
+
+    (40) mapLiteral -> MAP LBRACKET . DATATYPE RBRACKET DATATYPE LBRACE mapEntries RBRACE
+
+    DATATYPE        shift and go to state 79
+
+
+state 63
+
+    (33) switch -> SWITCH expression LBRACE caseBlocks . RBRACE
+
+    RBRACE          shift and go to state 80
+
+
+state 64
+
+    (34) caseBlocks -> caseBlock .
+    (35) caseBlocks -> caseBlock . caseBlocks
+    (34) caseBlocks -> . caseBlock
+    (35) caseBlocks -> . caseBlock caseBlocks
+    (36) caseBlock -> . CASE expression COLON sentencias
+    (37) caseBlock -> . DEFAULT COLON sentencias
+
+    RBRACE          reduce using rule 34 (caseBlocks -> caseBlock .)
+    CASE            shift and go to state 65
+    DEFAULT         shift and go to state 66
+
+    caseBlock                      shift and go to state 64
+    caseBlocks                     shift and go to state 81
+
+state 65
+
+    (36) caseBlock -> CASE . expression COLON sentencias
+    (22) expression -> . expression comparador expression
+    (23) expression -> . expression operadorLogico expression
+    (48) expression -> . expression PLUS expression
+    (49) expression -> . expression MINUS expression
+    (50) expression -> . expression TIMES expression
+    (51) expression -> . expression DIVIDE expression
+    (52) expression -> . expression MOD expression
+    (53) expression -> . MINUS expression
+    (54) expression -> . LPAREN expression RPAREN
+    (55) expression -> . value
+    (56) value -> . NUMBER
+    (57) value -> . IDENTIFIER
+
+    MINUS           shift and go to state 25
+    LPAREN          shift and go to state 26
+    NUMBER          shift and go to state 28
+    IDENTIFIER      shift and go to state 29
+
+    expression                     shift and go to state 82
+    value                          shift and go to state 27
+
+state 66
+
+    (37) caseBlock -> DEFAULT . COLON sentencias
+
+    COLON           shift and go to state 83
+
+
+state 67
+
+    (22) expression -> expression comparador expression .
+    (22) expression -> expression . comparador expression
+    (23) expression -> expression . operadorLogico expression
+    (48) expression -> expression . PLUS expression
+    (49) expression -> expression . MINUS expression
+    (50) expression -> expression . TIMES expression
+    (51) expression -> expression . DIVIDE expression
+    (52) expression -> expression . MOD expression
+    (26) comparador -> . EQ
+    (27) comparador -> . NEQ
+    (28) comparador -> . GT
+    (29) comparador -> . LT
+    (30) comparador -> . GE
+    (31) comparador -> . LE
+    (24) operadorLogico -> . AND
+    (25) operadorLogico -> . OR
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for TIMES resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+  ! shift/reduce conflict for MOD resolved as shift
+  ! shift/reduce conflict for EQ resolved as shift
+  ! shift/reduce conflict for NEQ resolved as shift
+  ! shift/reduce conflict for GT resolved as shift
+  ! shift/reduce conflict for LT resolved as shift
+  ! shift/reduce conflict for GE resolved as shift
+  ! shift/reduce conflict for LE resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+  ! shift/reduce conflict for OR resolved as shift
+    LBRACE          reduce using rule 22 (expression -> expression comparador expression .)
+    COMMA           reduce using rule 22 (expression -> expression comparador expression .)
+    RPAREN          reduce using rule 22 (expression -> expression comparador expression .)
+    IDENTIFIER      reduce using rule 22 (expression -> expression comparador expression .)
+    PACKAGE         reduce using rule 22 (expression -> expression comparador expression .)
+    IMPORT          reduce using rule 22 (expression -> expression comparador expression .)
+    SWITCH          reduce using rule 22 (expression -> expression comparador expression .)
+    VAR             reduce using rule 22 (expression -> expression comparador expression .)
+    $end            reduce using rule 22 (expression -> expression comparador expression .)
+    CASE            reduce using rule 22 (expression -> expression comparador expression .)
+    DEFAULT         reduce using rule 22 (expression -> expression comparador expression .)
+    RBRACE          reduce using rule 22 (expression -> expression comparador expression .)
+    COLON           reduce using rule 22 (expression -> expression comparador expression .)
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    MOD             shift and go to state 46
+    EQ              shift and go to state 47
+    NEQ             shift and go to state 48
+    GT              shift and go to state 49
+    LT              shift and go to state 50
+    GE              shift and go to state 51
+    LE              shift and go to state 52
+    AND             shift and go to state 53
+    OR              shift and go to state 54
+
+  ! PLUS            [ reduce using rule 22 (expression -> expression comparador expression .) ]
+  ! MINUS           [ reduce using rule 22 (expression -> expression comparador expression .) ]
+  ! TIMES           [ reduce using rule 22 (expression -> expression comparador expression .) ]
+  ! DIVIDE          [ reduce using rule 22 (expression -> expression comparador expression .) ]
+  ! MOD             [ reduce using rule 22 (expression -> expression comparador expression .) ]
+  ! EQ              [ reduce using rule 22 (expression -> expression comparador expression .) ]
+  ! NEQ             [ reduce using rule 22 (expression -> expression comparador expression .) ]
+  ! GT              [ reduce using rule 22 (expression -> expression comparador expression .) ]
+  ! LT              [ reduce using rule 22 (expression -> expression comparador expression .) ]
+  ! GE              [ reduce using rule 22 (expression -> expression comparador expression .) ]
+  ! LE              [ reduce using rule 22 (expression -> expression comparador expression .) ]
+  ! AND             [ reduce using rule 22 (expression -> expression comparador expression .) ]
+  ! OR              [ reduce using rule 22 (expression -> expression comparador expression .) ]
+
+    comparador                     shift and go to state 40
+    operadorLogico                 shift and go to state 41
+
+state 68
+
+    (23) expression -> expression operadorLogico expression .
+    (22) expression -> expression . comparador expression
+    (23) expression -> expression . operadorLogico expression
+    (48) expression -> expression . PLUS expression
+    (49) expression -> expression . MINUS expression
+    (50) expression -> expression . TIMES expression
+    (51) expression -> expression . DIVIDE expression
+    (52) expression -> expression . MOD expression
+    (26) comparador -> . EQ
+    (27) comparador -> . NEQ
+    (28) comparador -> . GT
+    (29) comparador -> . LT
+    (30) comparador -> . GE
+    (31) comparador -> . LE
+    (24) operadorLogico -> . AND
+    (25) operadorLogico -> . OR
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for TIMES resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+  ! shift/reduce conflict for MOD resolved as shift
+  ! shift/reduce conflict for EQ resolved as shift
+  ! shift/reduce conflict for NEQ resolved as shift
+  ! shift/reduce conflict for GT resolved as shift
+  ! shift/reduce conflict for LT resolved as shift
+  ! shift/reduce conflict for GE resolved as shift
+  ! shift/reduce conflict for LE resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+  ! shift/reduce conflict for OR resolved as shift
+    LBRACE          reduce using rule 23 (expression -> expression operadorLogico expression .)
+    COMMA           reduce using rule 23 (expression -> expression operadorLogico expression .)
+    RPAREN          reduce using rule 23 (expression -> expression operadorLogico expression .)
+    IDENTIFIER      reduce using rule 23 (expression -> expression operadorLogico expression .)
+    PACKAGE         reduce using rule 23 (expression -> expression operadorLogico expression .)
+    IMPORT          reduce using rule 23 (expression -> expression operadorLogico expression .)
+    SWITCH          reduce using rule 23 (expression -> expression operadorLogico expression .)
+    VAR             reduce using rule 23 (expression -> expression operadorLogico expression .)
+    $end            reduce using rule 23 (expression -> expression operadorLogico expression .)
+    CASE            reduce using rule 23 (expression -> expression operadorLogico expression .)
+    DEFAULT         reduce using rule 23 (expression -> expression operadorLogico expression .)
+    RBRACE          reduce using rule 23 (expression -> expression operadorLogico expression .)
+    COLON           reduce using rule 23 (expression -> expression operadorLogico expression .)
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    MOD             shift and go to state 46
+    EQ              shift and go to state 47
+    NEQ             shift and go to state 48
+    GT              shift and go to state 49
+    LT              shift and go to state 50
+    GE              shift and go to state 51
+    LE              shift and go to state 52
+    AND             shift and go to state 53
+    OR              shift and go to state 54
+
+  ! PLUS            [ reduce using rule 23 (expression -> expression operadorLogico expression .) ]
+  ! MINUS           [ reduce using rule 23 (expression -> expression operadorLogico expression .) ]
+  ! TIMES           [ reduce using rule 23 (expression -> expression operadorLogico expression .) ]
+  ! DIVIDE          [ reduce using rule 23 (expression -> expression operadorLogico expression .) ]
+  ! MOD             [ reduce using rule 23 (expression -> expression operadorLogico expression .) ]
+  ! EQ              [ reduce using rule 23 (expression -> expression operadorLogico expression .) ]
+  ! NEQ             [ reduce using rule 23 (expression -> expression operadorLogico expression .) ]
+  ! GT              [ reduce using rule 23 (expression -> expression operadorLogico expression .) ]
+  ! LT              [ reduce using rule 23 (expression -> expression operadorLogico expression .) ]
+  ! GE              [ reduce using rule 23 (expression -> expression operadorLogico expression .) ]
+  ! LE              [ reduce using rule 23 (expression -> expression operadorLogico expression .) ]
+  ! AND             [ reduce using rule 23 (expression -> expression operadorLogico expression .) ]
+  ! OR              [ reduce using rule 23 (expression -> expression operadorLogico expression .) ]
+
+    operadorLogico                 shift and go to state 41
+    comparador                     shift and go to state 40
+
+state 69
+
+    (48) expression -> expression PLUS expression .
+    (22) expression -> expression . comparador expression
+    (23) expression -> expression . operadorLogico expression
+    (48) expression -> expression . PLUS expression
+    (49) expression -> expression . MINUS expression
+    (50) expression -> expression . TIMES expression
+    (51) expression -> expression . DIVIDE expression
+    (52) expression -> expression . MOD expression
+    (26) comparador -> . EQ
+    (27) comparador -> . NEQ
+    (28) comparador -> . GT
+    (29) comparador -> . LT
+    (30) comparador -> . GE
+    (31) comparador -> . LE
+    (24) operadorLogico -> . AND
+    (25) operadorLogico -> . OR
+
+    LBRACE          reduce using rule 48 (expression -> expression PLUS expression .)
+    PLUS            reduce using rule 48 (expression -> expression PLUS expression .)
+    MINUS           reduce using rule 48 (expression -> expression PLUS expression .)
+    EQ              reduce using rule 48 (expression -> expression PLUS expression .)
+    NEQ             reduce using rule 48 (expression -> expression PLUS expression .)
+    GT              reduce using rule 48 (expression -> expression PLUS expression .)
+    LT              reduce using rule 48 (expression -> expression PLUS expression .)
+    GE              reduce using rule 48 (expression -> expression PLUS expression .)
+    LE              reduce using rule 48 (expression -> expression PLUS expression .)
+    AND             reduce using rule 48 (expression -> expression PLUS expression .)
+    OR              reduce using rule 48 (expression -> expression PLUS expression .)
+    COMMA           reduce using rule 48 (expression -> expression PLUS expression .)
+    RPAREN          reduce using rule 48 (expression -> expression PLUS expression .)
+    IDENTIFIER      reduce using rule 48 (expression -> expression PLUS expression .)
+    PACKAGE         reduce using rule 48 (expression -> expression PLUS expression .)
+    IMPORT          reduce using rule 48 (expression -> expression PLUS expression .)
+    SWITCH          reduce using rule 48 (expression -> expression PLUS expression .)
+    VAR             reduce using rule 48 (expression -> expression PLUS expression .)
+    $end            reduce using rule 48 (expression -> expression PLUS expression .)
+    CASE            reduce using rule 48 (expression -> expression PLUS expression .)
+    DEFAULT         reduce using rule 48 (expression -> expression PLUS expression .)
+    RBRACE          reduce using rule 48 (expression -> expression PLUS expression .)
+    COLON           reduce using rule 48 (expression -> expression PLUS expression .)
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    MOD             shift and go to state 46
+
+  ! TIMES           [ reduce using rule 48 (expression -> expression PLUS expression .) ]
+  ! DIVIDE          [ reduce using rule 48 (expression -> expression PLUS expression .) ]
+  ! MOD             [ reduce using rule 48 (expression -> expression PLUS expression .) ]
+  ! PLUS            [ shift and go to state 42 ]
+  ! MINUS           [ shift and go to state 43 ]
+  ! EQ              [ shift and go to state 47 ]
+  ! NEQ             [ shift and go to state 48 ]
+  ! GT              [ shift and go to state 49 ]
+  ! LT              [ shift and go to state 50 ]
+  ! GE              [ shift and go to state 51 ]
+  ! LE              [ shift and go to state 52 ]
+  ! AND             [ shift and go to state 53 ]
+  ! OR              [ shift and go to state 54 ]
+
+    comparador                     shift and go to state 40
+    operadorLogico                 shift and go to state 41
+
+state 70
+
+    (49) expression -> expression MINUS expression .
+    (22) expression -> expression . comparador expression
+    (23) expression -> expression . operadorLogico expression
+    (48) expression -> expression . PLUS expression
+    (49) expression -> expression . MINUS expression
+    (50) expression -> expression . TIMES expression
+    (51) expression -> expression . DIVIDE expression
+    (52) expression -> expression . MOD expression
+    (26) comparador -> . EQ
+    (27) comparador -> . NEQ
+    (28) comparador -> . GT
+    (29) comparador -> . LT
+    (30) comparador -> . GE
+    (31) comparador -> . LE
+    (24) operadorLogico -> . AND
+    (25) operadorLogico -> . OR
+
+    LBRACE          reduce using rule 49 (expression -> expression MINUS expression .)
+    PLUS            reduce using rule 49 (expression -> expression MINUS expression .)
+    MINUS           reduce using rule 49 (expression -> expression MINUS expression .)
+    EQ              reduce using rule 49 (expression -> expression MINUS expression .)
+    NEQ             reduce using rule 49 (expression -> expression MINUS expression .)
+    GT              reduce using rule 49 (expression -> expression MINUS expression .)
+    LT              reduce using rule 49 (expression -> expression MINUS expression .)
+    GE              reduce using rule 49 (expression -> expression MINUS expression .)
+    LE              reduce using rule 49 (expression -> expression MINUS expression .)
+    AND             reduce using rule 49 (expression -> expression MINUS expression .)
+    OR              reduce using rule 49 (expression -> expression MINUS expression .)
+    COMMA           reduce using rule 49 (expression -> expression MINUS expression .)
+    RPAREN          reduce using rule 49 (expression -> expression MINUS expression .)
+    IDENTIFIER      reduce using rule 49 (expression -> expression MINUS expression .)
+    PACKAGE         reduce using rule 49 (expression -> expression MINUS expression .)
+    IMPORT          reduce using rule 49 (expression -> expression MINUS expression .)
+    SWITCH          reduce using rule 49 (expression -> expression MINUS expression .)
+    VAR             reduce using rule 49 (expression -> expression MINUS expression .)
+    $end            reduce using rule 49 (expression -> expression MINUS expression .)
+    CASE            reduce using rule 49 (expression -> expression MINUS expression .)
+    DEFAULT         reduce using rule 49 (expression -> expression MINUS expression .)
+    RBRACE          reduce using rule 49 (expression -> expression MINUS expression .)
+    COLON           reduce using rule 49 (expression -> expression MINUS expression .)
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    MOD             shift and go to state 46
+
+  ! TIMES           [ reduce using rule 49 (expression -> expression MINUS expression .) ]
+  ! DIVIDE          [ reduce using rule 49 (expression -> expression MINUS expression .) ]
+  ! MOD             [ reduce using rule 49 (expression -> expression MINUS expression .) ]
+  ! PLUS            [ shift and go to state 42 ]
+  ! MINUS           [ shift and go to state 43 ]
+  ! EQ              [ shift and go to state 47 ]
+  ! NEQ             [ shift and go to state 48 ]
+  ! GT              [ shift and go to state 49 ]
+  ! LT              [ shift and go to state 50 ]
+  ! GE              [ shift and go to state 51 ]
+  ! LE              [ shift and go to state 52 ]
+  ! AND             [ shift and go to state 53 ]
+  ! OR              [ shift and go to state 54 ]
+
+    comparador                     shift and go to state 40
+    operadorLogico                 shift and go to state 41
+
+state 71
+
+    (50) expression -> expression TIMES expression .
+    (22) expression -> expression . comparador expression
+    (23) expression -> expression . operadorLogico expression
+    (48) expression -> expression . PLUS expression
+    (49) expression -> expression . MINUS expression
+    (50) expression -> expression . TIMES expression
+    (51) expression -> expression . DIVIDE expression
+    (52) expression -> expression . MOD expression
+    (26) comparador -> . EQ
+    (27) comparador -> . NEQ
+    (28) comparador -> . GT
+    (29) comparador -> . LT
+    (30) comparador -> . GE
+    (31) comparador -> . LE
+    (24) operadorLogico -> . AND
+    (25) operadorLogico -> . OR
+
+    LBRACE          reduce using rule 50 (expression -> expression TIMES expression .)
+    PLUS            reduce using rule 50 (expression -> expression TIMES expression .)
+    MINUS           reduce using rule 50 (expression -> expression TIMES expression .)
+    TIMES           reduce using rule 50 (expression -> expression TIMES expression .)
+    DIVIDE          reduce using rule 50 (expression -> expression TIMES expression .)
+    MOD             reduce using rule 50 (expression -> expression TIMES expression .)
+    EQ              reduce using rule 50 (expression -> expression TIMES expression .)
+    NEQ             reduce using rule 50 (expression -> expression TIMES expression .)
+    GT              reduce using rule 50 (expression -> expression TIMES expression .)
+    LT              reduce using rule 50 (expression -> expression TIMES expression .)
+    GE              reduce using rule 50 (expression -> expression TIMES expression .)
+    LE              reduce using rule 50 (expression -> expression TIMES expression .)
+    AND             reduce using rule 50 (expression -> expression TIMES expression .)
+    OR              reduce using rule 50 (expression -> expression TIMES expression .)
+    COMMA           reduce using rule 50 (expression -> expression TIMES expression .)
+    RPAREN          reduce using rule 50 (expression -> expression TIMES expression .)
+    IDENTIFIER      reduce using rule 50 (expression -> expression TIMES expression .)
+    PACKAGE         reduce using rule 50 (expression -> expression TIMES expression .)
+    IMPORT          reduce using rule 50 (expression -> expression TIMES expression .)
+    SWITCH          reduce using rule 50 (expression -> expression TIMES expression .)
+    VAR             reduce using rule 50 (expression -> expression TIMES expression .)
+    $end            reduce using rule 50 (expression -> expression TIMES expression .)
+    CASE            reduce using rule 50 (expression -> expression TIMES expression .)
+    DEFAULT         reduce using rule 50 (expression -> expression TIMES expression .)
+    RBRACE          reduce using rule 50 (expression -> expression TIMES expression .)
+    COLON           reduce using rule 50 (expression -> expression TIMES expression .)
+
+  ! PLUS            [ shift and go to state 42 ]
+  ! MINUS           [ shift and go to state 43 ]
+  ! TIMES           [ shift and go to state 44 ]
+  ! DIVIDE          [ shift and go to state 45 ]
+  ! MOD             [ shift and go to state 46 ]
+  ! EQ              [ shift and go to state 47 ]
+  ! NEQ             [ shift and go to state 48 ]
+  ! GT              [ shift and go to state 49 ]
+  ! LT              [ shift and go to state 50 ]
+  ! GE              [ shift and go to state 51 ]
+  ! LE              [ shift and go to state 52 ]
+  ! AND             [ shift and go to state 53 ]
+  ! OR              [ shift and go to state 54 ]
+
+    comparador                     shift and go to state 40
+    operadorLogico                 shift and go to state 41
+
+state 72
+
+    (51) expression -> expression DIVIDE expression .
+    (22) expression -> expression . comparador expression
+    (23) expression -> expression . operadorLogico expression
+    (48) expression -> expression . PLUS expression
+    (49) expression -> expression . MINUS expression
+    (50) expression -> expression . TIMES expression
+    (51) expression -> expression . DIVIDE expression
+    (52) expression -> expression . MOD expression
+    (26) comparador -> . EQ
+    (27) comparador -> . NEQ
+    (28) comparador -> . GT
+    (29) comparador -> . LT
+    (30) comparador -> . GE
+    (31) comparador -> . LE
+    (24) operadorLogico -> . AND
+    (25) operadorLogico -> . OR
+
+    LBRACE          reduce using rule 51 (expression -> expression DIVIDE expression .)
+    PLUS            reduce using rule 51 (expression -> expression DIVIDE expression .)
+    MINUS           reduce using rule 51 (expression -> expression DIVIDE expression .)
+    TIMES           reduce using rule 51 (expression -> expression DIVIDE expression .)
+    DIVIDE          reduce using rule 51 (expression -> expression DIVIDE expression .)
+    MOD             reduce using rule 51 (expression -> expression DIVIDE expression .)
+    EQ              reduce using rule 51 (expression -> expression DIVIDE expression .)
+    NEQ             reduce using rule 51 (expression -> expression DIVIDE expression .)
+    GT              reduce using rule 51 (expression -> expression DIVIDE expression .)
+    LT              reduce using rule 51 (expression -> expression DIVIDE expression .)
+    GE              reduce using rule 51 (expression -> expression DIVIDE expression .)
+    LE              reduce using rule 51 (expression -> expression DIVIDE expression .)
+    AND             reduce using rule 51 (expression -> expression DIVIDE expression .)
+    OR              reduce using rule 51 (expression -> expression DIVIDE expression .)
+    COMMA           reduce using rule 51 (expression -> expression DIVIDE expression .)
+    RPAREN          reduce using rule 51 (expression -> expression DIVIDE expression .)
+    IDENTIFIER      reduce using rule 51 (expression -> expression DIVIDE expression .)
+    PACKAGE         reduce using rule 51 (expression -> expression DIVIDE expression .)
+    IMPORT          reduce using rule 51 (expression -> expression DIVIDE expression .)
+    SWITCH          reduce using rule 51 (expression -> expression DIVIDE expression .)
+    VAR             reduce using rule 51 (expression -> expression DIVIDE expression .)
+    $end            reduce using rule 51 (expression -> expression DIVIDE expression .)
+    CASE            reduce using rule 51 (expression -> expression DIVIDE expression .)
+    DEFAULT         reduce using rule 51 (expression -> expression DIVIDE expression .)
+    RBRACE          reduce using rule 51 (expression -> expression DIVIDE expression .)
+    COLON           reduce using rule 51 (expression -> expression DIVIDE expression .)
+
+  ! PLUS            [ shift and go to state 42 ]
+  ! MINUS           [ shift and go to state 43 ]
+  ! TIMES           [ shift and go to state 44 ]
+  ! DIVIDE          [ shift and go to state 45 ]
+  ! MOD             [ shift and go to state 46 ]
+  ! EQ              [ shift and go to state 47 ]
+  ! NEQ             [ shift and go to state 48 ]
+  ! GT              [ shift and go to state 49 ]
+  ! LT              [ shift and go to state 50 ]
+  ! GE              [ shift and go to state 51 ]
+  ! LE              [ shift and go to state 52 ]
+  ! AND             [ shift and go to state 53 ]
+  ! OR              [ shift and go to state 54 ]
+
+    comparador                     shift and go to state 40
+    operadorLogico                 shift and go to state 41
+
+state 73
+
+    (52) expression -> expression MOD expression .
+    (22) expression -> expression . comparador expression
+    (23) expression -> expression . operadorLogico expression
+    (48) expression -> expression . PLUS expression
+    (49) expression -> expression . MINUS expression
+    (50) expression -> expression . TIMES expression
+    (51) expression -> expression . DIVIDE expression
+    (52) expression -> expression . MOD expression
+    (26) comparador -> . EQ
+    (27) comparador -> . NEQ
+    (28) comparador -> . GT
+    (29) comparador -> . LT
+    (30) comparador -> . GE
+    (31) comparador -> . LE
+    (24) operadorLogico -> . AND
+    (25) operadorLogico -> . OR
+
+    LBRACE          reduce using rule 52 (expression -> expression MOD expression .)
+    PLUS            reduce using rule 52 (expression -> expression MOD expression .)
+    MINUS           reduce using rule 52 (expression -> expression MOD expression .)
+    TIMES           reduce using rule 52 (expression -> expression MOD expression .)
+    DIVIDE          reduce using rule 52 (expression -> expression MOD expression .)
+    MOD             reduce using rule 52 (expression -> expression MOD expression .)
+    EQ              reduce using rule 52 (expression -> expression MOD expression .)
+    NEQ             reduce using rule 52 (expression -> expression MOD expression .)
+    GT              reduce using rule 52 (expression -> expression MOD expression .)
+    LT              reduce using rule 52 (expression -> expression MOD expression .)
+    GE              reduce using rule 52 (expression -> expression MOD expression .)
+    LE              reduce using rule 52 (expression -> expression MOD expression .)
+    AND             reduce using rule 52 (expression -> expression MOD expression .)
+    OR              reduce using rule 52 (expression -> expression MOD expression .)
+    COMMA           reduce using rule 52 (expression -> expression MOD expression .)
+    RPAREN          reduce using rule 52 (expression -> expression MOD expression .)
+    IDENTIFIER      reduce using rule 52 (expression -> expression MOD expression .)
+    PACKAGE         reduce using rule 52 (expression -> expression MOD expression .)
+    IMPORT          reduce using rule 52 (expression -> expression MOD expression .)
+    SWITCH          reduce using rule 52 (expression -> expression MOD expression .)
+    VAR             reduce using rule 52 (expression -> expression MOD expression .)
+    $end            reduce using rule 52 (expression -> expression MOD expression .)
+    CASE            reduce using rule 52 (expression -> expression MOD expression .)
+    DEFAULT         reduce using rule 52 (expression -> expression MOD expression .)
+    RBRACE          reduce using rule 52 (expression -> expression MOD expression .)
+    COLON           reduce using rule 52 (expression -> expression MOD expression .)
+
+  ! PLUS            [ shift and go to state 42 ]
+  ! MINUS           [ shift and go to state 43 ]
+  ! TIMES           [ shift and go to state 44 ]
+  ! DIVIDE          [ shift and go to state 45 ]
+  ! MOD             [ shift and go to state 46 ]
+  ! EQ              [ shift and go to state 47 ]
+  ! NEQ             [ shift and go to state 48 ]
+  ! GT              [ shift and go to state 49 ]
+  ! LT              [ shift and go to state 50 ]
+  ! GE              [ shift and go to state 51 ]
+  ! LE              [ shift and go to state 52 ]
+  ! AND             [ shift and go to state 53 ]
+  ! OR              [ shift and go to state 54 ]
+
+    comparador                     shift and go to state 40
+    operadorLogico                 shift and go to state 41
+
+state 74
+
+    (54) expression -> LPAREN expression RPAREN .
+
+    LBRACE          reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    PLUS            reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    MINUS           reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    TIMES           reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    DIVIDE          reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    MOD             reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    EQ              reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    NEQ             reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    GT              reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    LT              reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    GE              reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    LE              reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    AND             reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    OR              reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    COMMA           reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    IDENTIFIER      reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    PACKAGE         reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    IMPORT          reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    SWITCH          reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    VAR             reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    $end            reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    CASE            reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    DEFAULT         reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    RBRACE          reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+    COLON           reduce using rule 54 (expression -> LPAREN expression RPAREN .)
+
+
+state 75
+
+    (39) map -> VAR IDENTIFIER ASSIGN mapLiteral .
+
+    IDENTIFIER      reduce using rule 39 (map -> VAR IDENTIFIER ASSIGN mapLiteral .)
+    PACKAGE         reduce using rule 39 (map -> VAR IDENTIFIER ASSIGN mapLiteral .)
+    IMPORT          reduce using rule 39 (map -> VAR IDENTIFIER ASSIGN mapLiteral .)
+    SWITCH          reduce using rule 39 (map -> VAR IDENTIFIER ASSIGN mapLiteral .)
+    VAR             reduce using rule 39 (map -> VAR IDENTIFIER ASSIGN mapLiteral .)
+    $end            reduce using rule 39 (map -> VAR IDENTIFIER ASSIGN mapLiteral .)
+    CASE            reduce using rule 39 (map -> VAR IDENTIFIER ASSIGN mapLiteral .)
+    DEFAULT         reduce using rule 39 (map -> VAR IDENTIFIER ASSIGN mapLiteral .)
+    RBRACE          reduce using rule 39 (map -> VAR IDENTIFIER ASSIGN mapLiteral .)
+
+
+state 76
+
+    (15) assigmentSimple -> VAR IDENTIFIER DATATYPE ASSIGN . expression
+    (16) assignmentFuncion -> VAR IDENTIFIER DATATYPE ASSIGN . llamarFuncion
+    (22) expression -> . expression comparador expression
+    (23) expression -> . expression operadorLogico expression
+    (48) expression -> . expression PLUS expression
+    (49) expression -> . expression MINUS expression
+    (50) expression -> . expression TIMES expression
+    (51) expression -> . expression DIVIDE expression
+    (52) expression -> . expression MOD expression
+    (53) expression -> . MINUS expression
+    (54) expression -> . LPAREN expression RPAREN
+    (55) expression -> . value
+    (17) llamarFuncion -> . IDENTIFIER LPAREN argumentos_opt RPAREN
+    (56) value -> . NUMBER
+    (57) value -> . IDENTIFIER
+
+    MINUS           shift and go to state 25
+    LPAREN          shift and go to state 26
+    IDENTIFIER      shift and go to state 84
+    NUMBER          shift and go to state 28
+
+    expression                     shift and go to state 85
+    llamarFuncion                  shift and go to state 86
+    value                          shift and go to state 27
+
+state 77
+
+    (10) input -> IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND . IDENTIFIER RPAREN
+
+    IDENTIFIER      shift and go to state 87
+
+
+state 78
+
+    (21) argumentos -> expression COMMA argumentos .
+
+    RPAREN          reduce using rule 21 (argumentos -> expression COMMA argumentos .)
+
+
+state 79
+
+    (40) mapLiteral -> MAP LBRACKET DATATYPE . RBRACKET DATATYPE LBRACE mapEntries RBRACE
+
+    RBRACKET        shift and go to state 88
+
+
+state 80
+
+    (33) switch -> SWITCH expression LBRACE caseBlocks RBRACE .
+
+    IDENTIFIER      reduce using rule 33 (switch -> SWITCH expression LBRACE caseBlocks RBRACE .)
+    PACKAGE         reduce using rule 33 (switch -> SWITCH expression LBRACE caseBlocks RBRACE .)
+    IMPORT          reduce using rule 33 (switch -> SWITCH expression LBRACE caseBlocks RBRACE .)
+    SWITCH          reduce using rule 33 (switch -> SWITCH expression LBRACE caseBlocks RBRACE .)
+    VAR             reduce using rule 33 (switch -> SWITCH expression LBRACE caseBlocks RBRACE .)
+    $end            reduce using rule 33 (switch -> SWITCH expression LBRACE caseBlocks RBRACE .)
+    CASE            reduce using rule 33 (switch -> SWITCH expression LBRACE caseBlocks RBRACE .)
+    DEFAULT         reduce using rule 33 (switch -> SWITCH expression LBRACE caseBlocks RBRACE .)
+    RBRACE          reduce using rule 33 (switch -> SWITCH expression LBRACE caseBlocks RBRACE .)
+
+
+state 81
+
+    (35) caseBlocks -> caseBlock caseBlocks .
+
+    RBRACE          reduce using rule 35 (caseBlocks -> caseBlock caseBlocks .)
+
+
+state 82
+
+    (36) caseBlock -> CASE expression . COLON sentencias
+    (22) expression -> expression . comparador expression
+    (23) expression -> expression . operadorLogico expression
+    (48) expression -> expression . PLUS expression
+    (49) expression -> expression . MINUS expression
+    (50) expression -> expression . TIMES expression
+    (51) expression -> expression . DIVIDE expression
+    (52) expression -> expression . MOD expression
+    (26) comparador -> . EQ
+    (27) comparador -> . NEQ
+    (28) comparador -> . GT
+    (29) comparador -> . LT
+    (30) comparador -> . GE
+    (31) comparador -> . LE
+    (24) operadorLogico -> . AND
+    (25) operadorLogico -> . OR
+
+    COLON           shift and go to state 89
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    MOD             shift and go to state 46
+    EQ              shift and go to state 47
+    NEQ             shift and go to state 48
+    GT              shift and go to state 49
+    LT              shift and go to state 50
+    GE              shift and go to state 51
+    LE              shift and go to state 52
+    AND             shift and go to state 53
+    OR              shift and go to state 54
+
+    comparador                     shift and go to state 40
+    operadorLogico                 shift and go to state 41
+
+state 83
+
+    (37) caseBlock -> DEFAULT COLON . sentencias
+    (1) sentencias -> . sentencia
+    (2) sentencias -> . sentencia sentencias
+    (3) sentencia -> . assignment
+    (4) sentencia -> . input
+    (5) sentencia -> . llamarFuncion
+    (6) sentencia -> . package
+    (7) sentencia -> . import
+    (8) sentencia -> . switch
+    (9) sentencia -> . map
+    (11) assignment -> . assigmentSimple
+    (12) assignment -> . assignmentFuncion
+    (13) assignment -> . shortAssignment
+    (10) input -> . IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN
+    (17) llamarFuncion -> . IDENTIFIER LPAREN argumentos_opt RPAREN
+    (46) package -> . PACKAGE MAIN
+    (47) import -> . IMPORT STRING
+    (33) switch -> . SWITCH expression LBRACE caseBlocks RBRACE
+    (38) map -> . IDENTIFIER DECLARE_ASSIGN mapLiteral
+    (39) map -> . VAR IDENTIFIER ASSIGN mapLiteral
+    (15) assigmentSimple -> . VAR IDENTIFIER DATATYPE ASSIGN expression
+    (16) assignmentFuncion -> . VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion
+    (14) shortAssignment -> . IDENTIFIER DECLARE_ASSIGN expression
+
+    IDENTIFIER      shift and go to state 13
+    PACKAGE         shift and go to state 14
+    IMPORT          shift and go to state 15
+    SWITCH          shift and go to state 16
+    VAR             shift and go to state 17
+
+    sentencias                     shift and go to state 90
+    sentencia                      shift and go to state 2
+    assignment                     shift and go to state 3
+    input                          shift and go to state 4
+    llamarFuncion                  shift and go to state 5
+    package                        shift and go to state 6
+    import                         shift and go to state 7
+    switch                         shift and go to state 8
+    map                            shift and go to state 9
+    assigmentSimple                shift and go to state 10
+    assignmentFuncion              shift and go to state 11
+    shortAssignment                shift and go to state 12
+
+state 84
+
+    (17) llamarFuncion -> IDENTIFIER . LPAREN argumentos_opt RPAREN
+    (57) value -> IDENTIFIER .
+
+    LPAREN          shift and go to state 20
+    PLUS            reduce using rule 57 (value -> IDENTIFIER .)
+    MINUS           reduce using rule 57 (value -> IDENTIFIER .)
+    TIMES           reduce using rule 57 (value -> IDENTIFIER .)
+    DIVIDE          reduce using rule 57 (value -> IDENTIFIER .)
+    MOD             reduce using rule 57 (value -> IDENTIFIER .)
+    EQ              reduce using rule 57 (value -> IDENTIFIER .)
+    NEQ             reduce using rule 57 (value -> IDENTIFIER .)
+    GT              reduce using rule 57 (value -> IDENTIFIER .)
+    LT              reduce using rule 57 (value -> IDENTIFIER .)
+    GE              reduce using rule 57 (value -> IDENTIFIER .)
+    LE              reduce using rule 57 (value -> IDENTIFIER .)
+    AND             reduce using rule 57 (value -> IDENTIFIER .)
+    OR              reduce using rule 57 (value -> IDENTIFIER .)
+    IDENTIFIER      reduce using rule 57 (value -> IDENTIFIER .)
+    PACKAGE         reduce using rule 57 (value -> IDENTIFIER .)
+    IMPORT          reduce using rule 57 (value -> IDENTIFIER .)
+    SWITCH          reduce using rule 57 (value -> IDENTIFIER .)
+    VAR             reduce using rule 57 (value -> IDENTIFIER .)
+    $end            reduce using rule 57 (value -> IDENTIFIER .)
+    CASE            reduce using rule 57 (value -> IDENTIFIER .)
+    DEFAULT         reduce using rule 57 (value -> IDENTIFIER .)
+    RBRACE          reduce using rule 57 (value -> IDENTIFIER .)
+
+
+state 85
+
+    (15) assigmentSimple -> VAR IDENTIFIER DATATYPE ASSIGN expression .
+    (22) expression -> expression . comparador expression
+    (23) expression -> expression . operadorLogico expression
+    (48) expression -> expression . PLUS expression
+    (49) expression -> expression . MINUS expression
+    (50) expression -> expression . TIMES expression
+    (51) expression -> expression . DIVIDE expression
+    (52) expression -> expression . MOD expression
+    (26) comparador -> . EQ
+    (27) comparador -> . NEQ
+    (28) comparador -> . GT
+    (29) comparador -> . LT
+    (30) comparador -> . GE
+    (31) comparador -> . LE
+    (24) operadorLogico -> . AND
+    (25) operadorLogico -> . OR
+
+    IDENTIFIER      reduce using rule 15 (assigmentSimple -> VAR IDENTIFIER DATATYPE ASSIGN expression .)
+    PACKAGE         reduce using rule 15 (assigmentSimple -> VAR IDENTIFIER DATATYPE ASSIGN expression .)
+    IMPORT          reduce using rule 15 (assigmentSimple -> VAR IDENTIFIER DATATYPE ASSIGN expression .)
+    SWITCH          reduce using rule 15 (assigmentSimple -> VAR IDENTIFIER DATATYPE ASSIGN expression .)
+    VAR             reduce using rule 15 (assigmentSimple -> VAR IDENTIFIER DATATYPE ASSIGN expression .)
+    $end            reduce using rule 15 (assigmentSimple -> VAR IDENTIFIER DATATYPE ASSIGN expression .)
+    CASE            reduce using rule 15 (assigmentSimple -> VAR IDENTIFIER DATATYPE ASSIGN expression .)
+    DEFAULT         reduce using rule 15 (assigmentSimple -> VAR IDENTIFIER DATATYPE ASSIGN expression .)
+    RBRACE          reduce using rule 15 (assigmentSimple -> VAR IDENTIFIER DATATYPE ASSIGN expression .)
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    MOD             shift and go to state 46
+    EQ              shift and go to state 47
+    NEQ             shift and go to state 48
+    GT              shift and go to state 49
+    LT              shift and go to state 50
+    GE              shift and go to state 51
+    LE              shift and go to state 52
+    AND             shift and go to state 53
+    OR              shift and go to state 54
+
+    comparador                     shift and go to state 40
+    operadorLogico                 shift and go to state 41
+
+state 86
+
+    (16) assignmentFuncion -> VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion .
+
+    IDENTIFIER      reduce using rule 16 (assignmentFuncion -> VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion .)
+    PACKAGE         reduce using rule 16 (assignmentFuncion -> VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion .)
+    IMPORT          reduce using rule 16 (assignmentFuncion -> VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion .)
+    SWITCH          reduce using rule 16 (assignmentFuncion -> VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion .)
+    VAR             reduce using rule 16 (assignmentFuncion -> VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion .)
+    $end            reduce using rule 16 (assignmentFuncion -> VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion .)
+    CASE            reduce using rule 16 (assignmentFuncion -> VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion .)
+    DEFAULT         reduce using rule 16 (assignmentFuncion -> VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion .)
+    RBRACE          reduce using rule 16 (assignmentFuncion -> VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion .)
+
+
+state 87
+
+    (10) input -> IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER . RPAREN
+
+    RPAREN          shift and go to state 91
+
+
+state 88
+
+    (40) mapLiteral -> MAP LBRACKET DATATYPE RBRACKET . DATATYPE LBRACE mapEntries RBRACE
+
+    DATATYPE        shift and go to state 92
+
+
+state 89
+
+    (36) caseBlock -> CASE expression COLON . sentencias
+    (1) sentencias -> . sentencia
+    (2) sentencias -> . sentencia sentencias
+    (3) sentencia -> . assignment
+    (4) sentencia -> . input
+    (5) sentencia -> . llamarFuncion
+    (6) sentencia -> . package
+    (7) sentencia -> . import
+    (8) sentencia -> . switch
+    (9) sentencia -> . map
+    (11) assignment -> . assigmentSimple
+    (12) assignment -> . assignmentFuncion
+    (13) assignment -> . shortAssignment
+    (10) input -> . IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN
+    (17) llamarFuncion -> . IDENTIFIER LPAREN argumentos_opt RPAREN
+    (46) package -> . PACKAGE MAIN
+    (47) import -> . IMPORT STRING
+    (33) switch -> . SWITCH expression LBRACE caseBlocks RBRACE
+    (38) map -> . IDENTIFIER DECLARE_ASSIGN mapLiteral
+    (39) map -> . VAR IDENTIFIER ASSIGN mapLiteral
+    (15) assigmentSimple -> . VAR IDENTIFIER DATATYPE ASSIGN expression
+    (16) assignmentFuncion -> . VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion
+    (14) shortAssignment -> . IDENTIFIER DECLARE_ASSIGN expression
+
+    IDENTIFIER      shift and go to state 13
+    PACKAGE         shift and go to state 14
+    IMPORT          shift and go to state 15
+    SWITCH          shift and go to state 16
+    VAR             shift and go to state 17
+
+    sentencias                     shift and go to state 93
+    sentencia                      shift and go to state 2
+    assignment                     shift and go to state 3
+    input                          shift and go to state 4
+    llamarFuncion                  shift and go to state 5
+    package                        shift and go to state 6
+    import                         shift and go to state 7
+    switch                         shift and go to state 8
+    map                            shift and go to state 9
+    assigmentSimple                shift and go to state 10
+    assignmentFuncion              shift and go to state 11
+    shortAssignment                shift and go to state 12
+
+state 90
+
+    (37) caseBlock -> DEFAULT COLON sentencias .
+
+    CASE            reduce using rule 37 (caseBlock -> DEFAULT COLON sentencias .)
+    DEFAULT         reduce using rule 37 (caseBlock -> DEFAULT COLON sentencias .)
+    RBRACE          reduce using rule 37 (caseBlock -> DEFAULT COLON sentencias .)
+
+
+state 91
+
+    (10) input -> IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN .
+
+    IDENTIFIER      reduce using rule 10 (input -> IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN .)
+    PACKAGE         reduce using rule 10 (input -> IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN .)
+    IMPORT          reduce using rule 10 (input -> IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN .)
+    SWITCH          reduce using rule 10 (input -> IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN .)
+    VAR             reduce using rule 10 (input -> IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN .)
+    $end            reduce using rule 10 (input -> IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN .)
+    CASE            reduce using rule 10 (input -> IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN .)
+    DEFAULT         reduce using rule 10 (input -> IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN .)
+    RBRACE          reduce using rule 10 (input -> IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN .)
+
+
+state 92
+
+    (40) mapLiteral -> MAP LBRACKET DATATYPE RBRACKET DATATYPE . LBRACE mapEntries RBRACE
+
+    LBRACE          shift and go to state 94
+
+
+state 93
+
+    (36) caseBlock -> CASE expression COLON sentencias .
+
+    CASE            reduce using rule 36 (caseBlock -> CASE expression COLON sentencias .)
+    DEFAULT         reduce using rule 36 (caseBlock -> CASE expression COLON sentencias .)
+    RBRACE          reduce using rule 36 (caseBlock -> CASE expression COLON sentencias .)
+
+
+state 94
+
+    (40) mapLiteral -> MAP LBRACKET DATATYPE RBRACKET DATATYPE LBRACE . mapEntries RBRACE
+    (41) mapEntries -> . mapEntry
+    (42) mapEntries -> . mapEntry COMMA mapEntries
+    (43) mapEntry -> . value_key COLON value_key
+    (44) value_key -> . expression
+    (45) value_key -> . STRING
+    (22) expression -> . expression comparador expression
+    (23) expression -> . expression operadorLogico expression
+    (48) expression -> . expression PLUS expression
+    (49) expression -> . expression MINUS expression
+    (50) expression -> . expression TIMES expression
+    (51) expression -> . expression DIVIDE expression
+    (52) expression -> . expression MOD expression
+    (53) expression -> . MINUS expression
+    (54) expression -> . LPAREN expression RPAREN
+    (55) expression -> . value
+    (56) value -> . NUMBER
+    (57) value -> . IDENTIFIER
+
+    STRING          shift and go to state 99
+    MINUS           shift and go to state 25
+    LPAREN          shift and go to state 26
+    NUMBER          shift and go to state 28
+    IDENTIFIER      shift and go to state 29
+
+    mapEntries                     shift and go to state 95
+    mapEntry                       shift and go to state 96
+    value_key                      shift and go to state 97
+    expression                     shift and go to state 98
+    value                          shift and go to state 27
+
+state 95
+
+    (40) mapLiteral -> MAP LBRACKET DATATYPE RBRACKET DATATYPE LBRACE mapEntries . RBRACE
+
+    RBRACE          shift and go to state 100
+
+
+state 96
+
+    (41) mapEntries -> mapEntry .
+    (42) mapEntries -> mapEntry . COMMA mapEntries
+
+    RBRACE          reduce using rule 41 (mapEntries -> mapEntry .)
+    COMMA           shift and go to state 101
+
+
+state 97
+
+    (43) mapEntry -> value_key . COLON value_key
+
+    COLON           shift and go to state 102
+
+
+state 98
+
+    (44) value_key -> expression .
+    (22) expression -> expression . comparador expression
+    (23) expression -> expression . operadorLogico expression
+    (48) expression -> expression . PLUS expression
+    (49) expression -> expression . MINUS expression
+    (50) expression -> expression . TIMES expression
+    (51) expression -> expression . DIVIDE expression
+    (52) expression -> expression . MOD expression
+    (26) comparador -> . EQ
+    (27) comparador -> . NEQ
+    (28) comparador -> . GT
+    (29) comparador -> . LT
+    (30) comparador -> . GE
+    (31) comparador -> . LE
+    (24) operadorLogico -> . AND
+    (25) operadorLogico -> . OR
+
+    COLON           reduce using rule 44 (value_key -> expression .)
+    COMMA           reduce using rule 44 (value_key -> expression .)
+    RBRACE          reduce using rule 44 (value_key -> expression .)
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    TIMES           shift and go to state 44
+    DIVIDE          shift and go to state 45
+    MOD             shift and go to state 46
+    EQ              shift and go to state 47
+    NEQ             shift and go to state 48
+    GT              shift and go to state 49
+    LT              shift and go to state 50
+    GE              shift and go to state 51
+    LE              shift and go to state 52
+    AND             shift and go to state 53
+    OR              shift and go to state 54
+
+    comparador                     shift and go to state 40
+    operadorLogico                 shift and go to state 41
+
+state 99
+
+    (45) value_key -> STRING .
+
+    COLON           reduce using rule 45 (value_key -> STRING .)
+    COMMA           reduce using rule 45 (value_key -> STRING .)
+    RBRACE          reduce using rule 45 (value_key -> STRING .)
+
+
+state 100
+
+    (40) mapLiteral -> MAP LBRACKET DATATYPE RBRACKET DATATYPE LBRACE mapEntries RBRACE .
+
+    IDENTIFIER      reduce using rule 40 (mapLiteral -> MAP LBRACKET DATATYPE RBRACKET DATATYPE LBRACE mapEntries RBRACE .)
+    PACKAGE         reduce using rule 40 (mapLiteral -> MAP LBRACKET DATATYPE RBRACKET DATATYPE LBRACE mapEntries RBRACE .)
+    IMPORT          reduce using rule 40 (mapLiteral -> MAP LBRACKET DATATYPE RBRACKET DATATYPE LBRACE mapEntries RBRACE .)
+    SWITCH          reduce using rule 40 (mapLiteral -> MAP LBRACKET DATATYPE RBRACKET DATATYPE LBRACE mapEntries RBRACE .)
+    VAR             reduce using rule 40 (mapLiteral -> MAP LBRACKET DATATYPE RBRACKET DATATYPE LBRACE mapEntries RBRACE .)
+    $end            reduce using rule 40 (mapLiteral -> MAP LBRACKET DATATYPE RBRACKET DATATYPE LBRACE mapEntries RBRACE .)
+    CASE            reduce using rule 40 (mapLiteral -> MAP LBRACKET DATATYPE RBRACKET DATATYPE LBRACE mapEntries RBRACE .)
+    DEFAULT         reduce using rule 40 (mapLiteral -> MAP LBRACKET DATATYPE RBRACKET DATATYPE LBRACE mapEntries RBRACE .)
+    RBRACE          reduce using rule 40 (mapLiteral -> MAP LBRACKET DATATYPE RBRACKET DATATYPE LBRACE mapEntries RBRACE .)
+
+
+state 101
+
+    (42) mapEntries -> mapEntry COMMA . mapEntries
+    (41) mapEntries -> . mapEntry
+    (42) mapEntries -> . mapEntry COMMA mapEntries
+    (43) mapEntry -> . value_key COLON value_key
+    (44) value_key -> . expression
+    (45) value_key -> . STRING
+    (22) expression -> . expression comparador expression
+    (23) expression -> . expression operadorLogico expression
+    (48) expression -> . expression PLUS expression
+    (49) expression -> . expression MINUS expression
+    (50) expression -> . expression TIMES expression
+    (51) expression -> . expression DIVIDE expression
+    (52) expression -> . expression MOD expression
+    (53) expression -> . MINUS expression
+    (54) expression -> . LPAREN expression RPAREN
+    (55) expression -> . value
+    (56) value -> . NUMBER
+    (57) value -> . IDENTIFIER
+
+    STRING          shift and go to state 99
+    MINUS           shift and go to state 25
+    LPAREN          shift and go to state 26
+    NUMBER          shift and go to state 28
+    IDENTIFIER      shift and go to state 29
+
+    mapEntry                       shift and go to state 96
+    mapEntries                     shift and go to state 103
+    value_key                      shift and go to state 97
+    expression                     shift and go to state 98
+    value                          shift and go to state 27
+
+state 102
+
+    (43) mapEntry -> value_key COLON . value_key
+    (44) value_key -> . expression
+    (45) value_key -> . STRING
+    (22) expression -> . expression comparador expression
+    (23) expression -> . expression operadorLogico expression
+    (48) expression -> . expression PLUS expression
+    (49) expression -> . expression MINUS expression
+    (50) expression -> . expression TIMES expression
+    (51) expression -> . expression DIVIDE expression
+    (52) expression -> . expression MOD expression
+    (53) expression -> . MINUS expression
+    (54) expression -> . LPAREN expression RPAREN
+    (55) expression -> . value
+    (56) value -> . NUMBER
+    (57) value -> . IDENTIFIER
+
+    STRING          shift and go to state 99
+    MINUS           shift and go to state 25
+    LPAREN          shift and go to state 26
+    NUMBER          shift and go to state 28
+    IDENTIFIER      shift and go to state 29
+
+    value_key                      shift and go to state 104
+    expression                     shift and go to state 98
+    value                          shift and go to state 27
+
+state 103
+
+    (42) mapEntries -> mapEntry COMMA mapEntries .
+
+    RBRACE          reduce using rule 42 (mapEntries -> mapEntry COMMA mapEntries .)
+
+
+state 104
+
+    (43) mapEntry -> value_key COLON value_key .
+
+    COMMA           reduce using rule 43 (mapEntry -> value_key COLON value_key .)
+    RBRACE          reduce using rule 43 (mapEntry -> value_key COLON value_key .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for PLUS in state 67 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 67 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 67 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 67 resolved as shift
+WARNING: shift/reduce conflict for MOD in state 67 resolved as shift
+WARNING: shift/reduce conflict for EQ in state 67 resolved as shift
+WARNING: shift/reduce conflict for NEQ in state 67 resolved as shift
+WARNING: shift/reduce conflict for GT in state 67 resolved as shift
+WARNING: shift/reduce conflict for LT in state 67 resolved as shift
+WARNING: shift/reduce conflict for GE in state 67 resolved as shift
+WARNING: shift/reduce conflict for LE in state 67 resolved as shift
+WARNING: shift/reduce conflict for AND in state 67 resolved as shift
+WARNING: shift/reduce conflict for OR in state 67 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 68 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 68 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 68 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 68 resolved as shift
+WARNING: shift/reduce conflict for MOD in state 68 resolved as shift
+WARNING: shift/reduce conflict for EQ in state 68 resolved as shift
+WARNING: shift/reduce conflict for NEQ in state 68 resolved as shift
+WARNING: shift/reduce conflict for GT in state 68 resolved as shift
+WARNING: shift/reduce conflict for LT in state 68 resolved as shift
+WARNING: shift/reduce conflict for GE in state 68 resolved as shift
+WARNING: shift/reduce conflict for LE in state 68 resolved as shift
+WARNING: shift/reduce conflict for AND in state 68 resolved as shift
+WARNING: shift/reduce conflict for OR in state 68 resolved as shift

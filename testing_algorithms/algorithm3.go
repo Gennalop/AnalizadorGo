@@ -1,28 +1,9 @@
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
-type Persona struct {
-	nombre string
-	edad   int
-}
 
-func saludar(p Persona) string {
-	if p.edad >= 18 {
-		return "Hola " + p.nombre + ", eres mayor de edad."
-	}
-	return "Hola " + p.nombre + ", eres menor de edad."
-}
 
-func main() {
-	// Declaración de variables
-	var mensaje string
-	var contador int = 0
-	nombre := ""
-	var notas [3]int
-	calificaciones := []float64{8.5, 9.2, 7.0}
 	puntajes := map[string]int{"Ana": 90, "Luis": 85}
 
 	// Entrada de datos
