@@ -7,6 +7,8 @@ def p_program(p):
     'program : declaration_list'
     p[0] = ('program', p[1])
 
+##Cambiar esta parte
+
 def p_declaration_list_single(p):
     'declaration_list : declaration'
     p[0] = [p[1]]
@@ -17,7 +19,9 @@ def p_declaration_list_multiple(p):
 
 def p_declaration(p):
     '''declaration : struct_definition
-                   | print_statement'''
+                   | print_statement
+                   | for_statement
+                   '''
     p[0] = p[1]
 
 #)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
@@ -32,7 +36,9 @@ def p_sentencia(p):
     '''sentencia : assignment
                  | input
                  | llamarFuncion
-                 | print_statement'''
+                 | print_statement
+                 | struct_definition
+                 | for_statement'''
 
 def p_input(p):
     '''input : IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN'''
@@ -52,15 +58,31 @@ def p_assingment_funcion(p):
     '''assignmentFuncion : VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion'''
 
 def p_llamar_funcion(p):
-    '''llamarFuncion : IDENTIFIER LPAREN argumentos_opt RPAREN'''
+    '''llamarFuncion : IDENTIFIER LPAREN argument_list_opt RPAREN'''
 
-def p_argumentos_opt(p):
-    '''argumentos_opt : argumentos
-                      | empty'''
+#def p_argumentos_opt(p):
+#    '''argumentos_opt : argumentos
+#                      | empty'''
 
-def p_argumentos(p):
-    '''argumentos : expression
-                  | expression COMMA argumentos'''
+#def p_argumentos(p):
+#    '''argumentos : expression
+#                  | argumentos COMMA expression'''
+
+##argument_list   
+def p_argument_list_single(p):
+    'argument_list : expression'
+    p[0] = [p[1]]
+def p_argument_list_multiple(p):
+    'argument_list : argument_list COMMA expression'
+    p[0] = p[1] + [p[3]]
+
+##argument_list_opt
+def p_argument_list_opt_some(p):
+    'argument_list_opt : argument_list'
+    p[0] = p[1]
+def p_argument_list_opt_empty(p):
+    'argument_list_opt : '
+    p[0] = []
 
 def p_condicion(p):
     '''condicion : expression comparador expression'''
@@ -93,7 +115,7 @@ def p_empty(p):
 
 ##print_statement
 def p_print_statement(p):
-    'print_statement : IDENTIFIER DOT IDENTIFIER LPAREN argumentos_opt RPAREN'
+    'print_statement : IDENTIFIER DOT IDENTIFIER LPAREN argument_list_opt RPAREN'
     if p[1] == 'fmt' and p[3] in ('Print', 'Println', 'Printf'):
         p[0] = ('print', p[3], p[5])
     else:
@@ -153,12 +175,35 @@ precedence = (
     ('right', 'UMINUS'),                
 )
 
+def p_expression_number(p):
+    'expression : NUMBER'
+    p[0] = ('number', p[1])
+def p_expression_identifier(p):
+    'expression : IDENTIFIER'
+    p[0] = ('ident', p[1])
+def p_expression_rune(p):
+    'expression : RUNE'
+    p[0] = ('rune', p[1])
+def p_expression_string(p):
+    'expression : STRING'
+    p[0] = ('string', p[1])
+def p_expression_raw_string(p):
+    'expression : RAW_STRING'
+    p[0] = ('raw_string', p[1])
+def p_expression_boolean(p):
+    '''expression : TRUE
+                  | FALSE'''
+    p[0] = ('bool', True if p[1] == 'true' else False)
+def p_expression_nil(p):
+    'expression : NIL'
+    p[0] = ('nil', None)
+
 def p_expression_binary(p):
-    '''expression_binary : expression PLUS expression
-                         | expression MINUS expression
-                         | expression TIMES expression
-                         | expression DIVIDE expression
-                         | expression MOD expression'''
+    '''expression : expression PLUS expression
+                 | expression MINUS expression
+                 | expression TIMES expression
+                 | expression DIVIDE expression
+                 | expression MOD expression'''
     p[0] = ('binop', p[2], p[1], p[3])
 
 def p_expression_unary_minus(p):
@@ -169,9 +214,9 @@ def p_expression_group(p):
     'expression : LPAREN expression RPAREN'
     p[0] = p[2]
 
-def p_expression_value(p):
-    'expression : value'
-    p[0] = p[1]
+#def p_expression_value(p):
+#    'expression : value'
+#    p[0] = p[1]
 
 #def p_value_number(p):
 #    'value : NUMBER'
@@ -180,29 +225,6 @@ def p_expression_value(p):
 #def p_value_identifier(p):
 #    'value : IDENTIFIER'
 #    p[0] = ('var', p[1])
-
-def p_value_identifier(p):
-    'value : IDENTIFIER'
-    p[0] = ('ident', p[1])
-def p_value_number(p):
-    'value : NUMBER'
-    p[0] = ('number', p[1])
-def p_value_rune(p):
-    'value : RUNE'
-    p[0] = ('rune', p[1])
-def p_value_string(p):
-    'value : STRING'
-    p[0] = ('string', p[1])
-def p_value_raw_string(p):
-    'value : RAW_STRING'
-    p[0] = ('raw_string', p[1])
-def p_value_boolean(p):
-    '''value : TRUE
-             | FALSE'''
-    p[0] = ('bool', True if p[1] == 'true' else False)
-def p_value_nil(p):
-    'value : NIL'
-    p[0] = ('nil', None)
 
 # Error rule for syntax errors
 def p_error(p):
