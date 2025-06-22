@@ -1,10 +1,109 @@
 import ply.yacc as yacc
-from lexer import tokens
+from lexer import tokens, lexer
 from logger import create_log_file 
 
 #Christopher Villon
+def p_sentencias(p):
+    '''sentencias : sentencia
+                  | sentencia sentencias'''
+
+def p_sentencia(p):
+    '''sentencia : assignment
+                 | input
+                 | llamarFuncion
+                 | package
+                 | import
+                 | switch
+                 | map'''
+
+def p_input(p):
+    '''input : IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN'''
+
+def p_assignment(p):
+    '''assignment : assigmentSimple
+                  | assignmentFuncion
+                  | shortAssignment'''
+
+def p_short_assignment(p):
+    '''shortAssignment : IDENTIFIER DECLARE_ASSIGN expression'''
+
+def p_assignment_simple(p):
+    '''assigmentSimple : VAR IDENTIFIER DATATYPE ASSIGN expression'''
+
+def p_assingment_funcion(p):
+    '''assignmentFuncion : VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion'''
+
+def p_llamar_funcion(p):
+    '''llamarFuncion : IDENTIFIER LPAREN argumentos_opt RPAREN'''
+
+def p_argumentos_opt(p):
+    '''argumentos_opt : argumentos
+                      | empty'''
+
+def p_argumentos(p):
+    '''argumentos : expression
+                  | expression COMMA argumentos'''
+    
+def p_expression_comparacion(p):
+    'expression : expression comparador expression'
+
+def p_boolean_expression(p):
+    '''expression : expression operadorLogico expression'''
+
+def p_operador_logico(p):
+    '''operadorLogico : AND
+                      | OR'''
+
+def p_comparador(p):
+    '''comparador : EQ
+                  | NEQ
+                  | GT
+                  | LT
+                  | GE
+                  | LE'''
+
+def p_empty(p):
+    '''empty :'''
+    pass
+
+def p_switch_statement(p):
+    '''switch : SWITCH expression LBRACE caseBlocks RBRACE'''
+
+def p_caseBlocks(p):
+    '''caseBlocks : caseBlock
+                   | caseBlock caseBlocks'''
+
+def p_caseBlock(p):
+    '''caseBlock : CASE expression COLON sentencias
+                  | DEFAULT COLON sentencias'''
+    
+def p_short_map(p):
+    '''map : IDENTIFIER DECLARE_ASSIGN mapLiteral'''
+
+def p_map(p):
+    '''map : VAR IDENTIFIER ASSIGN mapLiteral'''
+
+def p_map_literal(p):
+    '''mapLiteral : MAP LBRACKET DATATYPE RBRACKET DATATYPE LBRACE mapEntries RBRACE'''
+
+def p_map_entries(p):
+    '''mapEntries : mapEntry
+                   | mapEntry COMMA mapEntries'''
+
+def p_map_entry(p):
+    '''mapEntry : value_key COLON value_key'''
+    
+def p_value_key(p):
+    '''value_key : expression
+                | STRING'''
 
 
+
+def p_package(p):
+    '''package : PACKAGE MAIN'''
+
+def p_import(p):
+    '''import : IMPORT STRING'''
 
 
 
@@ -159,12 +258,30 @@ parser = yacc.yacc()
 
 '''
 log_file = create_log_file("gitUser") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
+=======
 
-with open("testing_algorithms/algorithm#.go", "r", encoding="utf-8") as f:  #PRUEBEN CON SU ALGORITMO
-    data = f.read()
+log_file = create_log_file("ChrVillon")  # Cambia por tu nombre real o el de GitHub
+
+with open("testing_algorithms/algorithm3.go", "r", encoding="utf-8") as f:
+    lines = f.readlines()
+
+print("Analizando archivo .go línea por línea...\n")
+
+for lineno, line in enumerate(lines, start=1):
+    line = line.strip()
+    if not line or line.startswith('//'):  # Saltar líneas vacías o comentarios
+        continue
+
+    lexer.lineno = lineno  
+
+    try:
+        result = parser.parse(line)
+        log_file.write(f"[OK] Línea {lineno}: {line}\n")
+
+    except Exception as e:
+        log_file.write(f"[ERROR] Línea {lineno}: {line} -> {str(e)}\n")
 
 parser.parse(data)
-
 '''
 while True:
    try:
@@ -177,4 +294,6 @@ while True:
 
 #log_file.close(
 parser.input(data)
+
+log_file.close()
 

@@ -30,6 +30,7 @@ reserved = {
     'interface' : 'INTERFACE',
     'range' : 'RANGE',
     'fallthrough' : 'FALLTHROUGH',
+    'main' : 'MAIN'
 }
 
 # 2. Lista de tokens (todos coordinan aquí)
@@ -148,7 +149,7 @@ def t_newline(t):
 
 def t_error(t):
     message = f"[ERROR] Unexpected character '{t.value[0]}' at line {t.lineno}\n"
-    log_file.write(message)
+    #log_file.write(message)
     print("Illegal character '%s'" % t.value[0]) 
     t.lexer.skip(1)
 
@@ -174,3 +175,20 @@ if __name__ == "__main__":
         print(tok)
 
     log_file.close()
+
+'''log_file = create_log_file("gitUser") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
+
+with open("testing_algorithms/algorithm3.go", "r", encoding="utf-8") as f:  #PRUEBEN CON SU ALGORITMO
+    data = f.read()
+
+lexer.input(data)
+  
+while True:
+    tok = lexer.token()
+    if not tok:
+        break
+    message = f"[LEXTOKEN] {tok.type} -> '{tok.value}' (line {tok.lineno}, pos {tok.lexpos})\n"
+    log_file.write(message)
+    print(tok)
+
+log_file.close()'''
