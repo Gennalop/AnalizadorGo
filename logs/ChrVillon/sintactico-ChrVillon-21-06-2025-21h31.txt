@@ -1,0 +1,46 @@
+[OK] Línea 1: package main
+[OK] Línea 3: import "fmt"
+[OK] Línea 6: type Persona struct {
+[OK] Línea 7: nombre string
+[OK] Línea 8: edad   int
+[OK] Línea 9: }
+[OK] Línea 11: func saludar(p Persona) string {
+[OK] Línea 12: if p.edad >= 18 {
+[OK] Línea 13: return "Hola " + p.nombre + ", eres mayor de edad."
+[OK] Línea 14: }
+[OK] Línea 15: return "Hola " + p.nombre + ", eres menor de edad."
+[OK] Línea 16: }
+[OK] Línea 18: func main() {
+[ERROR] Línea 20: var mensaje string -> 'NoneType' object has no attribute 'lineno'
+[OK] Línea 21: var contador int = 0
+[OK] Línea 22: nombre := ""
+[OK] Línea 23: var notas [3]int
+[OK] Línea 24: calificaciones := []float64{8.5, 9.2, 7.0}
+[OK] Línea 25: puntajes := map[string]int{"Ana": 90, "Luis": 85}
+[OK] Línea 28: fmt.Print("Ingresa tu nombre: ")
+[OK] Línea 29: fmt.Scanln(&nombre)
+[OK] Línea 31: fmt.Print("Ingresa tu edad: ")
+[ERROR] Línea 32: var edad int -> 'NoneType' object has no attribute 'lineno'
+[OK] Línea 33: fmt.Scanln(&edad)
+[OK] Línea 36: p := Persona{nombre: nombre, edad: edad}
+[OK] Línea 39: mensaje = saludar(p)
+[OK] Línea 40: fmt.Println(mensaje)
+[OK] Línea 43: total := (10 + 5) * 2 / (3 - 1)
+[OK] Línea 46: if total > 10 && edad >= 18 {
+[OK] Línea 47: fmt.Println("Total válido y edad suficiente.")
+[OK] Línea 48: } else {
+[OK] Línea 49: fmt.Println("Condición no cumplida.")
+[OK] Línea 50: }
+[OK] Línea 53: for i := 0; i < 3; i++ {
+[OK] Línea 54: notas[i] = i * 10
+[OK] Línea 55: fmt.Println("Nota", i, ":", notas[i])
+[OK] Línea 56: }
+[ERROR] Línea 59: switch edad { -> 'NoneType' object has no attribute 'lineno'
+[OK] Línea 60: case 18:
+[OK] Línea 61: fmt.Println("Tienes 18 años.")
+[OK] Línea 62: case 21:
+[OK] Línea 63: fmt.Println("Tienes 21 años.")
+[OK] Línea 64: default:
+[OK] Línea 65: fmt.Println("Edad no registrada específicamente.")
+[OK] Línea 66: }
+[OK] Línea 67: }
