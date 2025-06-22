@@ -39,6 +39,16 @@ def p_sentencias(p):
 
 def p_sentencia(p):
     '''sentencia : assignment
+<<<<<<< HEAD
+                | varDeclaration
+                | input
+                | llamarFuncion
+                | package
+                | import
+                | switch
+                | map
+                | function'''
+=======
                  | input
                  | llamarFuncion
                  | print_statement
@@ -48,23 +58,22 @@ def p_sentencia(p):
                  | import
                  | switch
                  | map'''
+>>>>>>> ea2dab13fcca0c4f15c702497befc5562a137423
 
 def p_input(p):
     '''input : IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN'''
 
-def p_assignment(p):
-    '''assignment : assigmentSimple
-                  | assignmentFuncion
-                  | shortAssignment'''
+def p_var_declaration(p):
+    '''varDeclaration : VAR IDENTIFIER DATATYPE'''
 
 def p_short_assignment(p):
-    '''shortAssignment : IDENTIFIER DECLARE_ASSIGN expression'''
+    '''assignment : IDENTIFIER DECLARE_ASSIGN expression'''
 
 def p_assignment_simple(p):
-    '''assigmentSimple : VAR IDENTIFIER DATATYPE ASSIGN expression'''
+    '''assigment : VAR IDENTIFIER DATATYPE ASSIGN expression'''
 
 def p_assingment_funcion(p):
-    '''assignmentFuncion : VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion'''
+    '''assignment : VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion'''
 
 def p_llamar_funcion(p):
     '''llamarFuncion : IDENTIFIER LPAREN argument_list_opt RPAREN'''
@@ -156,6 +165,21 @@ def p_map_entry(p):
 def p_value_key(p):
     '''value_key : expression
                 | STRING'''
+    
+def p_function(p):
+    '''function : FUNC IDENTIFIER LPAREN params_opt RPAREN DATATYPE LBRACE sentencias RETURN expression RBRACE'''
+
+def p_params_opt(p):
+    '''params_opt : params
+                      | empty'''
+    
+def p_params(p):
+    '''params : param
+                  | param COMMA params'''
+    
+def p_param(p):
+    '''param : IDENTIFIER DATATYPE'''
+
 
 
 
@@ -304,6 +328,33 @@ def p_value_identifier(p):
     'value : IDENTIFIER'
     p[0] = ("vari", p[1])
 
+<<<<<<< HEAD
+
+#condicion con uno o mas comparadores logicos
+def p_condition_comparison(p):
+    '''condition : expression comparetor expression'''
+    p[0] = ('compare', p[2], p[1], p[3])
+
+def p_comparetor(p):
+    '''comparetor : EQ
+                | NEQ
+                | GT
+                | LT
+                | GE
+                | LE'''
+
+def p_condition_logical(p):
+    '''condition : condition AND condition
+                 | condition OR condition'''
+    p[0] = ('logical', p[2], p[1], p[3])
+
+def p_condition_group(p):
+    'condition : LPAREN condition RPAREN'
+    p[0] = p[2]
+
+
+#Estructura de control if
+=======
 #Estructura if
 def p_if_statement(p):
     '''if_statement : IF expression block
@@ -355,6 +406,7 @@ def p_empty(p):
     'empty :'
     p[0] = None
 
+>>>>>>> ea2dab13fcca0c4f15c702497befc5562a137423
 
 
 #Estructura de datos: Slice
@@ -383,6 +435,11 @@ def p_elements_single(p):
 # Error rule for syntax errors
 def p_error(p):
     if p:
+<<<<<<< HEAD
+        raise SyntaxError(f"Syntax error at line {p.lineno}: unexpected '{p.value}'")
+    else:
+        raise SyntaxError("Syntax error at EOF")
+=======
         message = f"[SYNTAX ERROR] Unexpected token '{p.value}' at line {p.lineno}, pos {p.lexpos}\n"
     else:
         message = "[SYNTAX ERROR] Unexpected end of input\n"
@@ -391,10 +448,13 @@ def p_error(p):
     log_file.write(message)
 
 log_file = create_log_file("gennalop") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
+>>>>>>> ea2dab13fcca0c4f15c702497befc5562a137423
 
 # Build the parser
 parser = yacc.yacc()
 
+<<<<<<< HEAD
+=======
 with open("testing_algorithms/p.go", "r", encoding="utf-8") as f:  #PRUEBEN CON SU ALGORITMO
     data = f.read()
 
@@ -405,20 +465,35 @@ if result is not None:
     pprint.pprint(result, stream=log_file, indent=2)
 
 '''
+>>>>>>> ea2dab13fcca0c4f15c702497befc5562a137423
 log_file = create_log_file("ChrVillon")  # Cambia por tu nombre real o el de GitHub
 
 with open("testing_algorithms/algorithm3.go", "r", encoding="utf-8") as f:
     lines = f.readlines()
 
-print("Analizando archivo .go línea por línea...\n")
+block = ""
+open_braces = 0
 
 for lineno, line in enumerate(lines, start=1):
-    line = line.strip()
-    if not line or line.startswith('//'):  # Saltar líneas vacías o comentarios
+    stripped = line.strip()
+    if not stripped or stripped.startswith('//'):
         continue
 
-    lexer.lineno = lineno  
+    block += line
+    open_braces += line.count('{')
+    open_braces -= line.count('}')
 
+<<<<<<< HEAD
+    if open_braces == 0 and block.strip():
+        lexer.lineno = lineno
+        try:
+            result = parser.parse(block)
+            log_file.write(f"[OK] Bloque terminado en línea {lineno}: {block.strip()}\n")
+        except Exception as e:
+            log_file.write(f"[ERROR] Bloque terminado en línea {lineno}: {block.strip()} -> {str(e)}\n")
+        block = ""
+'''
+=======
     try:
         result = parser.parse(line)
         log_file.write(f"[OK] Línea {lineno}: {line}\n")
@@ -426,6 +501,7 @@ for lineno, line in enumerate(lines, start=1):
     except Exception as e:
         log_file.write(f"[ERROR] Línea {lineno}: {line} -> {str(e)}\n")
 
+>>>>>>> ea2dab13fcca0c4f15c702497befc5562a137423
 parser.parse(data)
 
 while True:
@@ -441,4 +517,5 @@ while True:
 parser.input(data)
 '''
 log_file.close()
+'''
 

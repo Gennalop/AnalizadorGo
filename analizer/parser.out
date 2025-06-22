@@ -1,0 +1,218 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    BREAK
+    CONST
+    CONTINUE
+    DEFER
+    FALLTHROUGH
+    FOR
+    GO
+    INTERFACE
+    NIL
+    RANGE
+    RAW_STRING
+    RUNE
+    SELECT
+    SEMICOLON
+    STRUCT
+    TYPE
+
+Grammar
+
+Rule 0     S' -> sentencias
+Rule 1     sentencias -> sentencia
+Rule 2     sentencias -> sentencia sentencias
+Rule 3     sentencia -> assignment
+Rule 4     sentencia -> varDeclaration
+Rule 5     sentencia -> input
+Rule 6     sentencia -> llamarFuncion
+Rule 7     sentencia -> package
+Rule 8     sentencia -> import
+Rule 9     sentencia -> switch
+Rule 10    sentencia -> map
+Rule 11    sentencia -> function
+Rule 12    input -> IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN
+Rule 13    varDeclaration -> VAR IDENTIFIER DATATYPE
+Rule 14    assignment -> IDENTIFIER DECLARE_ASSIGN expression
+Rule 15    assigment -> VAR IDENTIFIER DATATYPE ASSIGN expression
+Rule 16    assignment -> VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion
+Rule 17    llamarFuncion -> IDENTIFIER LPAREN argumentos_opt RPAREN
+Rule 18    argumentos_opt -> argumentos
+Rule 19    argumentos_opt -> empty
+Rule 20    argumentos -> expression
+Rule 21    argumentos -> expression COMMA argumentos
+Rule 22    expression -> expression comparador expression
+Rule 23    expression -> expression operadorLogico expression
+Rule 24    operadorLogico -> AND
+Rule 25    operadorLogico -> OR
+Rule 26    comparador -> EQ
+Rule 27    comparador -> NEQ
+Rule 28    comparador -> GT
+Rule 29    comparador -> LT
+Rule 30    comparador -> GE
+Rule 31    comparador -> LE
+Rule 32    empty -> <empty>
+Rule 33    switch -> SWITCH expression LBRACE caseBlocks RBRACE
+Rule 34    caseBlocks -> caseBlock
+Rule 35    caseBlocks -> caseBlock caseBlocks
+Rule 36    caseBlock -> CASE expression COLON sentencias
+Rule 37    caseBlock -> DEFAULT COLON sentencias
+Rule 38    map -> IDENTIFIER DECLARE_ASSIGN mapLiteral
+Rule 39    map -> VAR IDENTIFIER ASSIGN mapLiteral
+Rule 40    mapLiteral -> MAP LBRACKET DATATYPE RBRACKET DATATYPE LBRACE mapEntries RBRACE
+Rule 41    mapEntries -> mapEntry
+Rule 42    mapEntries -> mapEntry COMMA mapEntries
+Rule 43    mapEntry -> value_key COLON value_key
+Rule 44    value_key -> expression
+Rule 45    value_key -> STRING
+Rule 46    function -> FUNC IDENTIFIER LPAREN params_opt RPAREN DATATYPE LBRACE sentencias RETURN expression RBRACE
+Rule 47    params_opt -> params
+Rule 48    params_opt -> empty
+Rule 49    params -> param
+Rule 50    params -> param COMMA params
+Rule 51    param -> IDENTIFIER DATATYPE
+Rule 52    package -> PACKAGE MAIN
+Rule 53    import -> IMPORT STRING
+Rule 54    expression -> expression operator expression
+Rule 55    operator -> PLUS
+Rule 56    operator -> MINUS
+Rule 57    operator -> TIMES
+Rule 58    operator -> DIVIDE
+Rule 59    operator -> MOD
+Rule 60    expression -> MINUS expression
+Rule 61    expression -> LPAREN expression RPAREN
+Rule 62    expression -> value
+Rule 63    value -> NUMBER
+Rule 64    value -> IDENTIFIER
+Rule 65    condition -> expression comparetor expression
+Rule 66    comparetor -> EQ
+Rule 67    comparetor -> NEQ
+Rule 68    comparetor -> GT
+Rule 69    comparetor -> LT
+Rule 70    comparetor -> GE
+Rule 71    comparetor -> LE
+Rule 72    condition -> condition AND condition
+Rule 73    condition -> condition OR condition
+Rule 74    condition -> LPAREN condition RPAREN
+Rule 75    if_statement -> IF LPAREN condition RPAREN block
+Rule 76    if_statement -> IF LPAREN condition RPAREN block ELSE block
+Rule 77    function_call -> IDENTIFIER LPAREN args RPAREN
+Rule 78    args -> args COMMA expression
+Rule 79    args -> expression
+Rule 80    args -> <empty>
+Rule 81    block -> LBRACE statements RBRACE
+Rule 82    statements -> statements statement
+Rule 83    statements -> statement
+Rule 84    slice_declaration -> VAR IDENTIFIER LBRACKET RBRACKET DATATYPE
+Rule 85    declare_assign -> IDENTIFIER DECLARE_ASSIGN slice_literal
+Rule 86    slice_literal -> LBRACKET RBRACKET DATATYPE LBRACE elements RBRACE
+Rule 87    elements -> elements COMMA expression
+Rule 88    elements -> expression
+
+Terminals, with rules where they appear
+
+AMPERSAND            : 12
+AND                  : 24 72
+ASSIGN               : 15 16 39
+BREAK                : 
+CASE                 : 36
+COLON                : 36 37 43
+COMMA                : 21 42 50 78 87
+CONST                : 
+CONTINUE             : 
+DATATYPE             : 13 15 16 40 40 46 51 84 86
+DECLARE_ASSIGN       : 14 38 85
+DEFAULT              : 37
+DEFER                : 
+DIVIDE               : 58
+DOT                  : 12
+ELSE                 : 76
+EQ                   : 26 66
+FALLTHROUGH          : 
+FOR                  : 
+FUNC                 : 46
+GE                   : 30 70
+GO                   : 
+GT                   : 28 68
+IDENTIFIER           : 12 12 12 13 14 15 16 17 38 39 46 51 64 77 84 85
+IF                   : 75 76
+IMPORT               : 53
+INTERFACE            : 
+LBRACE               : 33 40 46 81 86
+LBRACKET             : 40 84 86
+LE                   : 31 71
+LPAREN               : 12 17 46 61 74 75 76 77
+LT                   : 29 69
+MAIN                 : 52
+MAP                  : 40
+MINUS                : 56 60
+MOD                  : 59
+NEQ                  : 27 67
+NIL                  : 
+NUMBER               : 63
+OR                   : 25 73
+PACKAGE              : 52
+PLUS                 : 55
+RANGE                : 
+RAW_STRING           : 
+RBRACE               : 33 40 46 81 86
+RBRACKET             : 40 84 86
+RETURN               : 46
+RPAREN               : 12 17 46 61 74 75 76 77
+RUNE                 : 
+SELECT               : 
+SEMICOLON            : 
+STRING               : 45 53
+STRUCT               : 
+SWITCH               : 33
+TIMES                : 57
+TYPE                 : 
+VAR                  : 13 15 16 39 84
+error                : 
+
+Nonterminals, with rules where they appear
+
+args                 : 77 78
+argumentos           : 18 21
+argumentos_opt       : 17
+assigment            : 
+assignment           : 3
+block                : 75 76 76
+caseBlock            : 34 35
+caseBlocks           : 33 35
+comparador           : 22
+comparetor           : 65
+condition            : 72 72 73 73 74 75 76
+declare_assign       : 
+elements             : 86 87
+empty                : 19 48
+expression           : 14 15 20 21 22 22 23 23 33 36 44 46 54 54 60 61 65 65 78 79 87 88
+function             : 11
+function_call        : 
+if_statement         : 
+import               : 8
+input                : 5
+llamarFuncion        : 6 16
+map                  : 10
+mapEntries           : 40 42
+mapEntry             : 41 42
+mapLiteral           : 38 39
+operadorLogico       : 23
+operator             : 54
+package              : 7
+param                : 49 50
+params               : 47 50
+params_opt           : 46
+sentencia            : 1 2
+sentencias           : 2 36 37 46 0
+slice_declaration    : 
+slice_literal        : 85
+statement            : 82 83
+statements           : 81 82
+switch               : 9
+value                : 62
+value_key            : 43 43
+varDeclaration       : 4
+
