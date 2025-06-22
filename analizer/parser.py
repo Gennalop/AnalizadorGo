@@ -1,5 +1,5 @@
 import ply.yacc as yacc
-from lexer import tokens
+from lexer import tokens, lexer
 from logger import create_log_file 
 
 #Christopher Villon
@@ -157,16 +157,26 @@ def p_error(p):
 parser = yacc.yacc()
 
 
-log_file = create_log_file("gitUser") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
+log_file = create_log_file("ChrVillon")  # Cambia por tu nombre real o el de GitHub
 
-with open("testing_algorithms/algorithm3.go", "r", encoding="utf-8") as f:  #PRUEBEN CON SU ALGORITMO
-    data = f.read()
+with open("testing_algorithms/algorithm3.go", "r", encoding="utf-8") as f:
+    lines = f.readlines()
 
-print("Analizando archivo .go...\n")
-try:
-    result = parser.parse(data)
-    log_file.write("[OK] Parsing exitoso\n")
-    print("✅ Parsing completado correctamente")
-except Exception as e:
-    log_file.write(f"[ERROR] {str(e)}\n")
-    print("❌ Error durante el parsing:", e)
+print("Analizando archivo .go línea por línea...\n")
+
+for lineno, line in enumerate(lines, start=1):
+    line = line.strip()
+    if not line or line.startswith('//'):  # Saltar líneas vacías o comentarios
+        continue
+
+    lexer.lineno = lineno  
+
+    try:
+        result = parser.parse(line)
+        log_file.write(f"[OK] Línea {lineno}: {line}\n")
+
+    except Exception as e:
+        log_file.write(f"[ERROR] Línea {lineno}: {line} -> {str(e)}\n")
+
+
+log_file.close()
