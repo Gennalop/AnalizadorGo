@@ -159,6 +159,4 @@ def t_error(t):
 
 
 # Build the lexer and test----------------------------------------------------------
-
-
 lexer = lex.lex()
