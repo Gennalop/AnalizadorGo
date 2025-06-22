@@ -39,16 +39,6 @@ def p_sentencias(p):
 
 def p_sentencia(p):
     '''sentencia : assignment
-<<<<<<< HEAD
-                | varDeclaration
-                | input
-                | llamarFuncion
-                | package
-                | import
-                | switch
-                | map
-                | function'''
-=======
                  | input
                  | llamarFuncion
                  | print_statement
@@ -58,7 +48,6 @@ def p_sentencia(p):
                  | import
                  | switch
                  | map'''
->>>>>>> ea2dab13fcca0c4f15c702497befc5562a137423
 
 def p_input(p):
     '''input : IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN'''
@@ -328,7 +317,6 @@ def p_value_identifier(p):
     'value : IDENTIFIER'
     p[0] = ("vari", p[1])
 
-<<<<<<< HEAD
 
 #condicion con uno o mas comparadores logicos
 def p_condition_comparison(p):
@@ -354,7 +342,6 @@ def p_condition_group(p):
 
 
 #Estructura de control if
-=======
 #Estructura if
 def p_if_statement(p):
     '''if_statement : IF expression block
@@ -406,7 +393,6 @@ def p_empty(p):
     'empty :'
     p[0] = None
 
->>>>>>> ea2dab13fcca0c4f15c702497befc5562a137423
 
 
 #Estructura de datos: Slice
@@ -435,37 +421,13 @@ def p_elements_single(p):
 # Error rule for syntax errors
 def p_error(p):
     if p:
-<<<<<<< HEAD
         raise SyntaxError(f"Syntax error at line {p.lineno}: unexpected '{p.value}'")
     else:
         raise SyntaxError("Syntax error at EOF")
-=======
-        message = f"[SYNTAX ERROR] Unexpected token '{p.value}' at line {p.lineno}, pos {p.lexpos}\n"
-    else:
-        message = "[SYNTAX ERROR] Unexpected end of input\n"
-    
-    print(message.strip())
-    log_file.write(message)
-
-log_file = create_log_file("gennalop") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
->>>>>>> ea2dab13fcca0c4f15c702497befc5562a137423
 
 # Build the parser
 parser = yacc.yacc()
 
-<<<<<<< HEAD
-=======
-with open("testing_algorithms/p.go", "r", encoding="utf-8") as f:  #PRUEBEN CON SU ALGORITMO
-    data = f.read()
-
-result = parser.parse(data)
-
-if result is not None:
-    log_file.write("[PARSE RESULT]\n")
-    pprint.pprint(result, stream=log_file, indent=2)
-
-'''
->>>>>>> ea2dab13fcca0c4f15c702497befc5562a137423
 log_file = create_log_file("ChrVillon")  # Cambia por tu nombre real o el de GitHub
 
 with open("testing_algorithms/algorithm3.go", "r", encoding="utf-8") as f:
@@ -483,7 +445,6 @@ for lineno, line in enumerate(lines, start=1):
     open_braces += line.count('{')
     open_braces -= line.count('}')
 
-<<<<<<< HEAD
     if open_braces == 0 and block.strip():
         lexer.lineno = lineno
         try:
@@ -493,15 +454,6 @@ for lineno, line in enumerate(lines, start=1):
             log_file.write(f"[ERROR] Bloque terminado en línea {lineno}: {block.strip()} -> {str(e)}\n")
         block = ""
 '''
-=======
-    try:
-        result = parser.parse(line)
-        log_file.write(f"[OK] Línea {lineno}: {line}\n")
-
-    except Exception as e:
-        log_file.write(f"[ERROR] Línea {lineno}: {line} -> {str(e)}\n")
-
->>>>>>> ea2dab13fcca0c4f15c702497befc5562a137423
 parser.parse(data)
 
 while True:
@@ -517,5 +469,3 @@ while True:
 parser.input(data)
 '''
 log_file.close()
-'''
-
