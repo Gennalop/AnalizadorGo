@@ -2,7 +2,6 @@ import ply.yacc as yacc
 from lexer import tokens
 from logger import create_log_file 
 
-
 #Christopher Villon
 
 
@@ -81,7 +80,6 @@ def p_condition_group(p):
     p[0] = p[2]
 
 
-
 #Estructura de control if
 def p_statement_if(p):
     '''if_statement : IF LPAREN condition RPAREN block
@@ -146,9 +144,6 @@ def p_elements_single(p):
 
 
 
-
-
-
 # Error rule for syntax errors
 def p_error(p):
     if p:
@@ -180,4 +175,6 @@ while True:
    result = parser.parse(s)
    print(result)
 
-#log_file.close()
+#log_file.close(
+parser.input(data)
+
