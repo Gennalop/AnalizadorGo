@@ -6,6 +6,8 @@ from logger import create_log_file
 # 1. Palabras Reservadas 
 
 reserved = {
+    'true': 'TRUE',
+    'false': 'FALSE',
     'if' : 'IF',
     'else' : 'ELSE',
     'for' : 'FOR',
@@ -49,7 +51,8 @@ tokens = [
     'DOT', 'COLON',
     'IDENTIFIER',
     'DATATYPE',
-    'STRING', 'RAW_STRING',
+    'STRING', 'STRING_UNCLOSE',
+    'RAW_STRING',
     'DECLARE_ASSIGN',
     'AMPERSAND',
 ] + list(reserved.values())
@@ -76,8 +79,12 @@ def t_IDENTIFIER(t):
 
 def t_STRING(t):
     r'"([^"\\]|\\.)*"'
-    #r'\"([^\\\n]|(\\.))*?\"'
     return t
+
+def t_STRING_UNCLOSED(t):
+    r'"[^"\n]*'
+    print("Error: cadena sin cerrar correctamente")
+    t.lexer.skip(len(t.value))
 
 def t_RAW_STRING(t):
     r'\`[^`]*\`'
@@ -148,14 +155,13 @@ def t_newline(t):
     t.lexer.lineno += len(t.value)
 
 def t_error(t):
-    message = f"[ERROR] Unexpected character '{t.value[0]}' at line {t.lineno}\n"
+    #message = f"[ERROR] Unexpected character '{t.value[0]}' at line {t.lineno}\n"
     #log_file.write(message)
     print("Illegal character '%s'" % t.value[0]) 
     t.lexer.skip(1)
 
 
 # Build the lexer and test----------------------------------------------------------
-    
 lexer = lex.lex()
 
 if __name__ == "__main__":

@@ -1,0 +1,5 @@
+[PARSE RESULT]
+( 'program',
+  [ ('print', 'Println', [('ident', 'i')]),
+    ('print', 'Println', [('ident', 'nombre')]),
+    ('print', 'Println', [('number', 5)])])

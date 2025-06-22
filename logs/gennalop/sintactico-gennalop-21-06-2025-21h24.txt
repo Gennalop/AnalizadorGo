@@ -1,0 +1,5 @@
+[PARSE RESULT]
+( 'program',
+  [ ('print', 'Println', None),
+    ('print', 'Println', None),
+    ('print', 'Println', None)])
