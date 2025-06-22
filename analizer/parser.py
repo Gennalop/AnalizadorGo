@@ -9,6 +9,16 @@ def p_program(p):
 
 ##Cambiar esta parte
 
+def p_arguments(p):
+    '''arguments : expression
+                 | expression COMMA arguments'''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = [p[1]] + p[3]
+
+
+
 def p_declaration_list_single(p):
     'declaration_list : declaration'
     p[0] = [p[1]]
@@ -21,7 +31,10 @@ def p_declaration(p):
     '''declaration : struct_definition
                    | print_statement
                    | for_statement
-                   '''
+                   | const_declaration
+                   | function
+                   | method_definition
+                   | function_literal'''
     p[0] = p[1]
 
 #Para manejar las constantes
@@ -47,7 +60,8 @@ def p_sentencia(p):
                  | package
                  | import
                  | switch
-                 | map'''
+                 | map
+                 | if_statement'''
 
 def p_input(p):
     '''input : IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN'''
@@ -55,14 +69,10 @@ def p_input(p):
 def p_var_declaration(p):
     '''varDeclaration : VAR IDENTIFIER DATATYPE'''
 
-def p_short_assignment(p):
-    '''assignment : IDENTIFIER DECLARE_ASSIGN expression'''
-
-def p_assignment_simple(p):
-    '''assigment : VAR IDENTIFIER DATATYPE ASSIGN expression'''
-
-def p_assingment_funcion(p):
-    '''assignment : VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion'''
+def p_assignment(p):
+    '''assignment : IDENTIFIER DECLARE_ASSIGN expression
+                  | VAR IDENTIFIER DATATYPE ASSIGN expression
+                  | VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion'''
 
 def p_llamar_funcion(p):
     '''llamarFuncion : IDENTIFIER LPAREN argument_list_opt RPAREN'''
@@ -190,7 +200,7 @@ def p_print_statement(p):
     if p[1] == 'fmt' and p[3] in ('Print', 'Println', 'Printf'):
         p[0] = ('print', p[3], p[5])
     else:
-        print("Error: no es una impresión válida")
+        raise SyntaxError(f"Impresión no válida: {p[1]}.{p[3]}")
 
 #STRUCT===============================================================================
 
@@ -232,6 +242,11 @@ def p_method_definition(p):
 def p_for_statement_classis(p):
     'for_statement : FOR shortAssignment SEMICOLON condicion SEMICOLON expression block'
     p[0] = ("FOR_CLASSIC", p[2], p[4], p[6], p[7])
+
+def p_short_assignment(p):
+    'shortAssignment : IDENTIFIER DECLARE_ASSIGN expression'
+    p[0] = ('short_assign', p[1], p[3])
+
 
 def p_for_statement_condition(p):
     'for_statement : FOR condicion block'
@@ -305,9 +320,10 @@ def p_expression_group(p):
     'expression : LPAREN expression RPAREN'
     p[0] = p[2]
 
-#def p_expression_value(p):
-#    'expression : value'
-#    p[0] = p[1]
+'''
+def p_expression_value(p):
+    'expression : value'
+    p[0] = p[1]
 
 def p_value_number(p):
     'value : NUMBER'
@@ -316,45 +332,16 @@ def p_value_number(p):
 def p_value_identifier(p):
     'value : IDENTIFIER'
     p[0] = ("vari", p[1])
+'''
 
-
-#condicion con uno o mas comparadores logicos
-def p_condition_comparison(p):
-    '''condition : expression comparetor expression'''
-    p[0] = ('compare', p[2], p[1], p[3])
-
-def p_comparetor(p):
-    '''comparetor : EQ
-                | NEQ
-                | GT
-                | LT
-                | GE
-                | LE'''
-
-def p_condition_logical(p):
-    '''condition : condition AND condition
-                 | condition OR condition'''
-    p[0] = ('logical', p[2], p[1], p[3])
-
-def p_condition_group(p):
-    'condition : LPAREN condition RPAREN'
-    p[0] = p[2]
-
-
-#Estructura de control if
 #Estructura if
 def p_if_statement(p):
-    '''if_statement : IF expression block
-                    | IF expression block ELSE block'''
+    '''if_statement : IF condicion_compleja block
+                    | IF condicion_compleja block ELSE block'''
     if len(p) == 4:
         p[0] = ('if', p[2], p[3], None)
     else:
         p[0] = ('if_else', p[2], p[3], p[5])
-
-def p_block(p):
-    '''block : LBRACE sentencias RBRACE'''
-    p[0] = ('block', p[2])
-
 
 #funciones de orden superior
 def p_function_literal(p):
@@ -387,11 +374,6 @@ def p_return_type(p):
         p[0] = p[1]
     else:
         p[0] = None
-
-
-def p_empty(p):
-    'empty :'
-    p[0] = None
 
 
 
@@ -428,9 +410,9 @@ def p_error(p):
 # Build the parser
 parser = yacc.yacc()
 
-log_file = create_log_file("ChrVillon")  # Cambia por tu nombre real o el de GitHub
+log_file = create_log_file("starAus20")  # Cambia por tu nombre real o el de GitHub
 
-with open("testing_algorithms/algorithm3.go", "r", encoding="utf-8") as f:
+with open("testing_algorithms/algorithm2.go", "r", encoding="utf-8") as f:
     lines = f.readlines()
 
 block = ""
