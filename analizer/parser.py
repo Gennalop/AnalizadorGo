@@ -98,7 +98,18 @@ def p_value_key(p):
                 | STRING'''
     
 def p_function(p):
-    '''function : FUNC IDENTIFIER LPAREN parametros_opt RPAREN DATATYPE LBRACE sentencias RETURN expression RBRACE'''
+    '''function : FUNC IDENTIFIER LPAREN params_opt RPAREN DATATYPE LBRACE sentencias RETURN expression RBRACE'''
+
+def p_params_opt(p):
+    '''params_opt : params
+                      | empty'''
+    
+def p_params(p):
+    '''params : param
+                  | param COMMA params'''
+    
+def p_param(p):
+    '''param : IDENTIFIER DATATYPE'''
 
 
 
@@ -120,18 +131,24 @@ def p_import(p):
 
 # Expresiones Aritmeticas
 precedence = (
+    ('left', 'OR'),                      # ||
+    ('left', 'AND'),                     # &&  
+    ('nonassoc', 'EQ', 'NEQ', 'GT', 'LT', 'GE', 'LE'), # ==, !=, >, <, >=, <=
     ('left', 'PLUS', 'MINUS'),         
     ('left', 'TIMES', 'DIVIDE', 'MOD'), 
-    ('right', 'UMINUS'),                
+    ('right', 'UMINUS'),                # -x
 )
 
 def p_expression_binary(p):
-    '''expression : expression PLUS expression
-                  | expression MINUS expression
-                  | expression TIMES expression
-                  | expression DIVIDE expression
-                  | expression MOD expression'''
+    '''expression : expression operator expression'''
     p[0] = ('binop', p[2], p[1], p[3])
+
+def p_operator(p):
+    '''operator : PLUS
+                | MINUS
+                | TIMES
+                | DIVIDE
+                | MOD'''
 
 def p_expression_unary_minus(p):
     'expression : MINUS expression %prec UMINUS'
@@ -147,11 +164,61 @@ def p_expression_value(p):
 
 def p_value_number(p):
     'value : NUMBER'
-    p[0] = ('number', p[1])
+    p[0] = ("number",p[1])
 
 def p_value_identifier(p):
     'value : IDENTIFIER'
-    p[0] = ('var', p[1])
+    p[0] = ("vari", p[1])
+
+
+#condicion con uno o mas comparadores logicos
+def p_condition_comparison(p):
+    '''condition : expression comparetor expression'''
+    p[0] = ('compare', p[2], p[1], p[3])
+
+def p_comparetor(p):
+    '''comparetor : EQ
+                | NEQ
+                | GT
+                | LT
+                | GE
+                | LE'''
+
+def p_condition_logical(p):
+    '''condition : condition AND condition
+                 | condition OR condition'''
+    p[0] = ('logical', p[2], p[1], p[3])
+
+def p_condition_group(p):
+    'condition : LPAREN condition RPAREN'
+    p[0] = p[2]
+
+
+#Estructura de control if
+
+
+#Estructura de datos: Slice
+def p_slice_declaration(p):
+    'slice_declaration : VAR IDENTIFIER LBRACKET RBRACKET DATATYPE'
+    p[0] = ('slice_decl', p[2], p[5]) 
+
+def p_slice_declare_assign(p):
+    'declare_assign : IDENTIFIER DECLARE_ASSIGN slice_literal'
+    p[0] = ('declare_slice', p[1], p[3])
+
+def p_slice_literal(p):
+    'slice_literal : LBRACKET RBRACKET DATATYPE LBRACE elements RBRACE'
+    p[0] = ('slice_lit', p[3], p[5]) 
+
+def p_elements_multiple(p):
+    'elements : elements COMMA expression'
+    p[0] = p[1] + [p[3]]
+
+def p_elements_single(p):
+    'elements : expression'
+    p[0] = [p[1]]
+
+
 
 # Error rule for syntax errors
 def p_error(p):
@@ -160,9 +227,10 @@ def p_error(p):
     else:
         raise SyntaxError("Syntax error at EOF")
 
+
+
 # Build the parser and test
 parser = yacc.yacc()
-
 
 log_file = create_log_file("ChrVillon")  # Cambia por tu nombre real o el de GitHub
 
@@ -189,3 +257,21 @@ for lineno, line in enumerate(lines, start=1):
         except Exception as e:
             log_file.write(f"[ERROR] Bloque terminado en línea {lineno}: {block.strip()} -> {str(e)}\n")
         block = ""
+'''
+parser.parse(data)
+
+while True:
+   try:
+       s = input('calc > ')
+   except EOFError:
+       break
+   if not s: continue
+   result = parser.parse(s)
+   print(result)
+
+#log_file.close(
+parser.input(data)
+
+log_file.close()
+'''
+
