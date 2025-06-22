@@ -155,7 +155,7 @@ def t_newline(t):
     t.lexer.lineno += len(t.value)
 
 def t_error(t):
-    message = f"[ERROR] Unexpected character '{t.value[0]}' at line {t.lineno}\n"
+    #message = f"[ERROR] Unexpected character '{t.value[0]}' at line {t.lineno}\n"
     #log_file.write(message)
     print("Illegal character '%s'" % t.value[0]) 
     t.lexer.skip(1)
