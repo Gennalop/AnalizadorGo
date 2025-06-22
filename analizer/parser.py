@@ -194,6 +194,19 @@ def p_struct_fields_multiple(p):
     'struct_fields : struct_fields struct_field'
     p[0] = p[1] + [p[2]]
 
+#METHODS==============================================================================
+
+##method_definition VERIFICARRRR
+def p_method_definition(p):
+    'method_definition : FUNC LPAREN IDENTIFIER IDENTIFIER RPAREN IDENTIFIER LPAREN arguments RPAREN block'
+    p[0] = ('method', {
+        'receiver_name': p[2],
+        'receiver_type': p[3],
+        'method_name': p[5],
+        'params': p[7],
+        'body': p[9]
+    })
+
 #FOR==================================================================================
 
 ##for_statement
