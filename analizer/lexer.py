@@ -149,19 +149,20 @@ def t_error(t):
 # Build the lexer and test----------------------------------------------------------
 lexer = lex.lex()
 
-log_file = create_log_file("gitUser") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
+if __name__ == "__main__":
+    log_file = create_log_file("gitUser") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
 
-with open("testing_algorithms/algorithm3.go", "r", encoding="utf-8") as f:  #PRUEBEN CON SU ALGORITMO
-    data = f.read()
+    with open("testing_algorithms/algorithm#.go", "r", encoding="utf-8") as f:   #PRUEBEN CON SU ALGORITMO
+        data = f.read()
 
-lexer.input(data)
-  
-while True:
-    tok = lexer.token()
-    if not tok:
-        break
-    message = f"[LEXTOKEN] {tok.type} -> '{tok.value}' (line {tok.lineno}, pos {tok.lexpos})\n"
-    log_file.write(message)
-    print(tok)
+    lexer.input(data)
+    
+    while True:
+        tok = lexer.token()
+        if not tok:
+            break
+        message = f"[LEXTOKEN] {tok.type} -> '{tok.value}' (line {tok.lineno}, pos {tok.lexpos})\n"
+        log_file.write(message)
+        print(tok)
 
-log_file.close()
+    log_file.close()
