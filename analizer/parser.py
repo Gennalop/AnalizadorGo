@@ -9,29 +9,29 @@ def p_sentencias(p):
 
 def p_sentencia(p):
     '''sentencia : assignment
-                 | input
-                 | llamarFuncion
-                 | package
-                 | import
-                 | switch
-                 | map'''
+                | varDeclaration
+                | input
+                | llamarFuncion
+                | package
+                | import
+                | switch
+                | map
+                | function'''
 
 def p_input(p):
     '''input : IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN'''
 
-def p_assignment(p):
-    '''assignment : assigmentSimple
-                  | assignmentFuncion
-                  | shortAssignment'''
+def p_var_declaration(p):
+    '''varDeclaration : VAR IDENTIFIER DATATYPE'''
 
 def p_short_assignment(p):
-    '''shortAssignment : IDENTIFIER DECLARE_ASSIGN expression'''
+    '''assignment : IDENTIFIER DECLARE_ASSIGN expression'''
 
 def p_assignment_simple(p):
-    '''assigmentSimple : VAR IDENTIFIER DATATYPE ASSIGN expression'''
+    '''assigment : VAR IDENTIFIER DATATYPE ASSIGN expression'''
 
 def p_assingment_funcion(p):
-    '''assignmentFuncion : VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion'''
+    '''assignment : VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion'''
 
 def p_llamar_funcion(p):
     '''llamarFuncion : IDENTIFIER LPAREN argumentos_opt RPAREN'''
@@ -96,6 +96,10 @@ def p_map_entry(p):
 def p_value_key(p):
     '''value_key : expression
                 | STRING'''
+    
+def p_function(p):
+    '''function : FUNC IDENTIFIER LPAREN parametros_opt RPAREN DATATYPE LBRACE sentencias RETURN expression RBRACE'''
+
 
 
 
@@ -151,7 +155,10 @@ def p_value_identifier(p):
 
 # Error rule for syntax errors
 def p_error(p):
-     print(f"Syntax error at line {p.lineno}")
+    if p:
+        raise SyntaxError(f"Syntax error at line {p.lineno}: unexpected '{p.value}'")
+    else:
+        raise SyntaxError("Syntax error at EOF")
 
 # Build the parser and test
 parser = yacc.yacc()
@@ -162,21 +169,23 @@ log_file = create_log_file("ChrVillon")  # Cambia por tu nombre real o el de Git
 with open("testing_algorithms/algorithm3.go", "r", encoding="utf-8") as f:
     lines = f.readlines()
 
-print("Analizando archivo .go línea por línea...\n")
+block = ""
+open_braces = 0
 
 for lineno, line in enumerate(lines, start=1):
-    line = line.strip()
-    if not line or line.startswith('//'):  # Saltar líneas vacías o comentarios
+    stripped = line.strip()
+    if not stripped or stripped.startswith('//'):
         continue
 
-    lexer.lineno = lineno  
+    block += line
+    open_braces += line.count('{')
+    open_braces -= line.count('}')
 
-    try:
-        result = parser.parse(line)
-        log_file.write(f"[OK] Línea {lineno}: {line}\n")
-
-    except Exception as e:
-        log_file.write(f"[ERROR] Línea {lineno}: {line} -> {str(e)}\n")
-
-
-log_file.close()
+    if open_braces == 0 and block.strip():
+        lexer.lineno = lineno
+        try:
+            result = parser.parse(block)
+            log_file.write(f"[OK] Bloque terminado en línea {lineno}: {block.strip()}\n")
+        except Exception as e:
+            log_file.write(f"[ERROR] Bloque terminado en línea {lineno}: {block.strip()} -> {str(e)}\n")
+        block = ""
