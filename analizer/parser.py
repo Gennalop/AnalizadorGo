@@ -4,8 +4,15 @@ from lexer import tokens, lexer
 from logger import create_log_file 
 
 def p_program(p):
-    'program : declaration_list'
-    p[0] = ('program', p[1])
+    '''program : package import_list declaration_list
+               | package declaration_list
+               | declaration_list'''
+    if len(p) == 2:
+        p[0] = ('program', None, [], p[1])
+    elif len(p) == 3:
+        p[0] = ('program', p[1], [], p[2])
+    else:
+        p[0] = ('program', p[1], p[2], p[3])
 
 ##Cambiar esta parte
 
@@ -41,6 +48,14 @@ def p_declaration(p):
 def p_const_declaration(p):
     'const_declaration : CONST IDENTIFIER ASSIGN expression'
     p[0] = ('const_decl', p[2], p[4])
+
+def p_import_list_single(p):
+    'import_list : import'
+    p[0] = [p[1]]
+
+def p_import_list_multiple(p):
+    'import_list : import_list import'
+    p[0] = p[1] + [p[2]]
 
 #)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
 #Christopher Villon)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
@@ -88,9 +103,30 @@ def p_llamar_funcion(p):
 def p_argumentos(p):
     '''argumentos : expression
                   | expression COMMA argumentos'''
-    
+
+#Aus 
 def p_expression_comparacion(p):
     'expression : expression comparador expression'
+    left = p[1]
+    right = p[3]
+
+    # Extraer tipos base
+    left_type = left[0]
+    right_type = right[0]
+
+    # Permitir comparaciones solo entre números, strings o bool entre sí
+    allowed = [
+        ('number', 'number'),
+        ('string', 'string'),
+        ('rune', 'rune'),
+        ('bool', 'bool'),
+    ]
+
+    if (left_type, right_type) not in allowed:
+        raise SyntaxError(f"Comparison between incompatible types: {left_type} y {right_type}")
+
+    p[0] = ('comparison', p[2], left, right)
+
 
 def p_boolean_expression(p):
     '''expression : expression operadorLogico expression'''
@@ -133,9 +169,13 @@ def p_comparador(p):
 def p_empty(p):
     '''empty :'''
     pass
-
+#Aus
 def p_switch_statement(p):
     '''switch : SWITCH expression LBRACE caseBlocks RBRACE'''
+    expr = p[2]
+    if expr[0] == 'nil':
+        raise SyntaxError("Switch expression cannot be nil")
+    p[0] = ('switch', expr, p[4])
 
 def p_caseBlocks(p):
     '''caseBlocks : caseBlock
@@ -166,8 +206,9 @@ def p_value_key(p):
                 | STRING'''
     
 def p_function(p):
-    '''function : FUNC IDENTIFIER LPAREN params_opt RPAREN DATATYPE LBRACE sentencias RETURN expression RBRACE'''
-
+    '''function : FUNC IDENTIFIER LPAREN params_opt RPAREN return_type LBRACE sentencias RETURN expression RBRACE'''
+    p[0] = ('function', p[2], p[4], p[6], ('block', p[8] + [('return', p[10])]))
+    
 def p_params_opt(p):
     '''params_opt : params
                       | empty'''
@@ -247,10 +288,16 @@ def p_short_assignment(p):
     'shortAssignment : IDENTIFIER DECLARE_ASSIGN expression'
     p[0] = ('short_assign', p[1], p[3])
 
-
+#Aus
 def p_for_statement_condition(p):
     'for_statement : FOR condicion block'
-    p[0] = ("FOR_CONDITION", p[2], p[3])
+    cond = p[2]
+    cond_type = cond[0]
+
+    if cond_type not in ('comparison', 'bool'):
+        raise SyntaxError(f"The condition of for must be boolean or a comparison, not '{cond_type}'")
+
+    p[0] = ("FOR_CONDITION", cond, p[3])
 
 def p_for_statement_infinite(p):
     'for_statement : FOR block'
@@ -333,15 +380,21 @@ def p_value_identifier(p):
     'value : IDENTIFIER'
     p[0] = ("vari", p[1])
 '''
-
+#Aus
 #Estructura if
 def p_if_statement(p):
     '''if_statement : IF condicion_compleja block
                     | IF condicion_compleja block ELSE block'''
+    cond = p[2]
+    cond_type = cond[0]
+
+    if cond_type not in ('comparison', 'bool'):
+        raise SyntaxError(f"The condition of if must be boolean or a comparison, not '{cond_type}'")
+
     if len(p) == 4:
-        p[0] = ('if', p[2], p[3], None)
+        p[0] = ('if', cond, p[3], None)
     else:
-        p[0] = ('if_else', p[2], p[3], p[5])
+        p[0] = ('if_else', cond, p[3], p[5])
 
 #funciones de orden superior
 def p_function_literal(p):
