@@ -6,14 +6,18 @@ from logger import create_log_file
 def p_program(p):
     '''program : package import_list declaration_list
                | package declaration_list
-               | declaration_list'''
+               | declaration_list
+               | package''' 
     if len(p) == 2:
-        p[0] = ('program', None, [], p[1])
+        p[0] = ('program', p[1])
     elif len(p) == 3:
-        p[0] = ('program', p[1], [], p[2])
+        p[0] = ('program', p[1], p[2])
     else:
         p[0] = ('program', p[1], p[2], p[3])
 
+def p_package(p):
+    '''package : PACKAGE MAIN'''
+    
 ##Cambiar esta parte
 
 def p_arguments(p):
@@ -41,7 +45,8 @@ def p_declaration(p):
                    | const_declaration
                    | function
                    | method_definition
-                   | function_literal'''
+                   | function_literal
+                   | import'''
     p[0] = p[1]
 
 #Para manejar las constantes
@@ -64,6 +69,10 @@ def p_import_list_multiple(p):
 def p_sentencias(p):
     '''sentencias : sentencia
                   | sentencia sentencias'''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = [p[1]] + p[2]
 
 def p_sentencia(p):
     '''sentencia : assignment
@@ -76,7 +85,8 @@ def p_sentencia(p):
                  | import
                  | switch
                  | map
-                 | if_statement'''
+                 | if_statement
+                 | return_statement'''
 
 def p_input(p):
     '''input : IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN'''
@@ -206,9 +216,18 @@ def p_value_key(p):
                 | STRING'''
     
 def p_function(p):
+    '''function : FUNC IDENTIFIER LPAREN params_opt RPAREN return_type block'''
+    p[0] = ('function', p[2], p[4], p[6], p[7])
+
+def p_function_with_return(p):
     '''function : FUNC IDENTIFIER LPAREN params_opt RPAREN return_type LBRACE sentencias RETURN expression RBRACE'''
-    p[0] = ('function', p[2], p[4], p[6], ('block', p[8] + [('return', p[10])]))
-    
+
+def p_function_main(p):
+    '''function : FUNC MAIN LPAREN params_opt RPAREN block'''
+
+def p_return_statement(p):
+    'return_statement : RETURN expression'
+
 def p_params_opt(p):
     '''params_opt : params
                       | empty'''
@@ -218,13 +237,13 @@ def p_params(p):
                   | param COMMA params'''
     
 def p_param(p):
-    '''param : IDENTIFIER DATATYPE'''
+    '''param : IDENTIFIER type_name'''
+
+def p_type_name(p):
+    '''type_name : DATATYPE
+                 | IDENTIFIER'''
 
 
-
-
-def p_package(p):
-    '''package : PACKAGE MAIN'''
 
 def p_import(p):
     '''import : IMPORT STRING'''
@@ -284,8 +303,16 @@ def p_for_statement_classis(p):
     'for_statement : FOR shortAssignment SEMICOLON condicion SEMICOLON expression block'
     p[0] = ("FOR_CLASSIC", p[2], p[4], p[6], p[7])
 
+def p_identifier_list_single(p):
+    'identifier_list : IDENTIFIER'
+    p[0] = [p[1]]
+
+def p_identifier_list_multiple(p):
+    'identifier_list : IDENTIFIER COMMA identifier_list'
+    p[0] = [p[1]] + p[3]
+
 def p_short_assignment(p):
-    'shortAssignment : IDENTIFIER DECLARE_ASSIGN expression'
+    'shortAssignment : identifier_list DECLARE_ASSIGN expression'
     p[0] = ('short_assign', p[1], p[3])
 
 #Aus
@@ -302,6 +329,10 @@ def p_for_statement_condition(p):
 def p_for_statement_infinite(p):
     'for_statement : FOR block'
     p[0] = ("FOR_INFINITE", p[2])
+
+def p_for_range_clause(p):
+    'for_range_clause : shortAssignment RANGE expression'
+    p[0] = ('for_range', p[1], p[3])
 
 def p_block(p):
     'block : LBRACE sentencias RBRACE'
@@ -432,7 +463,7 @@ def p_return_type(p):
 
 #Estructura de datos: Slice
 def p_slice_declaration(p):
-    'slice_declaration : VAR IDENTIFIER LBRACKET RBRACKET DATATYPE'
+    'slice_declaration : VAR IDENTIFIER LBRACKET RBRACKET type_name'
     p[0] = ('slice_decl', p[2], p[5]) 
 
 def p_slice_declare_assign(p):
@@ -440,7 +471,7 @@ def p_slice_declare_assign(p):
     p[0] = ('declare_slice', p[1], p[3])
 
 def p_slice_literal(p):
-    'slice_literal : LBRACKET RBRACKET DATATYPE LBRACE elements RBRACE'
+    'slice_literal : LBRACKET RBRACKET type_name LBRACE elements RBRACE'
     p[0] = ('slice_lit', p[3], p[5]) 
 
 def p_elements_multiple(p):

@@ -1,0 +1,43 @@
+[ERROR] Bloque terminado en línea 1: package main -> Syntax error at EOF
+[OK] Bloque terminado en línea 3: import "fmt"
+[OK] Bloque terminado en línea 10: type Producto struct {
+	nombre  string
+	precio  float64
+	enStock bool
+}
+[ERROR] Bloque terminado en línea 14: func aplicarDescuento(p Producto, porcentaje float64) float64 {
+	return p.precio - (p.precio * porcentaje / 100)
+} -> Syntax error at line 15: unexpected 'return'
+[ERROR] Bloque terminado en línea 59: func main() {
+	productos := []Producto{
+		{"Camisa", 25.5, true},
+		{"Pantalón", 40.0, false},
+		{"Zapatos", 60.75, true},
+	}
+	stock := map[string]int{
+		"Camisa":   10,
+		"Pantalón": 0,
+		"Zapatos":  5,
+	}
+	for _, p := range productos {
+		if p.enStock && p.precio < 50 {
+			precioFinal := aplicarDescuento(p, 10.0)
+			fmt.Println("Producto disponible:", p.nombre)
+			fmt.Println("Precio con descuento:", precioFinal)
+			fmt.Println("Stock:", stock[p.nombre])
+		}
+	}
+	subtotal := 10 + 5*2 - 3/1
+	const PI = 3.1416
+	var iva float64 = 12.0
+	total := float64(subtotal) * (1 + iva/100)
+	fmt.Println("Total con IVA:", total)
+	var usuario string = "cliente_01"
+	var edad int = 30
+	activo := true
+	if edad >= 18 && activo {
+		fmt.Println("Usuario autorizado:", usuario)
+	} else {
+		fmt.Println("Acceso restringido")
+	}
+} -> Syntax error at line 60: unexpected '['
