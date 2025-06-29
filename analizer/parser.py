@@ -17,7 +17,7 @@ def p_program(p):
 
 def p_package(p):
     '''package : PACKAGE MAIN'''
-    
+
 ##Cambiar esta parte
 
 def p_arguments(p):
@@ -382,6 +382,10 @@ def p_expression_nil(p):
 def p_expression_binary(p):
     '''expression : expression operator expression'''
     p[0] = ('binop', p[2], p[1], p[3])
+    
+def p_expression_field_access(p):
+    'expression : expression DOT IDENTIFIER'
+    p[0] = ('field_access', p[1], p[3])
 
 def p_operator(p):
     '''operator : PLUS
