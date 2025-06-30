@@ -570,7 +570,7 @@ def semantic_error(message):
 # Build the parser
 parser = yacc.yacc()
 
-log_file = create_log_file("gennalop")  # Cambia por tu nombre real o el de GitHub
+log_file = create_log_file("ChrVillon")  # Cambia por tu nombre real o el de GitHub
 
 with open("testing_algorithms/algorithm1.go", "r", encoding="utf-8") as f:
     lines = f.readlines()
