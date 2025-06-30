@@ -197,10 +197,32 @@ def p_argument_list_opt_empty(p):
 
 def p_condicion(p):
     '''condicion : expression comparador expression'''
+    left = p[1]
+    right = p[3]
+    tipo_izq = left[0]
+    tipo_der = right[0]
+    if tipo_izq != tipo_der:
+        raise SyntaxError(f"Error semántico: No se puede comparar '{tipo_izq}' con '{tipo_der}'")
+    op = p[2]
+    if op in ('==', '!='):
+        p[0] = ('bool', ('cmp', op, left, right))
+        return
+    tipos_ordenables = ['number', 'string', 'rune']
+    if tipo_izq not in tipos_ordenables:
+        raise SyntaxError(f"Error semántico: El operador '{op}' no es válido para tipo '{tipo_izq}'")
+    p[0] = ('bool', ('cmp', op, left, right))
 
 def p_condicion_compleja(p):
     '''condicion_compleja : condicion operadorLogico condicion
                           | condicion operadorLogico condicion_compleja'''
+    izquierda = p[1]
+    derecha = p[3]
+    op = p[2]
+    tipo_izq = izquierda[0] if isinstance(izquierda, tuple) else 'unknown'
+    tipo_der = derecha[0] if isinstance(derecha, tuple) else 'unknown'
+    if tipo_izq != 'bool' or tipo_der != 'bool':
+        raise SyntaxError(f"Error semántico: El operador lógico '{op}' solo se aplica a valores booleanos")
+    p[0] = ('bool', ('logic', op, izquierda, derecha))
 
 def p_operador_logico(p):
     '''operadorLogico : AND
@@ -417,9 +439,21 @@ def p_expression_nil(p):
     'expression : NIL'
     p[0] = ('nil', None)
 
+
+##Genesis. Regla para compatibilidad de tipos
 def p_expression_binary(p):
     '''expression : expression operator expression'''
-    p[0] = ('binop', p[2], p[1], p[3])
+    left = p[1]
+    right = p[3]
+    op = p[2]
+    tipo_izq = left[0] if isinstance(left, tuple) else 'unknown'
+    tipo_der = right[0] if isinstance(right, tuple) else 'unknown'
+    if tipo_izq == 'number' and tipo_der == 'number':
+        p[0] = ('number', ('binop', op, left, right))
+    elif op == '+' and tipo_izq == tipo_der == 'string':
+        p[0] = ('string', ('binop', op, left, right))
+    else:
+        raise SyntaxError(f"Error semántico: No se puede usar el operador '{op}' entre '{tipo_izq}' y '{tipo_der}'")
     
 def p_expression_field_access(p):
     'expression : expression DOT IDENTIFIER'
