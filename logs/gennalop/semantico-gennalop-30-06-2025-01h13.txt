@@ -1,0 +1,11 @@
+[OK] Bloque terminado en línea 2: var nombre string = "Carlos"
+[OK] Bloque terminado en línea 3: var edad int = 30
+[OK] Bloque terminado en línea 4: activo := true
+[OK] Bloque terminado en línea 5: var letra rune = 'a'
+[OK] Bloque terminado en línea 6: var precio float64 = 10.5
+[OK] Bloque terminado en línea 8: edad = 35               // reasignación válida
+[OK] Bloque terminado en línea 9: activo = false          // reasignación válida
+[OK] Bloque terminado en línea 12: var error1 bool = "true"        // Error: string no asignable a bool
+[OK] Bloque terminado en línea 13: var error2 int = 3.14           // Error: float no asignable a int
+[OK] Bloque terminado en línea 14: nombre = 123                    // Error: int no asignable a string
+[OK] Bloque terminado en línea 15: letra = "b"                    // Error: string no asignable a rune

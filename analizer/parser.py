@@ -2,7 +2,6 @@ import pprint
 import ply.yacc as yacc
 from lexer import tokens, lexer
 from logger import create_log_file 
-
   
 tabla_simbolos = {
     "variables": {}, 
@@ -15,77 +14,19 @@ tabla_simbolos = {
 }
 
 def p_program(p):
-    '''program : package import_list declaration_list
-               | package declaration_list
-               | declaration_list
-               | package''' 
-    if len(p) == 2:
-        p[0] = ('program', p[1])
-    elif len(p) == 3:
-        p[0] = ('program', p[1], p[2])
-    else:
-        p[0] = ('program', p[1], p[2], p[3])
+    'program : statement_list'
+    p[0] = ('program', p[1])
 
-def p_package(p):
-    '''package : PACKAGE MAIN'''
-
-##Cambiar esta parte
-
-def p_arguments(p):
-    '''arguments : expression
-                 | expression COMMA arguments'''
+def p_statement_list(p):
+    '''statement_list : statement
+                      | statement_list statement'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
-        p[0] = [p[1]] + p[3]
+        p[0] = p[1] + [p[2]]
 
-
-def p_declaration_list_single(p):
-    'declaration_list : declaration'
-    p[0] = [p[1]]
-
-def p_declaration_list_multiple(p):
-    'declaration_list : declaration_list declaration'
-    p[0] = p[1] + [p[2]]
-
-def p_declaration(p):
-    '''declaration : struct_definition
-                   | print_statement
-                   | for_statement
-                   | const_declaration
-                   | function
-                   | method_definition
-                   | function_literal
-                   | import'''
-    p[0] = p[1]
-
-#Para manejar las constantes
-def p_const_declaration(p):
-    'const_declaration : CONST IDENTIFIER ASSIGN expression'
-    p[0] = ('const_decl', p[2], p[4])
-
-def p_import_list_single(p):
-    'import_list : import'
-    p[0] = [p[1]]
-
-def p_import_list_multiple(p):
-    'import_list : import_list import'
-    p[0] = p[1] + [p[2]]
-
-#)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
-#Christopher Villon)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
-#)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
-
-def p_sentencias(p):
-    '''sentencias : sentencia
-                  | sentencia sentencias'''
-    if len(p) == 2:
-        p[0] = [p[1]]
-    else:
-        p[0] = [p[1]] + p[2]
-
-def p_sentencia(p):
-    '''sentencia : assignment
+def p_statement(p):
+    '''statement : assignment
                  | input
                  | llamarFuncion
                  | print_statement
@@ -96,19 +37,62 @@ def p_sentencia(p):
                  | switch
                  | map
                  | if_statement
-                 | return_statement'''
+                 | function
+                 | method_definition
+                 | function_literal'''
+    print("Matched statement:", p[1])
+    p[0] = p[1]
+
+def p_package(p):
+    '''package : PACKAGE MAIN
+               | PACKAGE IDENTIFIER'''
+    p[0] = ('package', p[2])
+
+def p_import(p): #Extender para casos: m "math" ; . "math" ; _ "math"
+    '''import : IMPORT STRING
+              | IMPORT LPAREN import_list RPAREN'''
+    if len(p) == 3:
+        p[0] = ('import_single', p[2])
+    else:
+        p[0] = ('import_multiple', p[3])
+
+def p_import_list(p):
+    '''import_list : STRING
+                   | import_list STRING'''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = p[1] + [p[2]]
+
+def p_arguments(p):
+    '''arguments : expression
+                  | arguments COMMA expression
+                  | '''
+    if len(p) == 1:
+        p[0] = []
+    elif len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = p[1] + [p[3]]
+
+#Para manejar las constantes
+def p_const_declaration(p):
+    'const_declaration : CONST IDENTIFIER ASSIGN expression'
+    p[0] = ('const_decl', p[2], p[4])
+
+#)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+#Christopher Villon)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+#)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
 
 def p_input(p):
     '''input : IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN'''
 
 def p_var_declaration(p):
-    '''varDeclaration : VAR IDENTIFIER DATATYPE'''
+    '''var_declaration : VAR IDENTIFIER DATATYPE'''
     var_name = p[2]
     var_type = p[3]
-
     if var_name in tabla_simbolos['variables']:
         print(f"Variable '{var_name}' already declared.")
-    
     tabla_simbolos['variables'][var_name] = var_type
     p[0] = ('var_decl', var_name, var_type)
 
@@ -130,7 +114,7 @@ def p_assignment(p):
         valor = p[5]
         tipo_expr = valor[0] if isinstance(valor, tuple) else 'unknown'
         if tipo_expr != tipo_declarado:
-            raise SyntaxError(f"Error semántico: Se declaró '{nombre}' como '{tipo_declarado}' pero se asignó valor tipo '{tipo_expr}'")
+            semantic_error(f"Error semántico: Se declaró '{nombre}' como '{tipo_declarado}' pero se asignó valor tipo '{tipo_expr}'")
         tabla_simbolos["variables"][nombre] = tipo_declarado
         p[0] = ('var_assign', nombre, tipo_declarado, valor)
 
@@ -140,26 +124,14 @@ def p_reasignacion(p):
     expr = p[3]
     tipo_expr = expr[0] if isinstance(expr, tuple) else 'unknown'
     if nombre not in tabla_simbolos["variables"]:
-        raise SyntaxError(f"Error: variable '{nombre}' no declarada")
+        semantic_error(f"Error: variable '{nombre}' no declarada")
     tipo_esperado = tabla_simbolos["variables"][nombre]
     if tipo_expr != tipo_esperado:
-        raise SyntaxError(f"Error semántico: variable '{nombre}' es de tipo '{tipo_esperado}' pero se intenta asignar valor tipo '{tipo_expr}'")
+        semantic_error(f"Error semántico: variable '{nombre}' es de tipo '{tipo_esperado}' pero se intenta asignar valor tipo '{tipo_expr}'")
     p[0] = ('reasignacion', nombre, expr)
 
 def p_llamar_funcion(p):
     '''llamarFuncion : IDENTIFIER LPAREN argument_list_opt RPAREN'''
-
-#def p_argumentos_opt(p):
-#    '''argumentos_opt : argumentos
-#                      | empty'''
-
-#def p_argumentos(p):
-#    '''argumentos : expression
-#                  | argumentos COMMA expression'''
-
-def p_argumentos(p):
-    '''argumentos : expression
-                  | expression COMMA argumentos'''
 
 #Aus 
 def p_expression_comparacion(p):
@@ -211,14 +183,14 @@ def p_condicion(p):
     tipo_izq = left[0]
     tipo_der = right[0]
     if tipo_izq != tipo_der:
-        raise SyntaxError(f"Error semántico: No se puede comparar '{tipo_izq}' con '{tipo_der}'")
+        semantic_error(f"Error semántico: No se puede comparar '{tipo_izq}' con '{tipo_der}'")
     op = p[2]
     if op in ('==', '!='):
         p[0] = ('bool', ('cmp', op, left, right))
         return
     tipos_ordenables = ['number', 'string', 'rune']
     if tipo_izq not in tipos_ordenables:
-        raise SyntaxError(f"Error semántico: El operador '{op}' no es válido para tipo '{tipo_izq}'")
+        semantic_error(f"Error semántico: El operador '{op}' no es válido para tipo '{tipo_izq}'")
     p[0] = ('bool', ('cmp', op, left, right))
 
 def p_condicion_compleja(p):
@@ -230,7 +202,7 @@ def p_condicion_compleja(p):
     tipo_izq = izquierda[0] if isinstance(izquierda, tuple) else 'unknown'
     tipo_der = derecha[0] if isinstance(derecha, tuple) else 'unknown'
     if tipo_izq != 'bool' or tipo_der != 'bool':
-        raise SyntaxError(f"Error semántico: El operador lógico '{op}' solo se aplica a valores booleanos")
+        semantic_error(f"Error semántico: El operador lógico '{op}' solo se aplica a valores booleanos")
     p[0] = ('bool', ('logic', op, izquierda, derecha))
 
 def p_operador_logico(p):
@@ -261,8 +233,8 @@ def p_caseBlocks(p):
                    | caseBlock caseBlocks'''
 
 def p_caseBlock(p):
-    '''caseBlock : CASE expression COLON sentencias
-                  | DEFAULT COLON sentencias'''
+    '''caseBlock : CASE expression COLON statement_list
+                  | DEFAULT COLON statement_list'''
     
 def p_short_map(p):
     '''map : IDENTIFIER DECLARE_ASSIGN mapLiteral'''
@@ -289,7 +261,7 @@ def p_function(p):
     p[0] = ('function', p[2], p[4], p[6], p[7])
 
 def p_function_with_return(p):
-    '''function : FUNC IDENTIFIER LPAREN params_opt RPAREN return_type LBRACE sentencias RETURN expression RBRACE'''
+    '''function : FUNC IDENTIFIER LPAREN params_opt RPAREN return_type LBRACE statement_list RETURN expression RBRACE'''
     func_name = p[2]
     return_types = p[6]
     tabla_simbolos['functions'][func_name] = {
@@ -333,11 +305,6 @@ def p_param(p):
 def p_type_name(p):
     '''type_name : DATATYPE
                  | IDENTIFIER'''
-
-
-
-def p_import(p):
-    '''import : IMPORT STRING'''
 
 #)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
 #Genesis Lopez))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
@@ -426,7 +393,7 @@ def p_for_range_clause(p):
     p[0] = ('for_range', p[1], p[3])
 
 def p_block(p):
-    'block : LBRACE sentencias RBRACE'
+    'block : LBRACE statement_list RBRACE'
     p[0] = ('block', p[2])
 
 def p_block_empty(p):
@@ -491,7 +458,7 @@ def p_expression_binary(p):
     elif op == '+' and tipo_izq == tipo_der == 'string':
         p[0] = ('string', ('binop', op, left, right))
     else:
-        raise SyntaxError(f"Error semántico: No se puede usar el operador '{op}' entre '{tipo_izq}' y '{tipo_der}'")
+        semantic_error(f"Error semántico: No se puede usar el operador '{op}' entre '{tipo_izq}' y '{tipo_der}'")
     
 def p_expression_field_access(p):
     'expression : expression DOT IDENTIFIER'
@@ -585,14 +552,18 @@ def p_elements_single(p):
     'elements : expression'
     p[0] = [p[1]]
 
-
-
 # Error rule for syntax errors
 def p_error(p):
     if p:
         raise SyntaxError(f"Syntax error at line {p.lineno}: unexpected '{p.value}'")
     else:
         raise SyntaxError("Syntax error at EOF")
+
+
+def semantic_error(message):
+    print("[SEMANTIC ERROR]", message)
+    log_file.write(f"[SEMANTIC ERROR] {message}\n")
+
 
 # Build the parser
 parser = yacc.yacc()
