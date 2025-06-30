@@ -105,7 +105,10 @@ def t_RUNE(t):
 
 def t_NUMBER(t):
     r'\d+(\.\d+)?'
-    t.value = float(t.value) if '.' in t.value else int(t.value)
+    if '.' in t.value:
+        t.value = ('float64', float(t.value))
+    else:
+        t.value = ('int', int(t.value))
     return t
 
 

@@ -1,15 +1,13 @@
 // Correctos
-var nombre string = "Carlos"
-var edad int = 30
-activo := true
-var letra rune = 'a'
-var precio float64 = 10.5
-
-edad = 35               // reasignación válida
-activo = false          // reasignación válida
+var suma int = 5 + 3
+var texto string = "Hola" + " Mundo"
+var esMayor bool = edad > 18
+var esIgual bool = nombre == "Carlos"
+var esVerdad bool = activo && true
+var letraMas int = letra + 1      // rune + number (depende si aceptas rune como number, sino error)
 
 // Incorrectos
-var error1 bool = "true"        // Error: string no asignable a bool
-var error2 int = 3.14           // Error: float no asignable a int
-nombre = 123                    // Error: int no asignable a string
-letra = "b"                    // Error: string no asignable a rune
+var errorSuma = "5" + 3          // Error: string + int no permitido
+var errorBool = true + 1         // Error: bool + number no permitido
+var errorComparacion = "hola" > 3  // Error: string > number no permitido
+var errorLogico = 1 && true      // Error: number && bool no permitido

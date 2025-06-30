@@ -416,7 +416,9 @@ precedence = (
 
 def p_expression_number(p):
     'expression : NUMBER'
-    p[0] = ('number', p[1])
+    tipo, valor = p[1]
+    p[0] = (tipo, valor)  # tipo será 'int' o 'float64'
+
 def p_expression_identifier(p):
     'expression : IDENTIFIER'
     var_name = p[1]
