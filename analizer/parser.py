@@ -3,6 +3,11 @@ import ply.yacc as yacc
 from lexer import tokens, lexer
 from logger import create_log_file 
 
+symbol_table = {
+    'functions': {},  
+    'variables': {}   
+}
+
 def p_program(p):
     '''program : package import_list declaration_list
                | package declaration_list
@@ -93,6 +98,14 @@ def p_input(p):
 
 def p_var_declaration(p):
     '''varDeclaration : VAR IDENTIFIER DATATYPE'''
+    var_name = p[2]
+    var_type = p[3]
+
+    if var_name in symbol_table['variables']:
+        print(f"Variable '{var_name}' already declared.")
+    
+    symbol_table['variables'][var_name] = var_type
+    p[0] = ('var_decl', var_name, var_type)
 
 def p_assignment(p):
     '''assignment : IDENTIFIER DECLARE_ASSIGN expression
@@ -221,12 +234,34 @@ def p_function(p):
 
 def p_function_with_return(p):
     '''function : FUNC IDENTIFIER LPAREN params_opt RPAREN return_type LBRACE sentencias RETURN expression RBRACE'''
+    func_name = p[2]
+    return_types = p[6]
+    symbol_table['functions'][func_name] = {
+        'return_types': return_types,  
+        'params': p[4]
+    }
+    p[0] = ('function_with_return', func_name, p[4], return_types, p[8])
 
 def p_function_main(p):
     '''function : FUNC MAIN LPAREN params_opt RPAREN block'''
 
 def p_return_statement(p):
     'return_statement : RETURN expression'
+    function_name = p[-2]  
+    returned_values = p[2]
+
+    if function_name in symbol_table['functions']:
+        expected_types = symbol_table['functions'][function_name]['return_types']
+        if len(returned_values) != len(expected_types):
+            raise TypeError(f"Function {function_name} expects {len(expected_types)} return values, but got {len(returned_values)}.")
+
+        for idx, value in enumerate(returned_values):
+            if value[0] != expected_types[idx]:
+                raise TypeError(f"Expected return type {expected_types[idx]} for value {idx + 1}, but got {value[0]}.")
+    else:
+        raise NameError(f"Function {function_name} is not defined.")
+    
+    p[0] = ('return', returned_values)
 
 def p_params_opt(p):
     '''params_opt : params
@@ -361,7 +396,14 @@ def p_expression_number(p):
     p[0] = ('number', p[1])
 def p_expression_identifier(p):
     'expression : IDENTIFIER'
-    p[0] = ('ident', p[1])
+    var_name = p[1]
+    
+    if var_name not in symbol_table['variables']:
+        print(f"Variable '{var_name}' is not defined.")
+    
+    var_type = symbol_table['variables'][var_name]
+    p[0] = ('ident', var_name, var_type)
+
 def p_expression_rune(p):
     'expression : RUNE'
     p[0] = ('rune', p[1])
@@ -459,9 +501,11 @@ def p_return_type(p):
     '''return_type : DATATYPE
                    | empty'''
     if len(p) == 2:
-        p[0] = p[1]
+        p[0] = [p[1]]  
+    elif len(p) == 3:
+        p[0] = [p[1]] + p[2] 
     else:
-        p[0] = None
+        p[0] = []
 
 
 
