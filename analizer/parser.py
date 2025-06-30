@@ -3,9 +3,15 @@ import ply.yacc as yacc
 from lexer import tokens, lexer
 from logger import create_log_file 
 
-symbol_table = {
-    'functions': {},  
-    'variables': {}   
+  
+tabla_simbolos = {
+    "variables": {}, 
+    "tipos": {
+        "string-funciones": ["len", "to_uppercase", "to_lowercase", "to_str"],
+        "int-funciones": ["abs", "sqrt"],
+    },
+    "funciones": {},
+    "structs": {},  
 }
 
 def p_program(p):
@@ -32,7 +38,6 @@ def p_arguments(p):
         p[0] = [p[1]]
     else:
         p[0] = [p[1]] + p[3]
-
 
 
 def p_declaration_list_single(p):
@@ -101,16 +106,45 @@ def p_var_declaration(p):
     var_name = p[2]
     var_type = p[3]
 
-    if var_name in symbol_table['variables']:
+    if var_name in tabla_simbolos['variables']:
         print(f"Variable '{var_name}' already declared.")
     
-    symbol_table['variables'][var_name] = var_type
+    tabla_simbolos['variables'][var_name] = var_type
     p[0] = ('var_decl', var_name, var_type)
 
+
+##Genesis. Aplicando regla semantica para verficacion de tipo
 def p_assignment(p):
     '''assignment : IDENTIFIER DECLARE_ASSIGN expression
                   | VAR IDENTIFIER DATATYPE ASSIGN expression
                   | VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion'''
+    if len(p) == 4:
+        nombre = p[1]
+        expr = p[3]
+        tipo_expr = expr[0] if isinstance(expr, tuple) else 'unknown'
+        tabla_simbolos["variables"][nombre] = tipo_expr
+        p[0] = ('assign_decl', nombre, expr)
+    elif len(p) == 6:
+        nombre = p[2]
+        tipo_declarado = p[3]
+        valor = p[5]
+        tipo_expr = valor[0] if isinstance(valor, tuple) else 'unknown'
+        if tipo_expr != tipo_declarado:
+            raise SyntaxError(f"Error semántico: Se declaró '{nombre}' como '{tipo_declarado}' pero se asignó valor tipo '{tipo_expr}'")
+        tabla_simbolos["variables"][nombre] = tipo_declarado
+        p[0] = ('var_assign', nombre, tipo_declarado, valor)
+
+def p_reasignacion(p):
+    'assignment : IDENTIFIER ASSIGN expression'
+    nombre = p[1]
+    expr = p[3]
+    tipo_expr = expr[0] if isinstance(expr, tuple) else 'unknown'
+    if nombre not in tabla_simbolos["variables"]:
+        raise SyntaxError(f"Error: variable '{nombre}' no declarada")
+    tipo_esperado = tabla_simbolos["variables"][nombre]
+    if tipo_expr != tipo_esperado:
+        raise SyntaxError(f"Error semántico: variable '{nombre}' es de tipo '{tipo_esperado}' pero se intenta asignar valor tipo '{tipo_expr}'")
+    p[0] = ('reasignacion', nombre, expr)
 
 def p_llamar_funcion(p):
     '''llamarFuncion : IDENTIFIER LPAREN argument_list_opt RPAREN'''
@@ -236,7 +270,7 @@ def p_function_with_return(p):
     '''function : FUNC IDENTIFIER LPAREN params_opt RPAREN return_type LBRACE sentencias RETURN expression RBRACE'''
     func_name = p[2]
     return_types = p[6]
-    symbol_table['functions'][func_name] = {
+    tabla_simbolos['functions'][func_name] = {
         'return_types': return_types,  
         'params': p[4]
     }
@@ -250,8 +284,8 @@ def p_return_statement(p):
     function_name = p[-2]  
     returned_values = p[2]
 
-    if function_name in symbol_table['functions']:
-        expected_types = symbol_table['functions'][function_name]['return_types']
+    if function_name in tabla_simbolos['functions']:
+        expected_types = tabla_simbolos['functions'][function_name]['return_types']
         if len(returned_values) != len(expected_types):
             raise TypeError(f"Function {function_name} expects {len(expected_types)} return values, but got {len(returned_values)}.")
 
@@ -398,10 +432,10 @@ def p_expression_identifier(p):
     'expression : IDENTIFIER'
     var_name = p[1]
     
-    if var_name not in symbol_table['variables']:
+    if var_name not in tabla_simbolos['variables']:
         print(f"Variable '{var_name}' is not defined.")
     
-    var_type = symbol_table['variables'][var_name]
+    var_type = tabla_simbolos['variables'][var_name]
     p[0] = ('ident', var_name, var_type)
 
 def p_expression_rune(p):
@@ -444,19 +478,6 @@ def p_expression_group(p):
     'expression : LPAREN expression RPAREN'
     p[0] = p[2]
 
-'''
-def p_expression_value(p):
-    'expression : value'
-    p[0] = p[1]
-
-def p_value_number(p):
-    'value : NUMBER'
-    p[0] = ("number",p[1])
-
-def p_value_identifier(p):
-    'value : IDENTIFIER'
-    p[0] = ("vari", p[1])
-'''
 #Aus
 #Estructura if
 def p_if_statement(p):
@@ -542,9 +563,9 @@ def p_error(p):
 # Build the parser
 parser = yacc.yacc()
 
-log_file = create_log_file("starAus20")  # Cambia por tu nombre real o el de GitHub
+log_file = create_log_file("gennalop")  # Cambia por tu nombre real o el de GitHub
 
-with open("testing_algorithms/algorithm2.go", "r", encoding="utf-8") as f:
+with open("testing_algorithms/algorithm1.go", "r", encoding="utf-8") as f:
     lines = f.readlines()
 
 block = ""
