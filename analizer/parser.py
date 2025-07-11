@@ -1,8 +1,11 @@
 import pprint
 import ply.yacc as yacc
-from lexer import tokens, lexer
-from logger import create_log_file 
-  
+from .lexer import tokens, lexer
+from .logger import create_log_file 
+
+semantic_errors = []
+parser_errors = []
+
 tabla_simbolos = {
     "variables": {}, 
     "tipos": {
@@ -94,7 +97,8 @@ def p_var_declaration(p):
     var_name = p[2]
     var_type = p[3]
     if var_name in tabla_simbolos['variables']:
-        print(f"Variable '{var_name}' already declared.")
+        semantic_error(f"Variable '{var_name}' already declared. Line {p.lineno}")
+        #print(f"Variable '{var_name}' already declared.")
     tabla_simbolos['variables'][var_name] = var_type
     p[0] = ('var_decl', var_name, var_type)
 
@@ -116,7 +120,8 @@ def p_assignment(p):
         valor = p[5]
         tipo_expr = valor[0] if isinstance(valor, tuple) else 'unknown'
         if tipo_expr != tipo_declarado:
-            semantic_error(f"Error semántico: Se declaró '{nombre}' como '{tipo_declarado}' pero se asignó valor tipo '{tipo_expr}'")
+            #semantic_error(f"Error semántico: Se declaró '{nombre}' como '{tipo_declarado}' pero se asignó valor tipo '{tipo_expr}'")
+            semantic_error(f"'{nombre}' was declared as '{tipo_declarado}' but was assigned value type '{tipo_expr}. Line {p.lineno}")
         tabla_simbolos["variables"][nombre] = tipo_declarado
         p[0] = ('var_assign', nombre, tipo_declarado, valor)
 
@@ -126,10 +131,10 @@ def p_reasignacion(p):
     expr = p[3]
     tipo_expr = expr[0] if isinstance(expr, tuple) else 'unknown'
     if nombre not in tabla_simbolos["variables"]:
-        semantic_error(f"Error: variable '{nombre}' no declarada")
+        semantic_error(f"Variable '{nombre}' no declarada. Line {p.lineno}")
     tipo_esperado = tabla_simbolos["variables"][nombre]
     if tipo_expr != tipo_esperado:
-        semantic_error(f"Error semántico: variable '{nombre}' es de tipo '{tipo_esperado}' pero se intenta asignar valor tipo '{tipo_expr}'")
+        semantic_error(f"Variable '{nombre}' es de tipo '{tipo_esperado}' pero se intenta asignar valor tipo '{tipo_expr}'. Line {p.lineno}")
     p[0] = ('reasignacion', nombre, expr)
 
 def p_llamar_funcion(p):
@@ -185,14 +190,14 @@ def p_condicion(p):
     tipo_izq = left[0]
     tipo_der = right[0]
     if tipo_izq != tipo_der:
-        semantic_error(f"Error semántico: No se puede comparar '{tipo_izq}' con '{tipo_der}'")
+        semantic_error(f"No se puede comparar '{tipo_izq}' con '{tipo_der}'. Line {p.lineno}")
     op = p[2]
     if op in ('==', '!='):
         p[0] = ('bool', ('cmp', op, left, right))
         return
     tipos_ordenables = ['number', 'string', 'rune']
     if tipo_izq not in tipos_ordenables:
-        semantic_error(f"Error semántico: El operador '{op}' no es válido para tipo '{tipo_izq}'")
+        semantic_error(f"El operador '{op}' no es válido para tipo '{tipo_izq}'. Line {p.lineno}")
     p[0] = ('bool', ('cmp', op, left, right))
 
 def p_condicion_compleja(p):
@@ -204,7 +209,7 @@ def p_condicion_compleja(p):
     tipo_izq = izquierda[0] if isinstance(izquierda, tuple) else 'unknown'
     tipo_der = derecha[0] if isinstance(derecha, tuple) else 'unknown'
     if tipo_izq != 'bool' or tipo_der != 'bool':
-        semantic_error(f"Error semántico: El operador lógico '{op}' solo se aplica a valores booleanos")
+        semantic_error(f"El operador lógico '{op}' solo se aplica a valores booleanos. Line {p.lineno}")
     p[0] = ('bool', ('logic', op, izquierda, derecha))
 
 def p_operador_logico(p):
@@ -450,13 +455,12 @@ def p_expression_number(p):
 def p_expression_identifier(p):
     'expression : IDENTIFIER'
     var_name = p[1]
-    line = p.lineno(1)
-    
+
     if var_name not in tabla_simbolos['variables']:
-        semantic_error(f"[Linea {line}] Variable '{var_name}' is not defined.")
-    
-    var_type = tabla_simbolos['variables'][var_name]
-    p[0] = ('ident', var_name, var_type)
+        semantic_error(f"Variable '{var_name}' is not defined. Line {p.lineno}")
+    else:
+        var_type = tabla_simbolos['variables'][var_name]
+    p[0] = ('ident', var_name)
 
 def p_expression_rune(p):
     'expression : RUNE'
@@ -494,6 +498,7 @@ def p_expression_binary(p):
     else:
         semantic_error(f"Error semántico: No se puede usar el operador '{op}' entre '{tipo_izq}' y '{tipo_der}'")
         p[0] = ('unknown', None)
+
     
 def p_expression_field_access(p):
     'expression : expression DOT IDENTIFIER'
@@ -524,7 +529,8 @@ def p_if_statement(p):
     cond_type = cond[0]
 
     if cond_type not in ('comparison', 'bool'):
-        raise SyntaxError(f"The condition of if must be boolean or a comparison, not '{cond_type}'")
+        #raise SyntaxError(f"The condition of if must be boolean or a comparison, not '{cond_type}'")
+        semantic_error(f"The condition of if must be boolean or a comparison, not '{cond_type}. Line {p.lineno}")
 
     if len(p) == 4:
         p[0] = ('if', cond, p[3], None)
@@ -592,21 +598,62 @@ def p_elements_single(p):
 # Error rule for syntax errors
 def p_error(p):
     if p:
-        raise SyntaxError(f"Syntax error at line {p.lineno}: unexpected '{p.value}'")
+        parser_errors.append(f"[SYNTAX ERROR] Unexpected '{p.value}' at line {p.lineno}")
+        raise SyntaxError(f"[SYNTAX ERROR] Unexpected '{p.value}' at line {p.lineno}")
     else:
-        raise SyntaxError("Syntax error at EOF")
+        parser_errors.append("[SYNTAX ERROR] Unexpected EOF")
+        raise SyntaxError("[SYNTAX ERROR] Unexpected EOF")
 
+def semantic_error(m):
+    print("[SEMANTIC ERROR]", m)
+    semantic_errors.append(f"[SEMANTIC ERROR] {m}")
+    #log_file.write(f"[SEMANTIC ERROR] {message}\n")
 
-def semantic_error(message):
-    print("[SEMANTIC ERROR]", message)
-    log_file.write(f"[SEMANTIC ERROR] {message}\n")
-
-
-# Build the parser
 parser = yacc.yacc()
 parser.funcion_actual = None
 
-log_file = create_log_file("ChrVillon")  # Cambia por tu nombre real o el de GitHub
+def parser_analyze(code):
+    global parser_errors
+    lexer.lineno = 1
+    parser_errors = []
+    #parser = yacc.yacc()
+    try:
+        results = []
+        resultado = parser.parse(code)
+        results.append("[OK] Parsing completed successfully.")
+        #results.append(str(resultado))
+        tree_str = tree_to_str(resultado)
+        results.append(tree_str)
+        return "\n".join(str(r) for r in results)
+    except Exception as e:
+        return "\n".join(str(e) for e in parser_errors)
+
+def tree_to_str(node, indent="", last=True):
+    if node is None:
+        return "(empty tree)"
+    lines = []
+    prefix = indent + ("└── " if last else "├── ")
+    if isinstance(node, tuple):
+        lines.append(prefix + str(node[0]))
+        indent += "    " if last else "│   "
+        for i, child in enumerate(node[1:]):
+            child_str = tree_to_str(child, indent, i == len(node[1:]) - 1)
+            lines.append(child_str)
+    elif isinstance(node, list):
+        for i, item in enumerate(node):
+            child_str = tree_to_str(item, indent, i == len(node) - 1)
+            lines.append(child_str)
+    else:
+        lines.append(prefix + str(node))    
+    return "\n".join(lines)
+
+def semantic_analyse(code):
+    if semantic_errors:
+        return "\n".join(semantic_errors)
+    return "No semantic errors detected"
+
+'''
+log_file = create_log_file("gennalop")  # Cambia por tu nombre real o el de GitHub
 
 with open("testing_algorithms/algorithm3.go", "r", encoding="utf-8") as f:
     lines = f.readlines()
@@ -637,6 +684,7 @@ for lineno, line in enumerate(lines, start=1):
             log_file.write(f"  -> {str(e)}\n")
         block = ""
 '''
+'''
 parser.parse(data)
 
 while True:
@@ -651,4 +699,4 @@ while True:
 #log_file.close(
 parser.input(data)
 '''
-log_file.close()
+#log_file.close()
