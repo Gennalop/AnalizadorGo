@@ -44,7 +44,11 @@ def p_statement(p):
                  | method_definition
                  | function_literal
                  | var_declaration
-                 | return_statement'''
+                 | return_statement
+                 | slice_declaration
+                 | declare_assign'''
+    
+
     print("Matched statement:", p[1])
     p[0] = p[1]
 
@@ -125,6 +129,24 @@ def p_assignment(p):
         tabla_simbolos["variables"][nombre] = tipo_declarado
         p[0] = ('var_assign', nombre, tipo_declarado, valor)
 
+def p_assignment_slice_literal(p):
+    '''assignment : IDENTIFIER DECLARE_ASSIGN slice_literal
+                  | VAR IDENTIFIER DATATYPE ASSIGN slice_literal'''
+    if len(p) == 4:
+        nombre = p[1]
+        slice_lit = p[3]
+        tabla_simbolos["variables"][nombre] = f"[]{slice_lit[1]}"
+        p[0] = ('assign_decl_slice', nombre, slice_lit)
+    else:
+        nombre = p[2]
+        tipo_declarado = p[3]
+        slice_lit = p[5]
+        tipo_slice = f"[]{slice_lit[1]}"
+        if tipo_slice != tipo_declarado:
+            semantic_error(f"'{nombre}' was declared as '{tipo_declarado}' but was assigned value type '{tipo_slice}'.", p)
+        tabla_simbolos["variables"][nombre] = tipo_declarado
+        p[0] = ('var_assign_slice', nombre, tipo_declarado, slice_lit)
+
 def p_reasignacion(p):
     'assignment : IDENTIFIER ASSIGN expression'
     nombre = p[1]
@@ -138,7 +160,13 @@ def p_reasignacion(p):
     p[0] = ('reasignacion', nombre, expr)
 
 def p_llamar_funcion(p):
-    '''llamarFuncion : IDENTIFIER LPAREN argument_list_opt RPAREN'''
+    '''llamarFuncion : IDENTIFIER LPAREN argument_list_opt RPAREN
+                     | IDENTIFIER LPAREN argument_list_opt COMMA expression RPAREN
+                     | IDENTIFIER DOT IDENTIFIER LPAREN argument_list_opt RPAREN'''
+    if len(p) == 7:
+        p[0] = ('call', (p[1], p[3]), p[5])
+    else:
+        p[0] = ('call', p[1], p[3])
 
 #Aus 
 def p_expression_comparacion(p):
@@ -146,20 +174,27 @@ def p_expression_comparacion(p):
     left = p[1]
     right = p[3]
 
-    # Extraer tipos base
     left_type = left[0]
+    if left_type == 'ident':
+        var_name = left[1]
+        left_type = tabla_simbolos['variables'].get(var_name, 'unknown')
+
     right_type = right[0]
+    if right_type == 'ident':
+        var_name = right[1]
+        right_type = tabla_simbolos['variables'].get(var_name, 'unknown')
 
     # Permitir comparaciones solo entre números, strings o bool entre sí
     allowed = [
-        ('number', 'number'),
+        ('int', 'int'),
+        ('float64', 'float64'),
         ('string', 'string'),
         ('rune', 'rune'),
         ('bool', 'bool'),
     ]
 
     if (left_type, right_type) not in allowed:
-        raise SyntaxError(f"Comparison between incompatible types: {left_type} y {right_type}")
+        semantic_error(f"Comparison between incompatible types: {left_type} y {right_type}")
 
     p[0] = ('comparison', p[2], left, right)
 
@@ -187,15 +222,25 @@ def p_condicion(p):
     '''condicion : expression comparador expression'''
     left = p[1]
     right = p[3]
+
     tipo_izq = left[0]
+    if tipo_izq == 'ident':
+        var_name = left[1]
+        tipo_izq = tabla_simbolos['variables'].get(var_name, 'unknown')
+
     tipo_der = right[0]
+    if tipo_der == 'ident':
+        var_name = right[1]
+        tipo_der = tabla_simbolos['variables'].get(var_name, 'unknown')
+
     if tipo_izq != tipo_der:
         semantic_error(f"No se puede comparar '{tipo_izq}' con '{tipo_der}'.", p)
     op = p[2]
     if op in ('==', '!='):
         p[0] = ('bool', ('cmp', op, left, right))
         return
-    tipos_ordenables = ['number', 'string', 'rune']
+    
+    tipos_ordenables = ['int', 'float64', 'string', 'rune']
     if tipo_izq not in tipos_ordenables:
         semantic_error(f"El operador '{op}' no es válido para tipo '{tipo_izq}'.", p)
     p[0] = ('bool', ('cmp', op, left, right))
@@ -479,6 +524,13 @@ def p_expression_nil(p):
     'expression : NIL'
     p[0] = ('nil', None)
 
+def p_expression_slice_literal(p):
+    'expression : slice_literal'
+    p[0] = p[1]
+
+def p_expression_llamar_funcion(p):
+    'expression : llamarFuncion'
+    p[0] = p[1]
 
 ##Genesis. Regla para compatibilidad de tipos
 def p_expression_binary(p):
@@ -519,17 +571,19 @@ def p_expression_group(p):
     'expression : LPAREN expression RPAREN'
     p[0] = p[2]
 
+
 #Aus
 #Estructura if
 def p_if_statement(p):
-    '''if_statement : IF condicion_compleja block
+    '''if_statement : IF condicion block
+                    | IF condicion block ELSE block
+                    | IF condicion_compleja block
                     | IF condicion_compleja block ELSE block'''
     cond = p[2]
     cond_type = cond[0]
 
-    if cond_type not in ('comparison', 'bool'):
-        #raise SyntaxError(f"The condition of if must be boolean or a comparison, not '{cond_type}'")
-        semantic_error(f"The condition of if must be boolean or a comparison, not '{cond_type}.", p)
+    if cond_type != 'bool':
+        semantic_error(f"La condición del if debe ser booleana, no '{cond_type}'.", p)
 
     if len(p) == 4:
         p[0] = ('if', cond, p[3], None)
@@ -584,7 +638,7 @@ def p_slice_declare_assign(p):
 
 def p_slice_literal(p):
     'slice_literal : LBRACKET RBRACKET type_name LBRACE elements RBRACE'
-    p[0] = ('slice_lit', p[3], p[5]) 
+    p[0] = ('slice_lit', p[3], p[5])
 
 def p_elements_multiple(p):
     'elements : elements COMMA expression'
@@ -593,6 +647,23 @@ def p_elements_multiple(p):
 def p_elements_single(p):
     'elements : expression'
     p[0] = [p[1]]
+
+def p_expression_index_access(p):
+    'expression : expression LBRACKET expression RBRACKET'
+    p[0] = ('index_access', p[1], p[3])
+
+def p_expression_slice_access(p):
+    '''expression : expression LBRACKET expression COLON expression RBRACKET
+                  | expression LBRACKET COLON expression RBRACKET
+                  | expression LBRACKET expression COLON RBRACKET'''
+    
+    if len(p) == 7:
+        p[0] = ('slice_access', p[1], p[3], p[5])  # numeros[1:4]
+    elif len(p) == 6 and p[3] == ':':
+        p[0] = ('slice_access', p[1], None, p[4])  # numeros[:4]
+    elif len(p) == 6 and p[4] == ':':
+        p[0] = ('slice_access', p[1], p[3], None)  # numeros[1:]
+
 
 # Error rule for syntax errors
 def p_error(p):
