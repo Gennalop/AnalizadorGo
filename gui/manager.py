@@ -6,6 +6,7 @@ class Manager(tk.Tk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.title("Analizador Go")
+        self.geometry("1100x600") 
 
         container = tk.Frame(self)
         container.pack(side = tk.TOP, fill = tk.BOTH, expand = True)

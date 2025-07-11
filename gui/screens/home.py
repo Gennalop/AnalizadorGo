@@ -2,26 +2,27 @@ import tkinter as tk
 from tkinter import filedialog
 from gui import style
 from analizer.lexer import lexer, lexer_analyze
-from analizer.parser import parser_analyze
+from analizer.parser import parser_analyze, semantic_analyse
 from .home_editor import create_editor_panel
 from .home_buttons import create_buttons_panel
 from .home_analysis import create_analysis_panels
 
 class Home(tk.Frame):
     def __init__(self, parent, controller):
-        super().__init__(parent)
-        self.configure(background = style.BACKGROUND)
+        super().__init__(parent, padx=20, pady=20, background=style.BACKGROUND)
         self.controller = controller
         self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=2)
+        self.columnconfigure(1, minsize=style.PANELS_SPACE)
+        self.columnconfigure(2, weight=2)
         self.rowconfigure(0, weight=3)
-        self.rowconfigure(1, weight=1)
-        self._analisis_programado = None  # Para el debounce
+        self.rowconfigure(1, minsize=style.PANELS_SPACE)
+        self.rowconfigure(2, weight=1)
+        self._analisis_programado = None
+        self.semantic_available = False
         self.live_enabled = False
         create_editor_panel(self, 0, 0)
-        create_buttons_panel(self, 1, 0)
-        create_analysis_panels(self)
-
+        create_buttons_panel(self, 2, 0)
+        create_analysis_panels(self, 0, 2)
         self.update_line_numbers()
 
     #Editor logic ===============================================================
@@ -35,6 +36,9 @@ class Home(tk.Frame):
         return "break"
 
     def update_line_numbers(self, event=None):
+        if self.semantic_available:
+            self.semantic_disabled()
+            self.semantic_available = False
         self.line_numbers.configure(state="normal")
         self.line_numbers.delete("1.0", "end")
         codigo = self.editor.get("1.0", "end-1c")
@@ -60,14 +64,18 @@ class Home(tk.Frame):
         code = self.editor.get("1.0", "end-1c")
         self.analisis_lexico(code)
         self.analisis_sintactico(code)
+        self.analisis_semantico(code)
 
     #Buttons logic ==============================================================
     def clean_panels(self):
         self.editor.delete("1.0", "end")
+        if self.semantic_available:
+            self.semantic_disabled()
+            self.semantic_available = False
         self.clean_lexico()
         self.clean_sintactico()
+        self.clean_semantico()
         
-
     def analisis_lexico(self, code=None):
         if code is None:
             self.clean_lexico()
@@ -90,6 +98,9 @@ class Home(tk.Frame):
         if not code.strip():
             self.clean_sintactico()
             return
+        if not self.semantic_available:
+            self.semantic_disabled(False)
+            self.semantic_available = True
         parser_result = parser_analyze(code)
         self.syntax_output.configure(state="normal")
         self.syntax_output.delete("1.0", "end")
@@ -101,12 +112,32 @@ class Home(tk.Frame):
         self.syntax_output.delete("1.0", "end")
         self.syntax_output.configure(state="disabled")
 
+    def analisis_semantico(self, code=None):
+        if code is None:
+            code = self.editor.get("1.0", "end-1c")
+        if not code.strip():
+            self.clean_semantico()
+            return
+        semantic_result = semantic_analyse()
+        self.semantic_output.configure(state="normal")
+        self.semantic_output.delete("1.0", "end")
+        self.semantic_output.insert("1.0", semantic_result)
+        self.semantic_output.configure(state="disabled")
+
+    def clean_semantico(self):
+        self.semantic_output.configure(state="normal")
+        self.semantic_output.delete("1.0", "end")
+        self.semantic_output.configure(state="disabled")
+
     def open_file(self):
         filepath = filedialog.askopenfilename(
             filetypes=[("Go Files", "*.go"), ("Text Files", "*.txt")]
         )
         if not filepath:
             return
+        if self.semantic_available:
+            self.semantic_disabled()
+            self.semantic_available = False
         with open(filepath, "r", encoding="utf-8") as file:
             content = file.read()
         self.editor.delete("1.0", "end")
@@ -116,9 +147,19 @@ class Home(tk.Frame):
         self.live_enabled = not self.live_enabled
         boton = self.boton_toggle_live
         if self.live_enabled:
-            boton.config(text="Live: ON", bg="#99FF99")
+            boton.config(text="Live: ON", bg=style.BUTTON_ON_BG)
         else:
-            boton.config(text="Live: OFF", bg="#FF9999")
+            boton.config(text="Live: OFF", bg=style.BUTTON_OFF_BG)
+
+    def semantic_disabled(self, turnOff=True):
+        boton = self.semantic_button
+        if turnOff:
+            #self.clean_semantico()
+            boton.config(state="disabled")
+            boton.config(bg=style.BUTTON_DISABLED)
+        else:
+            boton.config(state="normal")
+            boton.config(bg=style.BUTTONS_T1_BG)
     
     def insertar_tokens(self, tokens):
         self.clean_lexico()
@@ -127,4 +168,4 @@ class Home(tk.Frame):
                 self.lexical_table.insert("", "end", values=(t.lexema, t.tipo, t.linea, t.columna), tags=("error",))
             else:
                 self.lexical_table.insert("", "end", values=(t.lexema, t.tipo, t.linea, t.columna))
-        self.lexical_table.tag_configure("error", background="red", foreground="white")
+        self.lexical_table.tag_configure("error", background=style.BUTTON_OFF_BG, foreground="white")
