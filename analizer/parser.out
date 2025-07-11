@@ -9,7 +9,7 @@ Unused terminals:
     GO
     INTERFACE
     SELECT
-    STRING_UNCLOSE
+    STRING_UNCLOSED
 
 Grammar
 
@@ -193,7 +193,7 @@ RUNE                 : 94
 SELECT               : 
 SEMICOLON            : 83 83
 STRING               : 20 22 23 65 95
-STRING_UNCLOSE       : 
+STRING_UNCLOSED      : 
 STRUCT               : 78
 SWITCH               : 53
 TIMES                : 104

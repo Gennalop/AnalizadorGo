@@ -1,17 +1,7 @@
 import ply.lex as lex
-from logger import create_log_file 
+from .logger import create_log_file
 
-#Notes:
-#1) Se ha agregado el tipo rune que maneja datos de comilla simple.
-#2) Println se quedara como identifier por ser un nombre exportado.
-#Se podria reconocer junto a Println, Printf, Print como palabras reservadas, pero seria limitante a fmt
-#3) Está bien que los valores de constantes sean tokens NUMBER, porque representan literales fijos como 3.14.
-#El identificador de la constante (como PI) se procesa como IDENTIFIER y su valor se asocia luego en análisis semántico.
-
-
-## Reparticion del Trabajo
-
-# 1. Palabras Reservadas 
+errors = []
 
 reserved = {
     'true': 'TRUE',
@@ -43,8 +33,6 @@ reserved = {
     'main' : 'MAIN'
 }
 
-# 2. Lista de tokens (todos coordinan aquí)
-
 tokens = [
     'NUMBER',
     'RUNE',
@@ -59,13 +47,10 @@ tokens = [
     'DOT', 'COLON',
     'IDENTIFIER',
     'DATATYPE',
-    'STRING', 'STRING_UNCLOSE',
-    'RAW_STRING',
+    'STRING', 'STRING_UNCLOSED', 'RAW_STRING',
     'DECLARE_ASSIGN',
     'AMPERSAND',
 ] + list(reserved.values())
-
-# 3. Reglas para variables y tipo de datos 
 
 go_types = {
     'int', 'int8', 'int16', 'int32', 'int64',        
@@ -91,14 +76,17 @@ def t_STRING(t):
 
 def t_STRING_UNCLOSED(t):
     r'"[^"\n]*'
-    print("Error: cadena sin cerrar correctamente")
-    t.lexer.skip(len(t.value))
+    print("Error: String not properly closed")
+    global errors
+    col = calcular_columna(t.lexer.lexdata, t.lexpos)
+    errors.append(TokenInfo(t.value, t.type, t.lineno, col, category="error"))
+    #return t
+    #t.lexer.skip(len(t.value))
 
 def t_RAW_STRING(t):
     r'\`[^`]*\`'
     return t
 
-#En Go, las comillas simples ('...') se utilizan principalmente para representar caracteres individuales, conocidos como runas
 def t_RUNE(t): 
     r"\'([^\\'\n]|(\\.))\'"
     return t
@@ -110,9 +98,6 @@ def t_NUMBER(t):
     else:
         t.value = ('int', int(t.value))
     return t
-
-
-# 4. Reglas para operadores 
 
 t_PLUS    = r'\+'
 t_MINUS   = r'-'
@@ -132,8 +117,6 @@ t_OR      = r'\|\|'
 
 t_ASSIGN  = r'='
 t_DECLARE_ASSIGN = r':='
-
-# 5. Reglas para comentarios y delimitadores 
 
 t_AMPERSAND = r'&'
 
@@ -157,8 +140,6 @@ def t_COMMENT_MULTILINE(t):
     t.lexer.lineno += t.value.count('\n')
     pass
 
-# 6. Reglas comunes 
-
 t_ignore = ' \t'
 
 def t_newline(t):
@@ -166,46 +147,55 @@ def t_newline(t):
     t.lexer.lineno += len(t.value)
 
 def t_error(t):
-    #message = f"[ERROR] Unexpected character '{t.value[0]}' at line {t.lineno}\n"
-    #log_file.write(message)
-    print("Illegal character '%s'" % t.value[0]) 
+    global errors
+    col = calcular_columna(t.lexer.lexdata, t.lexpos)
+    errors.append(TokenInfo(t.value[0], "ILLEGAL_CHARACTER", t.lineno, col, category="error"))
+    print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
-
-# Build the lexer and test----------------------------------------------------------
 lexer = lex.lex()
+# Build the lexer and test----------------------------------------------------------
+
+class TokenInfo:
+    def __init__(self, lexema, tipo, linea, columna, category="token"):
+        self.lexema = lexema
+        self.tipo = tipo
+        self.linea = linea
+        self.columna = columna
+        self.category = category
+
+def calcular_columna(input_text, lexpos):
+    last_newline = input_text.rfind('\n', 0, lexpos)
+    if last_newline < 0:
+        columna = lexpos + 1
+    else:
+        columna = lexpos - last_newline
+    return columna
+
+def lexer_analyze(code):
+    global errors
+    lexer.lineno = 1
+    errors = []
+    lexer.input(code)
+    tokens = []
+    while True:
+        t = lexer.token()
+        if not t:
+            break
+        col = calcular_columna(code, t.lexpos)
+        tokens.append(TokenInfo(t.value, t.type, t.lineno, col, category="token"))
+    return tokens, errors
 
 if __name__ == "__main__":
-    log_file = create_log_file("gitUser") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
-
-    with open("testing_algorithms/algorithm#.go", "r", encoding="utf-8") as f:   #PRUEBEN CON SU ALGORITMO
+    lexer = lex.lex()
+    log_file = create_log_file("gitUser")
+    with open("testing_algorithms/algorithm#.go", "r", encoding="utf-8") as f:
         data = f.read()
 
-    lexer.input(data)
-    
-    while True:
-        tok = lexer.token()
-        if not tok:
-            break
-        message = f"[LEXTOKEN] {tok.type} -> '{tok.value}' (line {tok.lineno}, pos {tok.lexpos})\n"
-        log_file.write(message)
-        print(tok)
+    #tokens, _ = analizar_lexico(data)
+    #for token in tokens:
+    #    message = f"[LEXTOKEN] {token.tipo} -> '{token.lexema}' (line {token.linea}, pos {token.columna})\n"
+    #    log_file.write(message)
+    #    print(token.tipo, token.lexema, token.linea, token.columna)
 
     log_file.close()
-
-'''log_file = create_log_file("gitUser") #CAMBIAR A NOMBRE DE SU USUARIO GIT 
-
-with open("testing_algorithms/algorithm3.go", "r", encoding="utf-8") as f:  #PRUEBEN CON SU ALGORITMO
-    data = f.read()
-
-lexer.input(data)
-  
-while True:
-    tok = lexer.token()
-    if not tok:
-        break
-    message = f"[LEXTOKEN] {tok.type} -> '{tok.value}' (line {tok.lineno}, pos {tok.lexpos})\n"
-    log_file.write(message)
-    print(tok)
-
-log_file.close()'''
