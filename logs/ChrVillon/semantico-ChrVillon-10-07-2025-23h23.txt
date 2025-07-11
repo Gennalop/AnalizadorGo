@@ -1,0 +1,56 @@
+[OK] Bloque terminado en línea 1: package main
+[OK] Bloque terminado en línea 3: import "fmt"
+[OK] Bloque terminado en línea 9: type Persona struct {
+	nombre string
+	edad   int
+}
+[SEMANTIC ERROR] [Línea 11] Variable 'p' no ha sido declarada.
+[SEMANTIC ERROR] [Lines }
+]Error semántico: No se puede comparar 'field_access' con 'int'
+[SEMANTIC ERROR] Error semántico: El operador 'None' no es válido para tipo 'field_access'
+[ERROR] en bloque de líneas 10 a 16:
+   10: func saludar(p Persona) string {
+   11: 	if p.edad >= 18 {
+   12: 		return "Hola " + p.nombre + ", eres mayor de edad."
+   13: 	}
+   14: 	return "Hola " + p.nombre + ", eres menor de edad."
+   15: }
+   16: 
+  -> Syntax error at line 11: unexpected '{'
+[ERROR] en bloque de líneas 33 a 67:
+   33: func main() {
+   34: 	var mensaje string
+   35: 	var contador int = 0
+   36: 	nombre := ""
+   37: 	var notas [3]int
+   38: 	calificaciones := []float64{8.5, 9.2, 7.0}
+   39: 	puntajes := map[string]int{"Ana": 90, "Luis": 85}
+   40: 	fmt.Print("Ingresa tu nombre: ")
+   41: 	fmt.Scanln(&nombre)
+   42: 	fmt.Print("Ingresa tu edad: ")
+   43: 	var edad int
+   44: 	fmt.Scanln(&edad)
+   45: 	p := Persona{nombre: nombre, edad: edad}
+   46: 	mensaje = saludar(p)
+   47: 	fmt.Println(mensaje)
+   48: 	total := (10 + 5) * 2 / (3 - 1)
+   49: 	if total > 10 && edad >= 18 {
+   50: 		fmt.Println("Total válido y edad suficiente.")
+   51: 	} else {
+   52: 		fmt.Println("Condición no cumplida.")
+   53: 	}
+   54: 	for i := 0; i < 3; i++ {
+   55: 		notas[i] = i * 10
+   56: 		fmt.Println("Nota", i, ":", notas[i])
+   57: 	}
+   58: 	switch edad {
+   59: 	case 18:
+   60: 		fmt.Println("Tienes 18 años.")
+   61: 	case 21:
+   62: 		fmt.Println("Tienes 21 años.")
+   63: 	default:
+   64: 		fmt.Println("Edad no registrada específicamente.")
+   65: 	}
+   66: }
+   67: 
+  -> Syntax error at line 37: unexpected '['

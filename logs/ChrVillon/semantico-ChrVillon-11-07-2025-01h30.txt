@@ -1,0 +1,5 @@
+[SEMANTIC ERROR] Error: el tipo de retorno no coincide con lo declarado en la funcion
+[OK] Bloque terminado en línea 4: func cuadrado() int {
+	var x int = 1
+	return x * x
+}

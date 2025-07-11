@@ -9,7 +9,7 @@ tabla_simbolos = {
         "string-funciones": ["len", "to_uppercase", "to_lowercase", "to_str"],
         "int-funciones": ["abs", "sqrt"],
     },
-    "funciones": {},
+    "functions": {},
     "structs": {},  
 }
 
@@ -39,7 +39,9 @@ def p_statement(p):
                  | if_statement
                  | function
                  | method_definition
-                 | function_literal'''
+                 | function_literal
+                 | var_declaration
+                 | return_statement'''
     print("Matched statement:", p[1])
     p[0] = p[1]
 
@@ -216,6 +218,7 @@ def p_comparador(p):
                   | LT
                   | GE
                   | LE'''
+    p[0] = p[1] 
 
 def p_empty(p):
     '''empty :'''
@@ -257,39 +260,64 @@ def p_value_key(p):
                 | STRING'''
     
 def p_function(p):
-    '''function : FUNC IDENTIFIER LPAREN params_opt RPAREN return_type block'''
-    p[0] = ('function', p[2], p[4], p[6], p[7])
-
-def p_function_with_return(p):
-    '''function : FUNC IDENTIFIER LPAREN params_opt RPAREN return_type LBRACE statement_list RETURN expression RBRACE'''
+    '''function : FUNC IDENTIFIER LPAREN params_opt RPAREN block
+                | FUNC IDENTIFIER LPAREN params_opt RPAREN return_type LBRACE statement_list RETURN return_values RBRACE'''
+    
     func_name = p[2]
     return_types = p[6]
+    params = p[4]
+    return_values = p[10]
+    returns = len(return_types)
+
     tabla_simbolos['functions'][func_name] = {
-        'return_types': return_types,  
-        'params': p[4]
+        'return_types': return_types,
+        'params': params
     }
-    p[0] = ('function_with_return', func_name, p[4], return_types, p[8])
+
+    parser.funcion_actual = func_name
+
+    if len(return_values) != len(return_types):
+        semantic_error("Error: La funcion {func_name} espera {returns} retornos")
+    if len(return_types) > 1:
+        for i in range(0, len(return_types)):
+            if return_types[i] != return_values[i][0]:
+                semantic_error("Error: El retorno {return_values[i]} no es de tipo {return_types[i]}")
+
+    else:
+        if return_types[0] != return_values[0][0]:
+            semantic_error("Error: El tipo de retorno no coincide con lo declarado en la funcion")
+
+    if len(p) == 8:
+        p[0] = ('function', func_name, params, return_types, p[7])
+    else:
+        p[0] = ('function_with_return', func_name, params, return_types, p[9])
+
+def p_return_values(p):
+    '''return_values : expression
+                    | return_values COMMA expression'''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = p[1] + [p[3]]
+    
 
 def p_function_main(p):
     '''function : FUNC MAIN LPAREN params_opt RPAREN block'''
 
 def p_return_statement(p):
     'return_statement : RETURN expression'
-    function_name = p[-2]  
-    returned_values = p[2]
+    function_name = parser.funcion_actual
+    returned_value = p[2]
 
-    if function_name in tabla_simbolos['functions']:
-        expected_types = tabla_simbolos['functions'][function_name]['return_types']
-        if len(returned_values) != len(expected_types):
-            raise TypeError(f"Function {function_name} expects {len(expected_types)} return values, but got {len(returned_values)}.")
+    if function_name is None:
+        semantic_error("No se pudo determinar la función actual para validar el retorno")
+        return
 
-        for idx, value in enumerate(returned_values):
-            if value[0] != expected_types[idx]:
-                raise TypeError(f"Expected return type {expected_types[idx]} for value {idx + 1}, but got {value[0]}.")
-    else:
-        raise NameError(f"Function {function_name} is not defined.")
-    
-    p[0] = ('return', returned_values)
+    if function_name not in tabla_simbolos['functions']:
+        semantic_error(f"La función '{function_name}' no está registrada en la tabla de símbolos")
+        return
+
+    p[0] = ('return', returned_value)
 
 def p_params_opt(p):
     '''params_opt : params
@@ -422,9 +450,10 @@ def p_expression_number(p):
 def p_expression_identifier(p):
     'expression : IDENTIFIER'
     var_name = p[1]
+    line = p.lineno(1)
     
     if var_name not in tabla_simbolos['variables']:
-        print(f"Variable '{var_name}' is not defined.")
+        semantic_error(f"[Linea {line}] Variable '{var_name}' is not defined.")
     
     var_type = tabla_simbolos['variables'][var_name]
     p[0] = ('ident', var_name, var_type)
@@ -453,14 +482,18 @@ def p_expression_binary(p):
     left = p[1]
     right = p[3]
     op = p[2]
-    tipo_izq = left[0] if isinstance(left, tuple) else 'unknown'
-    tipo_der = right[0] if isinstance(right, tuple) else 'unknown'
-    if tipo_izq == 'number' and tipo_der == 'number':
-        p[0] = ('number', ('binop', op, left, right))
+
+    # Si viene como ('ident', nombre, tipo), extraer tipo de la posición 2
+    tipo_izq = left[2] if isinstance(left, tuple) and left[0] == 'ident' else left[0]
+    tipo_der = right[2] if isinstance(right, tuple) and right[0] == 'ident' else right[0]
+
+    if tipo_izq == 'int' and tipo_der == 'int':
+        p[0] = ('int', ('binop', op, left, right))
     elif op == '+' and tipo_izq == tipo_der == 'string':
         p[0] = ('string', ('binop', op, left, right))
     else:
         semantic_error(f"Error semántico: No se puede usar el operador '{op}' entre '{tipo_izq}' y '{tipo_der}'")
+        p[0] = ('unknown', None)
     
 def p_expression_field_access(p):
     'expression : expression DOT IDENTIFIER'
@@ -472,6 +505,7 @@ def p_operator(p):
                 | TIMES
                 | DIVIDE
                 | MOD'''
+    p[0] = p[1] 
 
 def p_expression_unary_minus(p):
     'expression : MINUS expression %prec UMINUS'
@@ -523,7 +557,8 @@ def p_parameter(p):
 
 def p_return_type(p):
     '''return_type : DATATYPE
-                   | empty'''
+                   | empty
+                   | LPAREN DATATYPE COMMA return_type RPAREN'''
     if len(p) == 2:
         p[0] = [p[1]]  
     elif len(p) == 3:
@@ -569,10 +604,11 @@ def semantic_error(message):
 
 # Build the parser
 parser = yacc.yacc()
+parser.funcion_actual = None
 
 log_file = create_log_file("ChrVillon")  # Cambia por tu nombre real o el de GitHub
 
-with open("testing_algorithms/algorithm1.go", "r", encoding="utf-8") as f:
+with open("testing_algorithms/algorithm3.go", "r", encoding="utf-8") as f:
     lines = f.readlines()
 
 block = ""
@@ -588,12 +624,17 @@ for lineno, line in enumerate(lines, start=1):
     open_braces -= line.count('}')
 
     if open_braces == 0 and block.strip():
-        lexer.lineno = lineno
+        start_line = lineno - block.count('\n')
+        lexer.lineno = start_line
+        lexer.input(block)
         try:
-            result = parser.parse(block)
+            result = parser.parse(block, lexer=lexer)
             log_file.write(f"[OK] Bloque terminado en línea {lineno}: {block.strip()}\n")
         except Exception as e:
-            log_file.write(f"[ERROR] Bloque terminado en línea {lineno}: {block.strip()} -> {str(e)}\n")
+            log_file.write(f"[ERROR] en bloque de líneas {start_line} a {lineno}:\n")
+            for i, l in enumerate(block.split('\n'), start=lineno - block.count('\n')):
+                log_file.write(f"  {i:>3}: {l}\n")
+            log_file.write(f"  -> {str(e)}\n")
         block = ""
 '''
 parser.parse(data)

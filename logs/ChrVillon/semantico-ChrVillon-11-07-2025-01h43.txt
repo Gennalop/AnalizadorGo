@@ -1,0 +1,4 @@
+[OK] Bloque terminado en línea 4: func cuadrado() int {
+	var x int = 1
+	return x * x
+}

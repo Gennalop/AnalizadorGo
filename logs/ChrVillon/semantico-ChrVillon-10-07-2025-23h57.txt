@@ -1,0 +1,7 @@
+[SEMANTIC ERROR] Error semántico: No se puede usar el operador 'None' entre 'ident' y 'ident'
+[ERROR] en bloque de líneas 1 a 4:
+    1: func cuadrado() int {
+    2: 	var x int = 1
+    3: 	return x * x
+    4: }
+  -> 'functions'
