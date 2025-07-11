@@ -146,20 +146,27 @@ def p_expression_comparacion(p):
     left = p[1]
     right = p[3]
 
-    # Extraer tipos base
     left_type = left[0]
+    if left_type == 'ident':
+        var_name = left[1]
+        left_type = tabla_simbolos['variables'].get(var_name, 'unknown')
+
     right_type = right[0]
+    if right_type == 'ident':
+        var_name = right[1]
+        right_type = tabla_simbolos['variables'].get(var_name, 'unknown')
 
     # Permitir comparaciones solo entre números, strings o bool entre sí
     allowed = [
-        ('number', 'number'),
+        ('int', 'int'),
+        ('float64', 'float64'),
         ('string', 'string'),
         ('rune', 'rune'),
         ('bool', 'bool'),
     ]
 
     if (left_type, right_type) not in allowed:
-        raise SyntaxError(f"Comparison between incompatible types: {left_type} y {right_type}")
+        semantic_error(f"Comparison between incompatible types: {left_type} y {right_type}")
 
     p[0] = ('comparison', p[2], left, right)
 
@@ -187,15 +194,25 @@ def p_condicion(p):
     '''condicion : expression comparador expression'''
     left = p[1]
     right = p[3]
+
     tipo_izq = left[0]
+    if tipo_izq == 'ident':
+        var_name = left[1]
+        tipo_izq = tabla_simbolos['variables'].get(var_name, 'unknown')
+
     tipo_der = right[0]
+    if tipo_der == 'ident':
+        var_name = right[1]
+        tipo_der = tabla_simbolos['variables'].get(var_name, 'unknown')
+
     if tipo_izq != tipo_der:
         semantic_error(f"No se puede comparar '{tipo_izq}' con '{tipo_der}'.", p)
     op = p[2]
     if op in ('==', '!='):
         p[0] = ('bool', ('cmp', op, left, right))
         return
-    tipos_ordenables = ['number', 'string', 'rune']
+    
+    tipos_ordenables = ['int', 'float64', 'string', 'rune']
     if tipo_izq not in tipos_ordenables:
         semantic_error(f"El operador '{op}' no es válido para tipo '{tipo_izq}'.", p)
     p[0] = ('bool', ('cmp', op, left, right))
@@ -522,14 +539,15 @@ def p_expression_group(p):
 #Aus
 #Estructura if
 def p_if_statement(p):
-    '''if_statement : IF condicion_compleja block
+    '''if_statement : IF condicion block
+                    | IF condicion block ELSE block
+                    | IF condicion_compleja block
                     | IF condicion_compleja block ELSE block'''
     cond = p[2]
     cond_type = cond[0]
 
-    if cond_type not in ('comparison', 'bool'):
-        #raise SyntaxError(f"The condition of if must be boolean or a comparison, not '{cond_type}'")
-        semantic_error(f"The condition of if must be boolean or a comparison, not '{cond_type}.", p)
+    if cond_type != 'bool':
+        semantic_error(f"La condición del if debe ser booleana, no '{cond_type}'.", p)
 
     if len(p) == 4:
         p[0] = ('if', cond, p[3], None)
