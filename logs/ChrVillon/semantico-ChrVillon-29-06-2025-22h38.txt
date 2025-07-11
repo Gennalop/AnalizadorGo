@@ -1,0 +1,14 @@
+[SEMANTIC ERROR] Error semántico: No se puede usar el operador 'None' entre 'int' y 'int'
+[SEMANTIC ERROR] Error semántico: Se declaró 'suma' como 'int' pero se asignó valor tipo 'unknown'
+[OK] Bloque terminado en línea 2: var suma int = 5 + 3
+[SEMANTIC ERROR] Error semántico: No se puede usar el operador 'None' entre 'string' y 'string'
+[SEMANTIC ERROR] Error semántico: Se declaró 'texto' como 'string' pero se asignó valor tipo 'unknown'
+[OK] Bloque terminado en línea 3: var texto string = "Hola" + " Mundo"
+[ERROR] Bloque terminado en línea 4: var esMayor bool = edad > 18 -> 'edad'
+[ERROR] Bloque terminado en línea 5: var esIgual bool = nombre == "Carlos" -> 'nombre'
+[ERROR] Bloque terminado en línea 6: var esVerdad bool = activo && true -> 'activo'
+[ERROR] Bloque terminado en línea 7: var letraMas int = letra + 1      // rune + number (depende si aceptas rune como number, sino error) -> 'letra'
+[ERROR] Bloque terminado en línea 10: var errorSuma = "5" + 3          // Error: string + int no permitido -> Syntax error at line 10: unexpected '"5"'
+[ERROR] Bloque terminado en línea 11: var errorBool = true + 1         // Error: bool + number no permitido -> Syntax error at line 11: unexpected 'true'
+[ERROR] Bloque terminado en línea 12: var errorComparacion = "hola" > 3  // Error: string > number no permitido -> Syntax error at line 12: unexpected '"hola"'
+[ERROR] Bloque terminado en línea 13: var errorLogico = 1 && true      // Error: number && bool no permitido -> Syntax error at line 13: unexpected '('int', 1)'
