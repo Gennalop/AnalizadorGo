@@ -48,7 +48,6 @@ def p_statement(p):
                  | slice_declaration
                  | declare_assign'''
     
-
     print("Matched statement:", p[1])
     p[0] = p[1]
 
@@ -310,64 +309,51 @@ def p_value_key(p):
                 | STRING'''
     
 def p_function(p):
-    '''function : FUNC IDENTIFIER LPAREN params_opt RPAREN block
-                | FUNC IDENTIFIER LPAREN params_opt RPAREN return_type LBRACE statement_list RETURN return_values RBRACE'''
+    '''function : FUNC IDENTIFIER LPAREN params_opt RPAREN block'''
+    
+def p_function_with_return(p):
+    '''function : FUNC IDENTIFIER LPAREN params_opt RPAREN return_type LBRACE statement_list RBRACE'''
     
     func_name = p[2]
     return_types = p[6]
     params = p[4]
-    return_values = p[10]
-    returns = len(return_types)
+    statements = p[8]
 
+    parser.funcion_actual = func_name
     tabla_simbolos['functions'][func_name] = {
         'return_types': return_types,
         'params': params
     }
 
-    parser.funcion_actual = func_name
+    todos_los_returns = encontrar_todos_los_returns(statements)
 
-    if len(return_values) != len(return_types):
-        semantic_error("Error: La funcion {func_name} espera {returns} retornos")
-    if len(return_types) > 1:
-        for i in range(0, len(return_types)):
-            if return_types[i] != return_values[i][0]:
-                semantic_error("Error: El retorno {return_values[i]} no es de tipo {return_types[i]}")
+    if not todos_los_returns:
+        semantic_error(f"La función '{func_name}' debe tener al menos un return.")
 
-    else:
-        if return_types[0] != return_values[0][0]:
-            semantic_error("Error: El tipo de retorno no coincide con lo declarado en la funcion")
+    for ret_vals in todos_los_returns:
+        if len(ret_vals) != len(return_types):
+            semantic_error(f"La función '{func_name}' debe retornar {len(return_types)} valores, se obtuvo {len(ret_vals)}.")
+        for i, val in enumerate(ret_vals):
+            tipo_valor = val[0]
+            if tipo_valor != return_types[i]:
+                semantic_error(f"Tipo de retorno incorrecto en '{func_name}': se esperaba '{return_types[i]}', se obtuvo '{tipo_valor}'.")
 
-    if len(p) == 8:
-        p[0] = ('function', func_name, params, return_types, p[7])
-    else:
-        p[0] = ('function_with_return', func_name, params, return_types, p[9])
-
-def p_return_values(p):
-    '''return_values : expression
-                    | return_values COMMA expression'''
-    if len(p) == 2:
-        p[0] = [p[1]]
-    else:
-        p[0] = p[1] + [p[3]]
-    
+    p[0] = ('function_with_return', func_name, params, return_types, statements)
 
 def p_function_main(p):
     '''function : FUNC MAIN LPAREN params_opt RPAREN block'''
 
 def p_return_statement(p):
-    'return_statement : RETURN expression'
-    function_name = parser.funcion_actual
-    returned_value = p[2]
+    'return_statement : RETURN return_values'
+    p[0] = ('return', p[2])
 
-    if function_name is None:
-        semantic_error("No se pudo determinar la función actual para validar el retorno")
-        return
+def p_return_values_single(p):
+    'return_values : expression'
+    p[0] = [p[1]]
 
-    if function_name not in tabla_simbolos['functions']:
-        semantic_error(f"La función '{function_name}' no está registrada en la tabla de símbolos")
-        return
-
-    p[0] = ('return', returned_value)
+def p_return_values_multiple(p):
+    'return_values : expression COMMA return_values'
+    p[0] = [p[1]] + p[3]
 
 def p_params_opt(p):
     '''params_opt : params
@@ -501,7 +487,9 @@ def p_expression_identifier(p):
     'expression : IDENTIFIER'
     var_name = p[1]
 
-    if var_name not in tabla_simbolos['variables']:
+    function_name = parser.funcion_actual
+
+    if var_name not in tabla_simbolos['variables'] or var_name not in tabla_simbolos['functions'][function_name]['params']:
         semantic_error(f"Variable '{var_name}' is not defined.", p)
     else:
         var_type = tabla_simbolos['variables'][var_name]
@@ -614,18 +602,24 @@ def p_parameter(p):
     else:
         p[0] = ('param_func', p[1], p[4], p[6])
 
-def p_return_type(p):
-    '''return_type : DATATYPE
-                   | empty
-                   | LPAREN DATATYPE COMMA return_type RPAREN'''
-    if len(p) == 2:
-        p[0] = [p[1]]  
-    elif len(p) == 3:
-        p[0] = [p[1]] + p[2] 
-    else:
-        p[0] = []
+def p_return_type_single(p):
+    'return_type : DATATYPE'
+    p[0] = [p[1]]
 
+def p_return_type_multiple(p):
+    'return_type : LPAREN type_list RPAREN'
+    p[0] = p[2]
 
+def p_return_type_empty(p):
+    'return_type : empty'
+    p[0] = []
+def p_type_list_single(p):
+    'type_list : DATATYPE'
+    p[0] = [p[1]]
+
+def p_type_list_multiple(p):
+    'type_list : DATATYPE COMMA type_list'
+    p[0] = [p[1]] + p[3]
 
 #Estructura de datos: Slice
 def p_slice_declaration(p):
@@ -772,3 +766,18 @@ while True:
 parser.input(data)
 '''
 #log_file.close()
+def encontrar_todos_los_returns(statements):
+    returns = []
+    for stmt in statements:
+        if isinstance(stmt, tuple) and stmt[0] == 'return':
+            returns.append(stmt[1])  # Lista de expresiones de retorno
+        elif isinstance(stmt, tuple) and stmt[0] == 'if_else':
+            # Recursivamente buscar en if y else
+            returns += encontrar_todos_los_returns(stmt[2][1])  # bloque if
+            if stmt[3]:
+                returns += encontrar_todos_los_returns(stmt[3][1])  # bloque else
+        elif isinstance(stmt, tuple) and stmt[0] == 'if':
+            returns += encontrar_todos_los_returns(stmt[2][1])  # solo bloque if
+        elif isinstance(stmt, tuple) and stmt[0] == 'block':
+            returns += encontrar_todos_los_returns(stmt[1])
+    return returns
