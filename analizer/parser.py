@@ -53,7 +53,8 @@ def p_statement(p):
                  | function_literal
                  | var_declaration
                  | slice_declaration
-                 | declare_assign'''
+                 | declare_assign
+                 | return_statement'''
     
     print("Matched statement:", p[1])
     p[0] = p[1]
@@ -358,6 +359,10 @@ def p_function_with_return(p):
 
     parser.funcion_actual = func_name
     todos_los_returns = encontrar_todos_los_returns(statements)
+    tabla_simbolos['functions'][func_name] = {
+        'return_types': return_types,
+        'params': params
+    }
 
     if not todos_los_returns:
         semantic_error(f"La función '{func_name}' debe tener al menos un return.")
