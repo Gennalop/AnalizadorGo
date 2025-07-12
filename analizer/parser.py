@@ -40,7 +40,6 @@ def p_statement(p):
     '''statement : assignment
                  | input
                  | llamarFuncion
-                 | print_statement
                  | struct_definition
                  | for_statement
                  | package
@@ -182,8 +181,11 @@ def p_llamar_funcion(p):
     '''llamarFuncion : IDENTIFIER LPAREN argument_list_opt RPAREN
                      | IDENTIFIER LPAREN argument_list_opt COMMA expression RPAREN
                      | IDENTIFIER DOT IDENTIFIER LPAREN argument_list_opt RPAREN'''
-    if len(p) == 7:
-        p[0] = ('call', (p[1], p[3]), p[5])
+    if len(p) == 7: 
+        if p[1] == 'fmt' and p[3] in ('Print', 'Println', 'Printf'):
+            p[0] = ('print', p[3], p[5])
+        else:
+            p[0] = ('call', (p[1], p[3]), p[5])
     else:
         func_name = p[1]
         args = p[3]
@@ -196,41 +198,6 @@ def p_llamar_funcion(p):
             semantic_error(f"Function '{func_name}' must return exactly one value here.", p)
         return_type = return_types[0]
         p[0] = (return_type, ('call', func_name, args))
-
-#Aus 
-def p_expression_comparacion(p):
-    'expression : expression comparador expression'
-    left = p[1]
-    right = p[3]
-
-    left_type = left[0]
-    if left_type == 'ident':
-        var_name = left[1]
-        left_type = tabla_simbolos['variables'].get(var_name, 'unknown')
-
-    right_type = right[0]
-    if right_type == 'ident':
-        var_name = right[1]
-        right_type = tabla_simbolos['variables'].get(var_name, 'unknown')
-
-    # Permitir comparaciones solo entre números, strings o bool entre sí
-    allowed = [
-        ('int', 'int'),
-        ('float64', 'float64'),
-        ('string', 'string'),
-        ('rune', 'rune'),
-        ('bool', 'bool'),
-    ]
-
-    if (left_type, right_type) not in allowed:
-        semantic_error(f"Comparison between incompatible types: {left_type} y {right_type}")
-
-    p[0] = ('comparison', p[2], left, right)
-
-
-def p_boolean_expression(p):
-    '''expression : expression operadorLogico expression'''
-    
 ##argument_list   
 def p_argument_list_single(p):
     'argument_list : expression'
@@ -452,12 +419,12 @@ def p_type_name(p):
 #IMPRESION============================================================================
 
 ##print_statement
-def p_print_statement(p):
-    'print_statement : IDENTIFIER DOT IDENTIFIER LPAREN argument_list_opt RPAREN'
-    if p[1] == 'fmt' and p[3] in ('Print', 'Println', 'Printf'):
-        p[0] = ('print', p[3], p[5])
-    else:
-        raise SyntaxError(f"Impresión no válida: {p[1]}.{p[3]}")
+#def p_print_statement(p):
+#    'print_statement : IDENTIFIER DOT IDENTIFIER LPAREN argument_list_opt RPAREN'
+#    print("p_print_statement matched")
+#    if p[1] != 'fmt' and p[3] in ('Print', 'Println', 'Printf'):
+#        semantic_error(f"Impresión no válida: {p[1]}.{p[3]}.", p)
+#    p[0] = ('print', p[3], p[5])
 
 #STRUCT===============================================================================
 
@@ -600,20 +567,17 @@ precedence = (
     ('right', 'UMINUS'),                # -x
 )
 
+def p_expression_identifier(p):
+    'expression : IDENTIFIER'
+    var_name = p[1]
+    if var_name not in tabla_simbolos['variables']:
+        semantic_error(f"Variable '{var_name}' is not defined.", p)
+    p[0] = ('ident', var_name)
+
 def p_expression_number(p):
     'expression : NUMBER'
     tipo, valor = p[1]
     p[0] = (tipo, valor)  # tipo será 'int' o 'float64'
-
-def p_expression_identifier(p):
-    'expression : IDENTIFIER'
-    var_name = p[1]
-
-    if var_name not in tabla_simbolos['variables']:
-        semantic_error(f"Variable '{var_name}' is not defined.", p)
-    else:
-        var_type = tabla_simbolos['variables'][var_name]
-    p[0] = ('ident', var_name)
 
 def p_expression_rune(p):
     'expression : RUNE'
@@ -636,9 +600,45 @@ def p_expression_slice_literal(p):
     'expression : slice_literal'
     p[0] = p[1]
 
+def p_expression_field_access(p):
+    'expression : IDENTIFIER DOT IDENTIFIER'
+    print("expression_field")
+    p[0] = ('field_access', p[1], p[3])
+
 def p_expression_llamar_funcion(p):
     'expression : llamarFuncion'
     p[0] = p[1]
+    
+def p_boolean_expression(p):
+    '''expression : expression operadorLogico expression'''
+
+#Aus 
+def p_expression_comparacion(p):
+    'expression : expression comparador expression'
+    left = p[1]
+    right = p[3]
+
+    left_type = left[0]
+    if left_type == 'ident':
+        var_name = left[1]
+        left_type = tabla_simbolos['variables'].get(var_name, 'unknown')
+
+    right_type = right[0]
+    if right_type == 'ident':
+        var_name = right[1]
+        right_type = tabla_simbolos['variables'].get(var_name, 'unknown')
+
+    # Permitir comparaciones solo entre números, strings o bool entre sí
+    allowed = [
+        ('int', 'int'),
+        ('float64', 'float64'),
+        ('string', 'string'),
+        ('rune', 'rune'),
+        ('bool', 'bool'),
+    ]
+    if (left_type, right_type) not in allowed:
+        semantic_error(f"Comparison between incompatible types: {left_type} y {right_type}")
+    p[0] = ('comparison', p[2], left, right)
 
 ##Genesis. Regla para compatibilidad de tipos
 def p_expression_binary(p):
@@ -658,10 +658,6 @@ def p_expression_binary(p):
     else:
         semantic_error(f"No se puede usar el operador '{op}' entre '{tipo_izq}' y '{tipo_der}'.", p)
         p[0] = ('unknown', None)
-    
-def p_expression_field_access(p):
-    'expression : expression DOT IDENTIFIER'
-    p[0] = ('field_access', p[1], p[3])
 
 def p_operator(p):
     '''operator : PLUS
@@ -807,10 +803,10 @@ def p_error(p):
     print("Encontre un error")
     if p:
         parser_errors.append(f"[SYNTAX ERROR] Unexpected '{p.value}' at line {p.lineno}")
-        #raise SyntaxError(f"[SYNTAX ERROR] Unexpected '{p.value}' at line {p.lineno}")
+        raise SyntaxError(f"[SYNTAX ERROR] Unexpected '{p.value}' at line {p.lineno}")
     else:
         parser_errors.append("[SYNTAX ERROR] Unexpected EOF")
-        #raise SyntaxError("[SYNTAX ERROR] Unexpected EOF")
+        raise SyntaxError("[SYNTAX ERROR] Unexpected EOF")
 
 def semantic_error(m, p):
     print("[SEMANTIC ERROR]", m)
