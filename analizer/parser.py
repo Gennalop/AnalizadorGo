@@ -117,22 +117,34 @@ def p_var_declaration(p):
 ##Genesis. Aplicando regla semantica para verficacion de tipo
 def p_assignment(p):
     '''assignment : IDENTIFIER DECLARE_ASSIGN expression
+                  | IDENTIFIER DECLARE_ASSIGN struct_literal
                   | VAR IDENTIFIER type_name ASSIGN expression
                   | VAR IDENTIFIER type_name ASSIGN llamarFuncion'''
-    if len(p) == 4:
+    
+    # Caso: short declaration con expression normal
+    if len(p) == 4 and p[2] == ':=' and isinstance(p[3], tuple) and p[3][0] != 'struct_lit':
         nombre = p[1]
         expr = p[3]
         tipo_expr = expr[0] if isinstance(expr, tuple) else 'unknown'
         tabla_simbolos["variables"][nombre] = tipo_expr
         p[0] = ('assign_decl', nombre, expr)
-    elif len(p) == 6:
+
+    # Caso: short declaration con struct literal
+    elif len(p) == 4 and p[2] == ':=' and isinstance(p[3], tuple) and p[3][0] == 'struct_lit':
+        nombre = p[1]
+        struct_info = p[3]
+        struct_type = struct_info[1]
+        tabla_simbolos["variables"][nombre] = struct_type
+        p[0] = ('assign_decl_struct', nombre, struct_info)
+
+    # Caso: declaración con VAR y expresión
+    elif len(p) == 6 and p[1] == 'var' and p[4] == '=':
         nombre = p[2]
         tipo_declarado = p[3]
         valor = p[5]
         tipo_expr = valor[0] if isinstance(valor, tuple) else 'unknown'
         if tipo_expr != tipo_declarado:
-            #semantic_error(f"Error semántico: Se declaró '{nombre}' como '{tipo_declarado}' pero se asignó valor tipo '{tipo_expr}'")
-            semantic_error(f"'{nombre}' was declared as '{tipo_declarado}' but was assigned value type '{tipo_expr}.", p)
+            semantic_error(f"'{nombre}' was declared as '{tipo_declarado}' but was assigned value type '{tipo_expr}'.", p)
         tabla_simbolos["variables"][nombre] = tipo_declarado
         p[0] = ('var_assign', nombre, tipo_declarado, valor)
 
@@ -173,7 +185,17 @@ def p_llamar_funcion(p):
     if len(p) == 7:
         p[0] = ('call', (p[1], p[3]), p[5])
     else:
-        p[0] = ('call', p[1], p[3])
+        func_name = p[1]
+        args = p[3]
+        if func_name not in tabla_simbolos['functions']:
+            semantic_error(f"Function '{func_name}' is not defined.", p)
+            p[0] = ('unknown', ('call', func_name, args))
+            return
+        return_types = tabla_simbolos['functions'][func_name]['return_types']
+        if len(return_types) != 1:
+            semantic_error(f"Function '{func_name}' must return exactly one value here.", p)
+        return_type = return_types[0]
+        p[0] = (return_type, ('call', func_name, args))
 
 #Aus 
 def p_expression_comparacion(p):
@@ -449,8 +471,47 @@ def p_struct_definition(p):
     if nombre_struct in tabla_simbolos["structs"]:
         '''REVISAAAAAAR'''
         semantic_error(f"Type '{nombre_struct}' is already defined.", p)
+    tabla_simbolos['structs'][nombre_struct] = campos_struct
     p[0] = ('struct', p[2], p[5])
     
+def p_struct_literal(p):
+    'struct_literal : IDENTIFIER LBRACE struct_field_assignments RBRACE'
+    struct_type = p[1]
+    fields = p[3]
+    if struct_type not in tabla_simbolos['structs']:
+        semantic_error(f"Struct '{struct_type}' no está declarado.", p)
+        p[0] = ('struct_lit_invalid', struct_type, fields)
+        return
+    struct_def = tabla_simbolos['structs'][struct_type]
+    struct_fields_declared = {field[0]: field[1] for field in struct_def}
+    for field_name, field_value in fields:
+        if field_name not in struct_fields_declared:
+            semantic_error(f"Campo '{field_name}' no es parte de '{struct_type}'.", p)
+        else:
+            expected_type = struct_fields_declared[field_name]
+            if isinstance(field_value, tuple) and field_value[0] == 'ident':
+                var_name = field_value[1]
+                actual_type = tabla_simbolos['variables'].get(var_name, 'unknown')
+            else:
+                actual_type = field_value[0] if isinstance(field_value, tuple) else 'unknown'
+            if expected_type != actual_type:
+                semantic_error(f"Campo '{field_name}' en '{struct_type}' es '{expected_type}' pero se asigna '{actual_type}'.", p)
+    p[0] = ('struct_lit', struct_type, fields)
+
+
+def p_struct_field_assignments_single(p):
+    'struct_field_assignments : struct_field_assignment'
+    p[0] = [p[1]]
+
+def p_struct_field_assignments_multiple(p):
+    'struct_field_assignments : struct_field_assignments COMMA struct_field_assignment'
+    p[0] = p[1] + [p[3]]
+
+def p_struct_field_assignment(p):
+    'struct_field_assignment : IDENTIFIER COLON expression'
+    field_name = p[1]
+    field_value = p[3]
+    p[0] = (field_name, field_value)
 
 ##struct_field
 def p_struct_field(p):
@@ -762,6 +823,10 @@ parser.funcion_actual = None
 def parser_analyze(code):
     global parser_errors
     global semantic_errors
+    global tabla_simbolos
+    tabla_simbolos['structs'].clear()
+    tabla_simbolos['variables'].clear()
+    tabla_simbolos['functions'].clear()
     lexer.lineno = 1
     parser_errors = []
     semantic_errors = []
