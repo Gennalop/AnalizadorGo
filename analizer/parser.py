@@ -104,7 +104,7 @@ def p_input(p):
     '''input : IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN'''
 
 def p_var_declaration(p):
-    '''var_declaration : VAR IDENTIFIER DATATYPE'''
+    '''var_declaration : VAR IDENTIFIER type_name'''
     var_name = p[2]
     var_type = p[3]
     if var_name in tabla_simbolos['variables']:
@@ -117,8 +117,8 @@ def p_var_declaration(p):
 ##Genesis. Aplicando regla semantica para verficacion de tipo
 def p_assignment(p):
     '''assignment : IDENTIFIER DECLARE_ASSIGN expression
-                  | VAR IDENTIFIER DATATYPE ASSIGN expression
-                  | VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion'''
+                  | VAR IDENTIFIER type_name ASSIGN expression
+                  | VAR IDENTIFIER type_name ASSIGN llamarFuncion'''
     if len(p) == 4:
         nombre = p[1]
         expr = p[3]
@@ -138,7 +138,7 @@ def p_assignment(p):
 
 def p_assignment_slice_literal(p):
     '''assignment : IDENTIFIER DECLARE_ASSIGN slice_literal
-                  | VAR IDENTIFIER DATATYPE ASSIGN slice_literal'''
+                  | VAR IDENTIFIER type_name ASSIGN slice_literal'''
     if len(p) == 4:
         nombre = p[1]
         slice_lit = p[3]
@@ -303,7 +303,7 @@ def p_map(p):
     '''map : VAR IDENTIFIER ASSIGN mapLiteral'''
 
 def p_map_literal(p):
-    '''mapLiteral : MAP LBRACKET DATATYPE RBRACKET DATATYPE LBRACE mapEntries RBRACE'''
+    '''mapLiteral : MAP LBRACKET type_name RBRACKET type_name LBRACE mapEntries RBRACE'''
 
 def p_map_entries(p):
     '''mapEntries : mapEntry
@@ -410,8 +410,12 @@ def p_params(p):
         p[0] = [p[1]] + p[3]
 
 def p_param(p):
-    '''param : IDENTIFIER type_name'''
-    p[0] = ('param', p[1], p[2])
+    '''param : IDENTIFIER type_name
+             | identifier_list type_name'''
+    if isinstance(p[1], list):
+        p[0] = [('param', name, p[2]) for name in p[1]]
+    else:
+        p[0] = ('param', p[1], p[2])
 
 def p_type_name(p):
     '''type_name : DATATYPE
@@ -450,7 +454,7 @@ def p_struct_definition(p):
 
 ##struct_field
 def p_struct_field(p):
-    'struct_field : IDENTIFIER DATATYPE'
+    'struct_field : IDENTIFIER type_name'
     p[0] = (p[1], p[2])
 
 ##struct_fields
@@ -645,22 +649,48 @@ def p_parameters(p):
     if len(p) == 2 and p[1] is None:
         p[0] = []
     elif len(p) == 2:
-        p[0] = [p[1]]
+        if isinstance(p[1], list):
+            p[0] = p[1]
+        else:
+            p[0] = [p[1]]
     else:
-        p[0] = p[1] + [p[3]]
+        left = p[1] if isinstance(p[1], list) else [p[1]]
+        right = p[3] if isinstance(p[3], list) else [p[3]]
+        p[0] = left + right
 
 def p_parameter(p):
-    '''parameter : IDENTIFIER DATATYPE
-                 | IDENTIFIER FUNC LPAREN parameters RPAREN DATATYPE'''
-    if len(p) == 3:
-        p[0] = ('param', p[1], p[2])
+    '''parameter : IDENTIFIER type_name
+                 | identifier_list type_name'''
+    if isinstance(p[1], list):
+
+        p[0] = [('param', name, p[2]) for name in p[1]]
     else:
-        p[0] = ('param_func', p[1], p[4], p[6])
+        p[0] = ('param', p[1], p[2])
+
+def p_identifier_list_single(p):
+    'identifier_list : IDENTIFIER'
+    p[0] = [p[1]]
+
+def p_identifier_list_multiple(p):
+    'identifier_list : IDENTIFIER COMMA identifier_list'
+    p[0] = [p[1]] + p[3]
+
+def p_type_name(p):
+    '''type_name : DATATYPE
+                 | IDENTIFIER
+                 | LBRACKET RBRACKET type_name
+                 | FUNC LPAREN parameters RPAREN return_type'''
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 4:
+        p[0] = f'[]{p[3]}'
+    else:
+        p[0] = ('func_type', p[3], p[5])
 
 def p_return_type(p):
-    '''return_type : DATATYPE
+    '''return_type : type_name
                    | empty
-                   | LPAREN DATATYPE COMMA return_type RPAREN'''
+                   | LPAREN type_name COMMA return_type RPAREN'''
     if len(p) == 2:
         p[0] = [p[1]]  
     elif len(p) == 3:
@@ -668,6 +698,9 @@ def p_return_type(p):
     else:
         p[0] = []
 
+def p_expression_function_literal(p):
+    'expression : function_literal'
+    p[0] = p[1]
 
 
 #Estructura de datos: Slice
