@@ -1,4 +1,4 @@
-import pprint
+import traceback
 import ply.yacc as yacc
 from .lexer import tokens, lexer
 from .logger import create_log_file 
@@ -19,6 +19,14 @@ tabla_simbolos = {
 def p_program(p):
     'program : statement_list'
     p[0] = ('program', p[1])
+
+def p_statement_list_opt(p):
+    '''statement_list_opt : statement_list
+                            | '''
+    if len(p) == 2:
+        p[0] = p[1] 
+    else:
+        p[0] = []
 
 def p_statement_list(p):
     '''statement_list : statement
@@ -44,7 +52,6 @@ def p_statement(p):
                  | method_definition
                  | function_literal
                  | var_declaration
-                 | return_statement
                  | slice_declaration
                  | declare_assign'''
     
@@ -96,7 +103,7 @@ def p_input(p):
     '''input : IDENTIFIER DOT IDENTIFIER LPAREN AMPERSAND IDENTIFIER RPAREN'''
 
 def p_var_declaration(p):
-    '''var_declaration : VAR IDENTIFIER DATATYPE'''
+    '''var_declaration : VAR IDENTIFIER type_name'''
     var_name = p[2]
     var_type = p[3]
     if var_name in tabla_simbolos['variables']:
@@ -109,28 +116,40 @@ def p_var_declaration(p):
 ##Genesis. Aplicando regla semantica para verficacion de tipo
 def p_assignment(p):
     '''assignment : IDENTIFIER DECLARE_ASSIGN expression
-                  | VAR IDENTIFIER DATATYPE ASSIGN expression
-                  | VAR IDENTIFIER DATATYPE ASSIGN llamarFuncion'''
-    if len(p) == 4:
+                  | IDENTIFIER DECLARE_ASSIGN struct_literal
+                  | VAR IDENTIFIER type_name ASSIGN expression
+                  | VAR IDENTIFIER type_name ASSIGN llamarFuncion'''
+    
+    # Caso: short declaration con expression normal
+    if len(p) == 4 and p[2] == ':=' and isinstance(p[3], tuple) and p[3][0] != 'struct_lit':
         nombre = p[1]
         expr = p[3]
         tipo_expr = expr[0] if isinstance(expr, tuple) else 'unknown'
         tabla_simbolos["variables"][nombre] = tipo_expr
         p[0] = ('assign_decl', nombre, expr)
-    elif len(p) == 6:
+
+    # Caso: short declaration con struct literal
+    elif len(p) == 4 and p[2] == ':=' and isinstance(p[3], tuple) and p[3][0] == 'struct_lit':
+        nombre = p[1]
+        struct_info = p[3]
+        struct_type = struct_info[1]
+        tabla_simbolos["variables"][nombre] = struct_type
+        p[0] = ('assign_decl_struct', nombre, struct_info)
+
+    # Caso: declaración con VAR y expresión
+    elif len(p) == 6 and p[1] == 'var' and p[4] == '=':
         nombre = p[2]
         tipo_declarado = p[3]
         valor = p[5]
         tipo_expr = valor[0] if isinstance(valor, tuple) else 'unknown'
         if tipo_expr != tipo_declarado:
-            #semantic_error(f"Error semántico: Se declaró '{nombre}' como '{tipo_declarado}' pero se asignó valor tipo '{tipo_expr}'")
-            semantic_error(f"'{nombre}' was declared as '{tipo_declarado}' but was assigned value type '{tipo_expr}.", p)
+            semantic_error(f"'{nombre}' was declared as '{tipo_declarado}' but was assigned value type '{tipo_expr}'.", p)
         tabla_simbolos["variables"][nombre] = tipo_declarado
         p[0] = ('var_assign', nombre, tipo_declarado, valor)
 
 def p_assignment_slice_literal(p):
     '''assignment : IDENTIFIER DECLARE_ASSIGN slice_literal
-                  | VAR IDENTIFIER DATATYPE ASSIGN slice_literal'''
+                  | VAR IDENTIFIER type_name ASSIGN slice_literal'''
     if len(p) == 4:
         nombre = p[1]
         slice_lit = p[3]
@@ -165,7 +184,17 @@ def p_llamar_funcion(p):
     if len(p) == 7:
         p[0] = ('call', (p[1], p[3]), p[5])
     else:
-        p[0] = ('call', p[1], p[3])
+        func_name = p[1]
+        args = p[3]
+        if func_name not in tabla_simbolos['functions']:
+            semantic_error(f"Function '{func_name}' is not defined.", p)
+            p[0] = ('unknown', ('call', func_name, args))
+            return
+        return_types = tabla_simbolos['functions'][func_name]['return_types']
+        if len(return_types) != 1:
+            semantic_error(f"Function '{func_name}' must return exactly one value here.", p)
+        return_type = return_types[0]
+        p[0] = (return_type, ('call', func_name, args))
 
 #Aus 
 def p_expression_comparacion(p):
@@ -295,7 +324,7 @@ def p_map(p):
     '''map : VAR IDENTIFIER ASSIGN mapLiteral'''
 
 def p_map_literal(p):
-    '''mapLiteral : MAP LBRACKET DATATYPE RBRACKET DATATYPE LBRACE mapEntries RBRACE'''
+    '''mapLiteral : MAP LBRACKET type_name RBRACKET type_name LBRACE mapEntries RBRACE'''
 
 def p_map_entries(p):
     '''mapEntries : mapEntry
@@ -307,10 +336,18 @@ def p_map_entry(p):
 def p_value_key(p):
     '''value_key : expression
                 | STRING'''
-    
-def p_function(p):
-    '''function : FUNC IDENTIFIER LPAREN params_opt RPAREN block'''
-    
+
+def p_function_no_return(p):
+    'function : FUNC IDENTIFIER LPAREN params_opt RPAREN block'
+    func_name = p[2]
+    params = p[4]
+    return_types = []
+
+    tabla_simbolos['functions'][func_name] = {
+        'return_types': return_types,
+        'params': params
+    }
+
 def p_function_with_return(p):
     '''function : FUNC IDENTIFIER LPAREN params_opt RPAREN return_type LBRACE statement_list RBRACE'''
     
@@ -320,11 +357,6 @@ def p_function_with_return(p):
     statements = p[8]
 
     parser.funcion_actual = func_name
-    tabla_simbolos['functions'][func_name] = {
-        'return_types': return_types,
-        'params': params
-    }
-
     todos_los_returns = encontrar_todos_los_returns(statements)
 
     if not todos_los_returns:
@@ -342,6 +374,15 @@ def p_function_with_return(p):
 
 def p_function_main(p):
     '''function : FUNC MAIN LPAREN params_opt RPAREN block'''
+    func_name = "main"
+    params = p[4]
+    return_types = [] 
+    tabla_simbolos['functions'][func_name] = {
+        'return_types': return_types,
+        'params': params
+    }
+    parser.funcion_actual = func_name
+    p[0] = ('function_main', func_name, params, p[6])
 
 def p_return_statement(p):
     'return_statement : RETURN return_values'
@@ -355,20 +396,36 @@ def p_return_values_multiple(p):
     'return_values : expression COMMA return_values'
     p[0] = [p[1]] + p[3]
 
+
 def p_params_opt(p):
     '''params_opt : params
-                      | empty'''
-    
+                      | '''
+    if len(p) == 2:
+        p[0] = p[1]  # lista de params
+    else:
+        p[0] = [] 
+
 def p_params(p):
     '''params : param
                   | param COMMA params'''
-    
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = [p[1]] + p[3]
+
 def p_param(p):
-    '''param : IDENTIFIER type_name'''
+    '''param : IDENTIFIER type_name
+             | identifier_list type_name'''
+    if isinstance(p[1], list):
+        p[0] = [('param', name, p[2]) for name in p[1]]
+    else:
+        p[0] = ('param', p[1], p[2])
 
 def p_type_name(p):
     '''type_name : DATATYPE
                  | IDENTIFIER'''
+    p[0] = ('type', p[1])
+    
 
 #)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
 #Genesis Lopez))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
@@ -389,11 +446,58 @@ def p_print_statement(p):
 ##struct_definition
 def p_struct_definition(p):
     'struct_definition : TYPE IDENTIFIER STRUCT LBRACE struct_fields RBRACE'
+    nombre_struct = p[2]
+    campos_struct = p[5]
+    if nombre_struct == "_":
+        semantic_error(f"'_' cannot be used as a struct name.", p)
+    if nombre_struct in tabla_simbolos["structs"]:
+        '''REVISAAAAAAR'''
+        semantic_error(f"Type '{nombre_struct}' is already defined.", p)
+    tabla_simbolos['structs'][nombre_struct] = campos_struct
     p[0] = ('struct', p[2], p[5])
+    
+def p_struct_literal(p):
+    'struct_literal : IDENTIFIER LBRACE struct_field_assignments RBRACE'
+    struct_type = p[1]
+    fields = p[3]
+    if struct_type not in tabla_simbolos['structs']:
+        semantic_error(f"Struct '{struct_type}' no está declarado.", p)
+        p[0] = ('struct_lit_invalid', struct_type, fields)
+        return
+    struct_def = tabla_simbolos['structs'][struct_type]
+    struct_fields_declared = {field[0]: field[1] for field in struct_def}
+    for field_name, field_value in fields:
+        if field_name not in struct_fields_declared:
+            semantic_error(f"Campo '{field_name}' no es parte de '{struct_type}'.", p)
+        else:
+            expected_type = struct_fields_declared[field_name]
+            if isinstance(field_value, tuple) and field_value[0] == 'ident':
+                var_name = field_value[1]
+                actual_type = tabla_simbolos['variables'].get(var_name, 'unknown')
+            else:
+                actual_type = field_value[0] if isinstance(field_value, tuple) else 'unknown'
+            if expected_type != actual_type:
+                semantic_error(f"Campo '{field_name}' en '{struct_type}' es '{expected_type}' pero se asigna '{actual_type}'.", p)
+    p[0] = ('struct_lit', struct_type, fields)
+
+
+def p_struct_field_assignments_single(p):
+    'struct_field_assignments : struct_field_assignment'
+    p[0] = [p[1]]
+
+def p_struct_field_assignments_multiple(p):
+    'struct_field_assignments : struct_field_assignments COMMA struct_field_assignment'
+    p[0] = p[1] + [p[3]]
+
+def p_struct_field_assignment(p):
+    'struct_field_assignment : IDENTIFIER COLON expression'
+    field_name = p[1]
+    field_value = p[3]
+    p[0] = (field_name, field_value)
 
 ##struct_field
 def p_struct_field(p):
-    'struct_field : IDENTIFIER DATATYPE'
+    'struct_field : IDENTIFIER type_name'
     p[0] = (p[1], p[2])
 
 ##struct_fields
@@ -590,17 +694,43 @@ def p_parameters(p):
     if len(p) == 2 and p[1] is None:
         p[0] = []
     elif len(p) == 2:
-        p[0] = [p[1]]
+        if isinstance(p[1], list):
+            p[0] = p[1]
+        else:
+            p[0] = [p[1]]
     else:
-        p[0] = p[1] + [p[3]]
+        left = p[1] if isinstance(p[1], list) else [p[1]]
+        right = p[3] if isinstance(p[3], list) else [p[3]]
+        p[0] = left + right
 
 def p_parameter(p):
-    '''parameter : IDENTIFIER DATATYPE
-                 | IDENTIFIER FUNC LPAREN parameters RPAREN DATATYPE'''
-    if len(p) == 3:
-        p[0] = ('param', p[1], p[2])
+    '''parameter : IDENTIFIER type_name
+                 | identifier_list type_name'''
+    if isinstance(p[1], list):
+
+        p[0] = [('param', name, p[2]) for name in p[1]]
     else:
-        p[0] = ('param_func', p[1], p[4], p[6])
+        p[0] = ('param', p[1], p[2])
+
+def p_identifier_list_single(p):
+    'identifier_list : IDENTIFIER'
+    p[0] = [p[1]]
+
+def p_identifier_list_multiple(p):
+    'identifier_list : IDENTIFIER COMMA identifier_list'
+    p[0] = [p[1]] + p[3]
+
+def p_type_name(p):
+    '''type_name : DATATYPE
+                 | IDENTIFIER
+                 | LBRACKET RBRACKET type_name
+                 | FUNC LPAREN parameters RPAREN return_type'''
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 4:
+        p[0] = f'[]{p[3]}'
+    else:
+        p[0] = ('func_type', p[3], p[5])
 
 def p_return_type_single(p):
     'return_type : DATATYPE'
@@ -609,6 +739,10 @@ def p_return_type_single(p):
 def p_return_type_multiple(p):
     'return_type : LPAREN type_list RPAREN'
     p[0] = p[2]
+
+def p_expression_function_literal(p):
+    'expression : function_literal'
+    p[0] = p[1]
 
 def p_return_type_empty(p):
     'return_type : empty'
@@ -661,12 +795,13 @@ def p_expression_slice_access(p):
 
 # Error rule for syntax errors
 def p_error(p):
+    print("Encontre un error")
     if p:
         parser_errors.append(f"[SYNTAX ERROR] Unexpected '{p.value}' at line {p.lineno}")
-        raise SyntaxError(f"[SYNTAX ERROR] Unexpected '{p.value}' at line {p.lineno}")
+        #raise SyntaxError(f"[SYNTAX ERROR] Unexpected '{p.value}' at line {p.lineno}")
     else:
         parser_errors.append("[SYNTAX ERROR] Unexpected EOF")
-        raise SyntaxError("[SYNTAX ERROR] Unexpected EOF")
+        #raise SyntaxError("[SYNTAX ERROR] Unexpected EOF")
 
 def semantic_error(m, p):
     print("[SEMANTIC ERROR]", m)
@@ -679,6 +814,10 @@ parser.funcion_actual = None
 def parser_analyze(code):
     global parser_errors
     global semantic_errors
+    global tabla_simbolos
+    tabla_simbolos['structs'].clear()
+    tabla_simbolos['variables'].clear()
+    tabla_simbolos['functions'].clear()
     lexer.lineno = 1
     parser_errors = []
     semantic_errors = []
@@ -689,9 +828,12 @@ def parser_analyze(code):
         results.append("[OK] Parsing completed successfully.")
         #results.append(str(resultado))
         tree_str = tree_to_str(resultado)
+        print("Sali del arbol")
         results.append(tree_str)
         return "\n".join(str(r) for r in results)
     except Exception as e:
+        print(e)
+        traceback.print_exc()
         return "\n".join(str(e) for e in parser_errors)
 
 def tree_to_str(node, indent="", last=True):
