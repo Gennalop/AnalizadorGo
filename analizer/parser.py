@@ -1,4 +1,4 @@
-import pprint
+import traceback
 import ply.yacc as yacc
 from .lexer import tokens, lexer
 from .logger import create_log_file 
@@ -19,6 +19,14 @@ tabla_simbolos = {
 def p_program(p):
     'program : statement_list'
     p[0] = ('program', p[1])
+
+def p_statement_list_opt(p):
+    '''statement_list_opt : statement_list
+                            | '''
+    if len(p) == 2:
+        p[0] = p[1] 
+    else:
+        p[0] = []
 
 def p_statement_list(p):
     '''statement_list : statement
@@ -43,8 +51,7 @@ def p_statement(p):
                  | function
                  | method_definition
                  | function_literal
-                 | var_declaration
-                 | return_statement'''
+                 | var_declaration'''
     print("Matched statement:", p[1])
     p[0] = p[1]
 
@@ -264,38 +271,47 @@ def p_value_key(p):
     '''value_key : expression
                 | STRING'''
     
-def p_function(p):
-    '''function : FUNC IDENTIFIER LPAREN params_opt RPAREN block
-                | FUNC IDENTIFIER LPAREN params_opt RPAREN return_type LBRACE statement_list RETURN return_values RBRACE'''
-    
-    func_name = p[2]
-    return_types = p[6]
-    params = p[4]
-    return_values = p[10]
-    returns = len(return_types)
 
+def p_function_no_return(p):
+    'function : FUNC IDENTIFIER LPAREN params_opt RPAREN block'
+    func_name = p[2]
+    params = p[4]
+    return_types = [] 
     tabla_simbolos['functions'][func_name] = {
         'return_types': return_types,
         'params': params
     }
-
     parser.funcion_actual = func_name
+    p[0] = ('function', func_name, params, return_types, p[6])
 
+def p_function_with_return(p):
+    'function : FUNC IDENTIFIER LPAREN params_opt RPAREN return_type LBRACE statement_list_opt RETURN return_values RBRACE'
+    func_name = p[2]
+    params = p[4]
+    return_types = p[6]
+    return_values = p[10]
+    tabla_simbolos['functions'][func_name] = {
+        'return_types': return_types,
+        'params': params
+    }
+    parser.funcion_actual = func_name
     if len(return_values) != len(return_types):
-        semantic_error("Error: La funcion {func_name} espera {returns} retornos")
+        semantic_error(f"La funcion {func_name} espera {len(return_types)} retornos", p)
     if len(return_types) > 1:
-        for i in range(0, len(return_types)):
+        for i in range(len(return_types)):
             if return_types[i] != return_values[i][0]:
-                semantic_error("Error: El retorno {return_values[i]} no es de tipo {return_types[i]}")
-
+                semantic_error(f"El retorno {return_values[i]} no es de tipo {return_types[i]}.", p)
     else:
         if return_types[0] != return_values[0][0]:
-            semantic_error("Error: El tipo de retorno no coincide con lo declarado en la funcion")
-
-    if len(p) == 8:
-        p[0] = ('function', func_name, params, return_types, p[7])
-    else:
-        p[0] = ('function_with_return', func_name, params, return_types, p[9])
+            semantic_error(f"El tipo de retorno no coincide con lo declarado en la funcion", p)
+    p[0] = (
+        'function_with_return',
+        ('name', func_name),
+        ('parameters', params),
+        ('return_types', return_types),
+        ('body', p[8]),   
+        ('return_values', return_values)
+    )
 
 def p_return_values(p):
     '''return_values : expression
@@ -304,10 +320,18 @@ def p_return_values(p):
         p[0] = [p[1]]
     else:
         p[0] = p[1] + [p[3]]
-    
 
 def p_function_main(p):
     '''function : FUNC MAIN LPAREN params_opt RPAREN block'''
+    func_name = "main"
+    params = p[4]
+    return_types = [] 
+    tabla_simbolos['functions'][func_name] = {
+        'return_types': return_types,
+        'params': params
+    }
+    parser.funcion_actual = func_name
+    p[0] = ('function_main', func_name, params, p[6])
 
 def p_return_statement(p):
     'return_statement : RETURN expression'
@@ -315,29 +339,40 @@ def p_return_statement(p):
     returned_value = p[2]
 
     if function_name is None:
-        semantic_error("No se pudo determinar la función actual para validar el retorno")
+        semantic_error("No se pudo determinar la función actual para validar el retorno.", p)
         return
 
     if function_name not in tabla_simbolos['functions']:
-        semantic_error(f"La función '{function_name}' no está registrada en la tabla de símbolos")
+        semantic_error(f"La función '{function_name}' no está registrada en la tabla de símbolos.", p)
         return
 
     p[0] = ('return', returned_value)
 
 def p_params_opt(p):
     '''params_opt : params
-                      | empty'''
-    
+                      | '''
+    if len(p) == 2:
+        p[0] = p[1]  # lista de params
+    else:
+        p[0] = [] 
+
 def p_params(p):
     '''params : param
                   | param COMMA params'''
-    
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = [p[1]] + p[3]
+
 def p_param(p):
     '''param : IDENTIFIER type_name'''
+    p[0] = ('param', p[1], p[2])
 
 def p_type_name(p):
     '''type_name : DATATYPE
                  | IDENTIFIER'''
+    p[0] = ('type', p[1])
+    
 
 #)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
 #Genesis Lopez))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
@@ -358,7 +393,15 @@ def p_print_statement(p):
 ##struct_definition
 def p_struct_definition(p):
     'struct_definition : TYPE IDENTIFIER STRUCT LBRACE struct_fields RBRACE'
+    nombre_struct = p[2]
+    campos_struct = p[5]
+    if nombre_struct == "_":
+        semantic_error(f"'_' cannot be used as a struct name.", p)
+    if nombre_struct in tabla_simbolos["structs"]:
+        '''REVISAAAAAAR'''
+        semantic_error(f"Type '{nombre_struct}' is already defined.", p)
     p[0] = ('struct', p[2], p[5])
+    
 
 ##struct_field
 def p_struct_field(p):
@@ -596,12 +639,13 @@ def p_elements_single(p):
 
 # Error rule for syntax errors
 def p_error(p):
+    print("Encontre un error")
     if p:
         parser_errors.append(f"[SYNTAX ERROR] Unexpected '{p.value}' at line {p.lineno}")
-        raise SyntaxError(f"[SYNTAX ERROR] Unexpected '{p.value}' at line {p.lineno}")
+        #raise SyntaxError(f"[SYNTAX ERROR] Unexpected '{p.value}' at line {p.lineno}")
     else:
         parser_errors.append("[SYNTAX ERROR] Unexpected EOF")
-        raise SyntaxError("[SYNTAX ERROR] Unexpected EOF")
+        #raise SyntaxError("[SYNTAX ERROR] Unexpected EOF")
 
 def semantic_error(m, p):
     print("[SEMANTIC ERROR]", m)
@@ -624,9 +668,12 @@ def parser_analyze(code):
         results.append("[OK] Parsing completed successfully.")
         #results.append(str(resultado))
         tree_str = tree_to_str(resultado)
+        print("Sali del arbol")
         results.append(tree_str)
         return "\n".join(str(r) for r in results)
     except Exception as e:
+        print(e)
+        traceback.print_exc()
         return "\n".join(str(e) for e in parser_errors)
 
 def tree_to_str(node, indent="", last=True):
