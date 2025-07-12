@@ -71,6 +71,7 @@ _lr_productions = [
   ('llamarFuncion -> IDENTIFIER LPAREN argument_list_opt RPAREN','llamarFuncion',4,'p_llamar_funcion','parser.py',181),
   ('llamarFuncion -> IDENTIFIER LPAREN argument_list_opt COMMA expression RPAREN','llamarFuncion',6,'p_llamar_funcion','parser.py',182),
   ('llamarFuncion -> IDENTIFIER DOT IDENTIFIER LPAREN argument_list_opt RPAREN','llamarFuncion',6,'p_llamar_funcion','parser.py',183),
+
   ('expression -> expression comparador expression','expression',3,'p_expression_comparacion','parser.py',201),
   ('expression -> expression operadorLogico expression','expression',3,'p_boolean_expression','parser.py',231),
   ('argument_list -> expression','argument_list',1,'p_argument_list_single','parser.py',235),
