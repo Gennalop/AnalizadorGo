@@ -182,5 +182,5 @@ _lr_productions = [
   ('expression -> expression LBRACKET expression COLON expression RBRACKET','expression',6,'p_expression_slice_access','parser.py',789),
   ('expression -> expression LBRACKET COLON expression RBRACKET','expression',5,'p_expression_slice_access','parser.py',790),
   ('expression -> expression LBRACKET expression COLON RBRACKET','expression',5,'p_expression_slice_access','parser.py',791),
->>>>>>> Villon
+
 ]
