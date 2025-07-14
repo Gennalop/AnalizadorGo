@@ -332,15 +332,15 @@ def p_function_with_return(p):
     }
 
     if not todos_los_returns:
-        semantic_error(f"La función '{func_name}' debe tener al menos un return.")
+        semantic_error(f"La función '{func_name}' debe tener al menos un return.", p)
 
     for ret_vals in todos_los_returns:
         if len(ret_vals) != len(return_types):
-            semantic_error(f"La función '{func_name}' debe retornar {len(return_types)} valores, se obtuvo {len(ret_vals)}.")
+            semantic_error(f"La función '{func_name}' debe retornar {len(return_types)} valores, se obtuvo {len(ret_vals)}.", p)
         for i, val in enumerate(ret_vals):
             tipo_valor = val[0]
             if tipo_valor != return_types[i]:
-                semantic_error(f"Tipo de retorno incorrecto en '{func_name}': se esperaba '{return_types[i]}', se obtuvo '{tipo_valor}'.")
+                semantic_error(f"Tipo de retorno incorrecto en '{func_name}': se esperaba '{return_types[i]}', se obtuvo '{tipo_valor}'.", p)
 
     p[0] = ('function_with_return', func_name, params, return_types, statements)
 
@@ -554,13 +554,6 @@ precedence = (
     ('right', 'UMINUS'),                # -x
 )
 
-def p_expression_identifier(p):
-    'expression : IDENTIFIER'
-    var_name = p[1]
-    if var_name not in tabla_simbolos['variables']:
-        semantic_error(f"Variable '{var_name}' is not defined.", p)
-    p[0] = ('ident', var_name)
-
 def p_expression_number(p):
     'expression : NUMBER'
     tipo, valor = p[1]
@@ -572,7 +565,7 @@ def p_expression_identifier(p):
 
     function_name = parser.funcion_actual
 
-    if var_name not in tabla_simbolos['variables'] or var_name not in tabla_simbolos['functions'][function_name]['params']:
+    if var_name not in tabla_simbolos['variables'] and var_name not in tabla_simbolos['functions'][function_name]['params']:
         semantic_error(f"Variable '{var_name}' is not defined.", p)
     else:
         var_type = tabla_simbolos['variables'][var_name]
