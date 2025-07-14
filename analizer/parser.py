@@ -796,6 +796,15 @@ def p_expression_slice_access(p):
     elif len(p) == 6 and p[4] == ':':
         p[0] = ('slice_access', p[1], p[3], None)  # numeros[1:]
 
+def p_struct_literal_positional(p):
+    'struct_literal : LBRACE elements RBRACE'
+    p[0] = ('struct_lit_positional', p[2])
+
+def p_expression_struct_literal(p):
+    'expression : struct_literal'
+    p[0] = p[1]
+
+
 
 # Error rule for syntax errors
 def p_error(p):
